@@ -7,6 +7,20 @@
 
 ---
 
+> [!IMPORTANT]
+> ### ⏱️ 30-Second Executive TL;DR & Judge Fast-Track
+> - **Execution Philosophy**: *"Validate locally. Measure rigorously. Scale responsibly."* — Moving sequentially from an audited technical prototype to controlled single-corridor field trials, empirical data collection, and regional expansion.
+> - **The 4 Implementation Stages**:
+>   - **Stage 1 (Current)**: Verified working prototype with tri-client architecture, deterministic 3-axis capacity validation, integer NMRS cost splitting, and offline SQLite driver journal.
+>   - **Stage 2 (Months 1–6)**: Controlled pilot on the high-density Nashik–Mumbai agricultural corridor (~165 km) with 10 FPOs, 25 fleet operators (50 trucks), and 20 APMC wholesale buyers.
+>   - **Stage 3 (Months 6–12)**: Empirical evidence harvesting (elevate truck utilization from <45% to $\ge 70\%$, cut deadhead km by 30%).
+>   - **Stage 4 (Months 12–24)**: Meta-heuristic optimization (ALNS), 3D bin packing, and expansion across 10 rural corridors.
+> - **Judge Fast-Path (60 Seconds)**:
+>   - Review the roadmap diagram in [**Section 1: Four-Stage Delivery Roadmap**](#1-guiding-execution-philosophy).
+>   - Review pilot specifications and exit gates in [**Section 2: Stage Breakdown & Deliverables**](#2-stage-breakdown--deliverables) and [**Section 3: Milestones & Risk Gate Management**](#3-milestones--risk-gate-management).
+
+---
+
 ## 1. Guiding Execution Philosophy
 
 > _"Validate locally. Measure rigorously. Scale responsibly."_ — **Slide 7**

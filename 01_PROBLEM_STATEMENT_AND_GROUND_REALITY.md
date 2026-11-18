@@ -7,6 +7,17 @@
 
 ---
 
+> [!IMPORTANT]
+> ### ⏱️ 30-Second Executive TL;DR & Judge Fast-Track
+> - **The Core Problem**: 86.2% of Indian farmers are smallholders producing sub-scale Less-Than-Truckload (LTL) harvests (1–4 tonnes). They are trapped between paying exorbitant full-truck charter rates or surrendering 10%–15% margins to informal village middlemen. Meanwhile, regional commercial trucks run at <50% capacity and log 28%–43% empty return kilometers (deadheading).
+> - **The PRAYAAN Solution**: A corridor-based digital freight pooling architecture that aggregates multi-producer LTL shipments into shared medium commercial vehicles along arterial highway routes using deterministic 3-axis capacity validation, FPO micro-ledger billing, and vernacular Bhashini voice interfaces.
+> - **Defensibility & Truthfulness**: We do not claim fabricated field data (`STATUS: NOT YET CONDUCTED — VALIDATION REQUIRED`). The problem and solution are grounded in official DPIIT, NCAER, MoAFW, and NITI Aayog benchmarks.
+> - **Judge Fast-Path (60 Seconds)**:
+>   - See the 8-platform competitive matrix in [**Section 11: Competitor Analysis & Genuine Technical Differentiation**](#11-competitor-analysis--genuine-technical-differentiation).
+>   - See the audit of verified data vs. hypotheses in [**Section 9: Evidence vs. Assumptions Audit**](#9-evidence-vs-assumptions-audit).
+
+---
+
 ## 1. Executive Problem Definition
 
 In India, agriculture and allied rural micro, small, and medium enterprises (MSMEs) sustain the livelihoods of over 50% of the national workforce and contribute approximately 18% to India's Gross Domestic Product (GDP). However, the physical conveyance of goods from rural production nodes (farmgates, village aggregation centres, rural cottage clusters) to intermediate wholesale markets (APMC mandis) and urban consuming hubs is crippled by structural, physical, and informational friction.

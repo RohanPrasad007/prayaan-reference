@@ -24,6 +24,12 @@ CREATE TYPE vehicle_body_type AS ENUM (
     'TARPAULIN_COVERED'
 );
 
+CREATE TYPE ethylene_category AS ENUM (
+    'NEUTRAL',
+    'HIGH_EMITTER',
+    'ETHYLENE_SENSITIVE'
+);
+
 CREATE TYPE request_status AS ENUM (
     'OPEN_POOL',
     'ASSIGNED_TO_TRIP',
@@ -139,7 +145,7 @@ CREATE TABLE orders (
     version_id INTEGER DEFAULT 1 -- Optimistic Concurrency Control
 );
 
--- Table: Transport Requests (Open Corridor Pool)
+-- Table: Transport Requests (Open Corridor Pool with Cross-Compatibility Profile)
 CREATE TABLE transport_requests (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     order_id UUID UNIQUE NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
@@ -147,6 +153,9 @@ CREATE TABLE transport_requests (
     volume_m3 NUMERIC(5, 2) NOT NULL CHECK (volume_m3 > 0),
     slot_demand INTEGER NOT NULL CHECK (slot_demand BETWEEN 1 AND 100),
     requires_refrigeration BOOLEAN DEFAULT FALSE,
+    ethylene_profile ethylene_category DEFAULT 'NEUTRAL',
+    is_odor_pungent BOOLEAN DEFAULT FALSE,
+    is_moisture_sensitive BOOLEAN DEFAULT FALSE,
     pickup_location GEOMETRY(Point, 4326) NOT NULL,
     drop_location GEOMETRY(Point, 4326) NOT NULL,
     status request_status DEFAULT 'OPEN_POOL',
@@ -187,6 +196,7 @@ CREATE TABLE consignments (
     pickup_stop_id UUID NOT NULL REFERENCES route_stops(id),
     drop_stop_id UUID NOT NULL REFERENCES route_stops(id),
     allocated_freight_paise BIGINT NOT NULL CHECK (allocated_freight_paise > 0), -- NMRS Paise
+    advance_freight_disbursed_paise BIGINT DEFAULT 0, -- 50% split at origin pickup
     loading_otp_hash VARCHAR(64) NOT NULL,   -- SHA-256 Hash of 6-digit OTP
     delivery_otp_hash VARCHAR(64) NOT NULL,  -- SHA-256 Hash of 6-digit OTP
     status consignment_status DEFAULT 'QUEUED',
@@ -257,7 +267,7 @@ CREATE POLICY orders_access_policy ON orders
         OR current_setting('app.current_user_role', true) = 'ADMIN'
     );
 
--- Policy: Consignments Tenant Isolation
+-- Policy: Consignments Tenant Isolation (Normalized Join through transport_requests)
 CREATE POLICY consignments_access_policy ON consignments
     FOR ALL
     USING (
@@ -292,8 +302,10 @@ CREATE POLICY consignments_access_policy ON consignments
     );
 
 -- =====================================================================================
--- 6. Optimistic Concurrency Control Triggers
+-- 6. Trigger Functions & Data Invariants
 -- =====================================================================================
+
+-- Trigger 1: Optimistic Concurrency Control Version Incrementer
 CREATE OR REPLACE FUNCTION increment_version_id()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -313,3 +325,104 @@ FOR EACH ROW EXECUTE FUNCTION increment_version_id();
 CREATE TRIGGER trg_consignments_version
 BEFORE UPDATE ON consignments
 FOR EACH ROW EXECUTE FUNCTION increment_version_id();
+
+-- Trigger 2: Consignment Leg Sequence & Contiguous Physical Capacity Validation
+CREATE OR REPLACE FUNCTION validate_consignment_stops_and_capacity()
+RETURNS TRIGGER AS $$
+DECLARE
+    v_vehicle_id UUID;
+    v_rated_payload INTEGER;
+    v_usable_volume NUMERIC(5, 2);
+    v_planning_slots INTEGER;
+    v_pickup_seq INTEGER;
+    v_drop_seq INTEGER;
+    v_pickup_trip UUID;
+    v_drop_trip UUID;
+    v_req_weight INTEGER;
+    v_req_volume NUMERIC(5, 2);
+    v_req_slots INTEGER;
+    v_leg_seq INTEGER;
+    v_active_weight INTEGER;
+    v_active_volume NUMERIC(5, 2);
+    v_active_slots INTEGER;
+BEGIN
+    -- (a) Validate that pickup and drop stops belong to the assigned trip and maintain sequence precedence
+    SELECT trip_id, stop_sequence INTO v_pickup_trip, v_pickup_seq 
+    FROM route_stops WHERE id = NEW.pickup_stop_id;
+    
+    SELECT trip_id, stop_sequence INTO v_drop_trip, v_drop_seq 
+    FROM route_stops WHERE id = NEW.drop_stop_id;
+
+    IF v_pickup_trip IS NULL OR v_drop_trip IS NULL THEN
+        RAISE EXCEPTION 'INVALID_STOP_IDS: pickup_stop_id (%) or drop_stop_id (%) does not exist.', 
+            NEW.pickup_stop_id, NEW.drop_stop_id;
+    END IF;
+
+    IF v_pickup_trip <> NEW.trip_id OR v_drop_trip <> NEW.trip_id THEN
+        RAISE EXCEPTION 'TRIP_MISMATCH: Pickup stop (trip %) and drop stop (trip %) must both belong to trip %', 
+            v_pickup_trip, v_drop_trip, NEW.trip_id;
+    END IF;
+
+    IF v_pickup_seq >= v_drop_seq THEN
+        RAISE EXCEPTION 'PRECEDENCE_VIOLATION: Pickup stop sequence (%) must strictly precede drop stop sequence (%)', 
+            v_pickup_seq, v_drop_seq;
+    END IF;
+
+    -- (b) Fetch assigned vehicle rated capacity thresholds
+    SELECT v.id, v.rated_payload_kg, v.usable_volume_m3, v.planning_slots
+    INTO v_vehicle_id, v_rated_payload, v_usable_volume, v_planning_slots
+    FROM trips t
+    JOIN vehicles v ON t.vehicle_id = v.id
+    WHERE t.id = NEW.trip_id;
+
+    -- Fetch current candidate consignment cargo demands
+    SELECT weight_kg, volume_m3, slot_demand
+    INTO v_req_weight, v_req_volume, v_req_slots
+    FROM transport_requests
+    WHERE id = NEW.request_id;
+
+    -- Evaluate cumulative multi-axis capacity across every contiguous transit leg
+    FOR v_leg_seq IN v_pickup_seq .. (v_drop_seq - 1) LOOP
+        SELECT 
+            COALESCE(SUM(tr.weight_kg), 0),
+            COALESCE(SUM(tr.volume_m3), 0),
+            COALESCE(SUM(tr.slot_demand), 0)
+        INTO v_active_weight, v_active_volume, v_active_slots
+        FROM consignments c
+        JOIN transport_requests tr ON c.request_id = tr.id
+        JOIN route_stops p ON c.pickup_stop_id = p.id
+        JOIN route_stops d ON c.drop_stop_id = d.id
+        WHERE c.trip_id = NEW.trip_id
+          AND c.id <> COALESCE(NEW.id, '00000000-0000-0000-0000-000000000000'::UUID)
+          AND c.status NOT IN ('DISPUTED_DAMAGED', 'REJECTED')
+          AND p.stop_sequence <= v_leg_seq
+          AND d.stop_sequence > v_leg_seq;
+
+        -- Accumulate candidate cargo demand
+        v_active_weight := v_active_weight + v_req_weight;
+        v_active_volume := v_active_volume + v_req_volume;
+        v_active_slots := v_active_slots + v_req_slots;
+
+        IF v_active_weight > v_rated_payload THEN
+            RAISE EXCEPTION 'CAPACITY_EXCEEDED (Weight): Cumulative payload on leg %->% (% kg) exceeds vehicle certified capacity (% kg)',
+                v_leg_seq, v_leg_seq + 1, v_active_weight, v_rated_payload;
+        END IF;
+
+        IF v_active_volume > v_usable_volume THEN
+            RAISE EXCEPTION 'CAPACITY_EXCEEDED (Volume): Cumulative volume on leg %->% (% m3) exceeds usable hold space (% m3)',
+                v_leg_seq, v_leg_seq + 1, v_active_volume, v_usable_volume;
+        END IF;
+
+        IF v_active_slots > v_planning_slots THEN
+            RAISE EXCEPTION 'CAPACITY_EXCEEDED (Slots): Cumulative slots on leg %->% (% slots) exceeds standard bed footprint (% slots)',
+                v_leg_seq, v_leg_seq + 1, v_active_slots, v_planning_slots;
+        END IF;
+    END LOOP;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_validate_consignment_capacity
+BEFORE INSERT OR UPDATE ON consignments
+FOR EACH ROW EXECUTE FUNCTION validate_consignment_stops_and_capacity();

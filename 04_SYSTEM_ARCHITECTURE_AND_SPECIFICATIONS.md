@@ -7,6 +7,20 @@
 
 ---
 
+> [!IMPORTANT]
+> ### ⏱️ 30-Second Executive TL;DR & Judge Fast-Track
+> - **The Core Architecture**: A full-stack, tri-client system (Vendor Web, Fleet Portal, Driver React Native Mobile App) backed by a hardened PostgreSQL 16 persistence engine, PostGIS spatial indexing, and strict Row-Level Security (RLS).
+> - **Key Engineering Innovations**:
+>   1. **Offline-First Resilience**: Driver mobile workflow runs on an encrypted on-device SQLite transactional journal with causal sync and idempotent replay, ensuring uninterrupted operations in 2G/zero-connectivity farm belts.
+>   2. **Split-Milestone Driver Working-Capital Settlement**: Solves driver fuel starvation by disbursing 50% of freight instantly via UPI upon pickup OTP verification (backed by the buyer's 20% advance cargo escrow deposit, which covers >140% of the entire trip freight), with the remaining 50% paid upon decoupled delivery verification.
+>   3. **Kernel-Level Capacity Enforcement**: Enforced via PostgreSQL PL/pgSQL trigger `validate_consignment_stops_and_capacity()`, preventing multi-leg truck overload at the database level.
+> - **Judge Fast-Path (60 Seconds)**:
+>   - Review the system component topology in [**Section 1: Mermaid Architecture Diagram**](#1-system-topology--architectural-principles).
+>   - Review edge case workflows in [**Section 6: Comprehensive Edge-Case & Error Recovery Workflows**](#6-comprehensive-edge-case--error-recovery-workflows).
+>   - Review driver cash-flow mechanics in [**Section 8: Statutory E-Way Bill & Payment Gateway Workflows**](#8-statutory-e-way-bill--payment-gateway-workflows).
+
+---
+
 ## 1. System Topology & Architectural Principles
 
 PRAYAAN’s system architecture is designed around three structural principles:
@@ -125,15 +139,16 @@ erDiagram
     TRANSPORT_REQUESTS {
         uuid id PK
         uuid order_id FK
-        numeric pickup_latitude
-        numeric pickup_longitude
-        numeric drop_latitude
-        numeric drop_longitude
+        geometry pickup_location "Point (SRID 4326)"
+        geometry drop_location "Point (SRID 4326)"
         integer weight_kg
         numeric volume_m3
         integer slot_demand
         boolean requires_refrigeration
-        enum request_status "OPEN_POOL, ASSIGNED, IN_TRANSIT, COMPLETED"
+        enum ethylene_profile "NEUTRAL, HIGH_EMITTER, ETHYLENE_SENSITIVE"
+        boolean is_odor_pungent
+        boolean is_moisture_sensitive
+        enum request_status "OPEN_POOL, ASSIGNED_TO_TRIP, IN_TRANSIT, COMPLETED"
     }
 
     TRIPS {
@@ -150,21 +165,26 @@ erDiagram
         uuid id PK
         uuid trip_id FK
         uuid request_id FK
-        integer sequence_order
+        uuid pickup_stop_id FK
+        uuid drop_stop_id FK
         bigint allocated_freight_paise "NMRS Integer Share"
+        bigint advance_freight_disbursed_paise "50% split at origin pickup"
+        string loading_otp_hash "SHA-256 Hash"
+        string delivery_otp_hash "SHA-256 Hash"
         enum consignment_status "QUEUED, PICKED_UP, DELIVERED, DISPUTED"
+        integer version_id
+        timestamp created_at
     }
 
     CUSTODY_EVENTS {
         uuid id PK
         uuid consignment_id FK
-        enum event_type "PICKUP_OTP_VERIFIED, PHOTO_ATTACHED, DOCK_GEOFENCE_ARRIVED, DELIVERY_CONFIRMED"
-        string otp_hashed "SHA-256 Hash"
-        string media_s3_uri
-        numeric recorded_latitude
-        numeric recorded_longitude
-        boolean is_mock_gps_detected
+        enum event_type "DOCK_GEOFENCE, PICKUP_OTP_VERIFIED, PHOTO_ATTACHED, DELIVERY_CONFIRMED"
+        geometry recorded_location "Point (SRID 4326)"
+        boolean is_mock_location_flagged
+        string photo_s3_uri
         timestamp event_timestamp
+        uuid idempotency_key UK "UUIDv4 Replay Protection"
     }
 
     SUBSCRIPTIONS {
@@ -214,16 +234,20 @@ PRAYAAN enforces a six-stage deterministic state transition machine governing or
 - The pooling engine validates candidate combinations against vehicle physical capacity ($W_V, U_V, S_V$) and cargo compatibility rules.
 - Once validated, the trip manifest is generated, freight is allocated via the integer NMRS algorithm, and a driver is assigned.
 
-### Stage 05: Loading Bay Custody Handshake (`PICKUP`)
+### Stage 05: Loading Bay Custody Handshake (`PICKUP`) & Driver Advance Disbursal
 
 - At the rural origin dock, the seller generates a time-bounded 6-digit cryptographic verification code on their mobile client.
 - The driver inspects produce, enters the code on their mobile app, and uploads a mandatory geotagged, timestamped photo of the loaded cargo hold.
 - Backend verifies the OTP hash and anti-spoofing flags before authorizing trip departure.
+- **Split-Milestone Driver Working-Capital Settlement (50% Advance Disbursal)**:
+  - Small fleet owners and rural owner-drivers frequently suffer from severe liquidity constraints, lacking working capital to pay for upfront diesel and FASTag highway tolls. In traditional markets, this forces drivers to take daily high-interest loans (3%–5% per month) from informal commission agents.
+  - PRAYAAN resolves this friction deterministically: Upon successful `PICKUP_OTP_VERIFIED`, the platform immediately triggers an instant UPI transfer releasing **50% of the allocated leg freight** (`advance_freight_disbursed_paise = 0.50 * allocated_freight_paise`) directly to the transporter or driver's verified account.
+  - **Financial Safety & Collateralization**: This advance is 100% collateralized because the buyer has already locked a **20% advance order deposit** in the licensed Payment Aggregator nodal escrow account during Stage 03 (`CONFIRM`). Because road freight typically represents only 10%–14% of the commodity value in agricultural shipments, the buyer's 20% cargo deposit covers **over 140% of the total freight fee**, completely insulating the platform from credit default.
 
 ### Stage 06: Decoupled Multi-Buyer Delivery (`DELIVER`)
 
 - Upon arrival at respective destination stops, each buyer inspects their specific consignment.
-- Buyer enters their delivery confirmation OTP. Consignment 1 transitions to `DELIVERED`, triggering automatic fund disbursement to Seller 1 and partial freight settlement to the fleet owner.
+- Buyer enters their delivery confirmation OTP. Consignment 1 transitions to `DELIVERED`, triggering automatic release of the remaining **50% freight balance** to the fleet owner, alongside the net crop value disbursement to Seller 1.
 - Other pooled consignments remain active on the vehicle until verified at subsequent stops. Trip closes to `COMPLETED` when all consignments reach terminal status.
 
 ---
@@ -300,27 +324,39 @@ PostgreSQL Row-Level Security (RLS) provides strong intra-database tenant isolat
 
 ```sql
 -- Production RLS Policy Example: Consignment Visibility Isolation
-ALTER TABLE app.consignments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE consignments ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY consignment_access_policy ON app.consignments
+CREATE POLICY consignments_access_policy ON consignments
     FOR ALL
-    TO authenticated_user
     USING (
-        -- Shippers see only consignments belonging to their orders
-        (current_setting('app.current_user_role') = 'SELLER' AND
-         order_id IN (SELECT id FROM app.orders WHERE seller_id = current_setting('app.current_user_id')::uuid))
+        -- Seller access (Normalized join through transport_requests)
+        request_id IN (
+            SELECT tr.id FROM transport_requests tr 
+            JOIN orders o ON tr.order_id = o.id 
+            WHERE o.seller_id = NULLIF(current_setting('app.current_user_id', true), '')::UUID
+        )
         OR
-        -- Buyers see only consignments destined for their facility
-        (current_setting('app.current_user_role') = 'BUYER' AND
-         order_id IN (SELECT id FROM app.orders WHERE buyer_id = current_setting('app.current_user_id')::uuid))
+        -- Buyer access (Normalized join through transport_requests)
+        request_id IN (
+            SELECT tr.id FROM transport_requests tr 
+            JOIN orders o ON tr.order_id = o.id 
+            WHERE o.buyer_id = NULLIF(current_setting('app.current_user_id', true), '')::UUID
+        )
         OR
-        -- Fleet owners see consignments assigned to their active vehicle trips
-        (current_setting('app.current_user_role') = 'FLEET_OWNER' AND
-         trip_id IN (SELECT id FROM app.trips WHERE vehicle_id IN (SELECT id FROM app.vehicles WHERE owner_id = current_setting('app.current_user_id')::uuid)))
+        -- Fleet Owner access
+        trip_id IN (
+            SELECT t.id FROM trips t 
+            JOIN vehicles v ON t.vehicle_id = v.id 
+            WHERE v.owner_id = NULLIF(current_setting('app.current_user_id', true), '')::UUID
+        )
         OR
-        -- Drivers see only active consignments on their assigned vehicle
-        (current_setting('app.current_user_role') = 'DRIVER' AND
-         trip_id IN (SELECT id FROM app.trips WHERE driver_id = current_setting('app.current_user_id')::uuid))
+        -- Driver access
+        trip_id IN (
+            SELECT t.id FROM trips t 
+            WHERE t.driver_id = NULLIF(current_setting('app.current_user_id', true), '')::UUID
+        )
+        OR
+        current_setting('app.current_user_role', true) = 'ADMIN'
     );
 ```
 
@@ -373,20 +409,30 @@ To prevent fraudulent collection of freight payments or falsified delivery evide
 |         |                                                      v                                  |
 |    +----+----+                                       [Funds Locked in Escrow]                     |
 |    |         |                                       - 20% Advance Cargo Deposit                  |
-|   YES        NO                                      - 100% Freight Fee Allocated                 |
+|   YES        NO                                      - 100% Freight Fee Committed                 |
 |    |         |                                                 |                                  |
 |    v         v                                                 v                                  |
 | [Bypass   [Check Consignment Value]                  [Loading OTP Verified at Farmgate]           |
 |  E-Way    - If > Rs 50,000: Generate Part A                    |                                  |
 |  Bill]      - When Truck Assigned: Add Part B                  v                                  |
-|           - In Demo: Tag SIMULATED_DEMO]             [Delivery OTP Confirmed by Buyer]            |
+|           - In Demo: Tag SIMULATED_DEMO]             [Milestone 1: 50% Freight Instant Disbursal] |
+|                                                      - UPI Advance to Driver for Diesel & Tolls   |
 |                                                                |                                  |
 |                                                                v                                  |
-|                                                      [Automated T+1 Bank Disbursal]               |
-|                                                      - Crop Value -> Farmer Account               |
-|                                                      - Freight Share -> Transporter Bank          |
+|                                                      [Delivery OTP Confirmed by Buyer]            |
+|                                                                |                                  |
+|                                                                v                                  |
+|                                                      [Milestone 2: Automated T+1 Final Disbursal] |
+|                                                      - Crop Value (100%) -> Farmer Bank Account   |
+|                                                      - Remaining 50% Freight -> Transporter Bank  |
 +---------------------------------------------------------------------------------------------------+
 ```
+
+### Deterministic 50/50 Split-Milestone Freight Disbursal Policy
+To solve the structural working capital deficit faced by rural truck drivers without incurring unhedged credit risk:
+1. **Collateralized Escrow Buffer**: Agricultural freight typically represents 10%–14% of the commodity value. When the buyer commits the standard **20% advance cargo deposit**, this deposit holds enough capital to cover **140% to 200% of the total freight charges**.
+2. **Milestone 1 (50% at Pickup)**: Upon driver entry of the 6-digit loading bay OTP and submission of cargo photo proof (`PICKUP_OTP_VERIFIED`), the system issues an automated payment webhook to the licensed Payment Aggregator, immediately transferring 50% of the allocated leg freight (`advance_freight_disbursed_paise`) to the transporter via UPI. This funds on-corridor diesel and FASTag toll expenses.
+3. **Milestone 2 (50% at Delivery)**: Upon buyer verification of the delivery OTP (`DELIVERY_OTP_VERIFIED`), the remaining 50% freight balance is released alongside the net crop value payout to the farmer. If a delivery dispute arises, the remaining 50% freight and crop balance are held in escrow pending 30-minute photo arbitration.
 
 ### Clarification on "Escrow" & Banking Integrations
 
