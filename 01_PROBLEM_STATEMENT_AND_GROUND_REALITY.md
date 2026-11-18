@@ -230,7 +230,7 @@ To maintain complete academic honesty and hackathon integrity, all empirical cla
 | **Mandi Price Benchmark**         | Modal price in ₹/quintal                        | `VERIFIED EVIDENCE`     | Directorate of Marketing & Inspection (AGMARKNET daily feeds).                 |
 | **Commercial Road Freight Rate**  | ₹3.78 per tonne-km national road average        | `COMMERCIAL EVIDENCE`   | NCAER / DPIIT (Dec 2023); varies from ₹1.51 (heavy trailers) to ₹11.03 (SCVs). |
 | **10-Tonne Truck Corridor Rate**  | ₹7,000 for Nashik $\rightarrow$ Mumbai (165 km) | `COMMERCIAL EVIDENCE`   | Regional truck union rate cards (approx. ₹40–₹45/km for 10t ICV roundtrip).    |
-| **SaaS Pricing Model**            | ₹899/month for sellers & fleet owners           | `TEAM ASSUMPTION`       | Approved team decision (27 Oct meeting), superseding legacy ₹149 concept.      |
+| **SaaS Pricing Model**            | ₹899/month for sellers & fleet owners           | `TEAM ASSUMPTION`       | Calibrated to cover cloud hosting, maps, SMS gateways, and rural support with 87% gross margin. |
 | **Corridor Buffer Threshold**     | 10 km spatial detour envelope                   | `TEAM ASSUMPTION`       | Engineering heuristic to restrict circuitous routing along arterial highways.  |
 | **Farmer Willingness to Pool**    | Farmers accept shared truck space               | `UNVERIFIED HYPOTHESIS` | Requires field confirmation regarding produce commingling concerns.            |
 | **Driver Smartphone Compliance**  | Drivers reliably trigger loading OTPs           | `UNVERIFIED HYPOTHESIS` | Requires testing in low-literacy and remote village loading docks.             |
@@ -268,25 +268,32 @@ Recognizing that elderly smallholders may lack smartphones:
 To establish competition-readiness, PRAYAAN is evaluated against existing commercial and government logistics platforms:
 
 ```
-+-----------------------------------------------------------------------------------------------------------------------------+
-|                                           COMPETITOR DIFFERENTIATION MATRIX                                                 |
-+------------------------------------+-----------+--------+--------+--------+-----------+-----------+----------+--------------+
-| Architectural Capability           | BlackBuck | Porter | Rivigo | DeHaat | Ninjacart | KisanRath | e-NAM    | PRAYAAN      |
-+------------------------------------+-----------+--------+--------+--------+-----------+-----------+----------+--------------+
-| 1. Small Shipment LTL Pooling      | No (FTL)  | No     | Parcels| Captive| Captive   | No        | No       | YES (Core)   |
-| 2. Multi-Stop Pickups & Drops      | Rare      | No     | Hub-Hub| Hub-Hub| Hub-Hub   | No        | No       | YES (Corridor|
-| 3. Rural Transporter Inclusivity   | Yes       | Urban  | Drivers| Closed | Closed    | Directory | Directory| YES (Open)   |
-| 4. 3-Axis Capacity Validation      | No (Wt)   | No (Wt)| Volume | Closed | Closed    | No        | No       | YES (3-Axis) |
-| 5. Offline Driver Workflows        | Basic     | No     | Yes    | No     | Basic     | No        | No       | YES (SQLite) |
-| 6. Vernacular Voice-First Access   | Limited   | No     | No     | Yes    | Internal  | Basic     | Multiling| YES (Bhashini|
-| 7. Transparent Cost Allocation     | Brokerage | Dynamic| Tariffs| Margin | Margin    | N/A       | N/A      | YES (Paise)  |
-| 8. Decoupled Delivery Confirmation | No        | No     | Hub-Hub| No     | Internal  | No        | No       | YES (OTP)    |
-+------------------------------------+-----------+--------+--------+--------+-----------+-----------+----------+--------------+
++-----------------------------------------------------------------------------------------------------------------------------------------+
+|                                           COMPETITOR DIFFERENTIATION MATRIX                                                             |
+| *Assessment Basis: Team technical review of publicly available product features, developer docs, and published regulatory filings.     |
++------------------------------------+-----------+--------+--------+--------+-----------+-----------+----------+--------------+-----------+
+| Architectural Capability           | BlackBuck | Porter | Rivigo | DeHaat | Ninjacart | KisanRath | e-NAM    | Vahak        | PRAYAAN   |
++------------------------------------+-----------+--------+--------+--------+-----------+-----------+----------+--------------+-----------+
+| 1. Small Shipment LTL Pooling      | No (FTL)  | No     | Parcels| Captive| Captive   | No        | No       | No (FTL)     | YES (Core)|
+| 2. Multi-Stop Pickups & Drops      | Rare      | No     | Hub-Hub| Hub-Hub| Hub-Hub   | No        | No       | Rare         | YES (Corr)|
+| 3. Rural Transporter Inclusivity   | Yes       | Urban  | Drivers| Closed | Closed    | Directory | Directory| Yes          | YES (Open)|
+| 4. 3-Axis Capacity Validation      | No (Wt)   | No (Wt)| Volume | Closed | Closed    | No        | No       | No           | YES (3-Ax)|
+| 5. Offline Driver Workflows        | Basic     | No     | Yes    | No     | Basic     | No        | No       | Basic        | YES(SQLite|
+| 6. Vernacular Voice-First Access   | Limited   | No     | No     | Yes    | Internal  | Basic     | Multiling| Limited      | YES(Bhash)|
+| 7. Transparent Cost Allocation     | Brokerage | Dynamic| Tariffs| Margin | Margin    | N/A       | N/A      | Bidding      | YES(Paise)|
+| 8. Decoupled Delivery Confirmation | No        | No     | Hub-Hub| No     | Internal  | No        | No       | No           | YES (OTP) |
++------------------------------------+-----------+--------+--------+--------+-----------+-----------+----------+--------------+-----------+
 ```
+
+### Analysis of Intercity LTL & Load-Board Platforms (Why They Differ)
+
+1. **Vahak**: Operates as a peer-to-peer open load board and bidding marketplace for intercity full-truckload (FTL) shipments. It does not perform multi-consignment pooling, 3-axis packing audits, or multi-stop route sequencing along rural corridors.
+2. **Delhivery Freight (Express / Part-Truckload - PTL)**: Operates a mechanized hub-and-spoke sortation network optimized for standard barcoded cartons and industrial FMCG. It requires transshipment at regional hubs with 24–48 hour dwell cycles—which is physically fatal for fresh, unboxed, perishable produce (tomatoes, leafy greens) that requires direct farmgate-to-mandi corridor conveyance without intermediate dock transfers.
+3. **Gati-KWE**: Specializes in organized B2B corporate express freight on established national highways. It does not provide rural feeder-road dispatch, vernacular voice-first booking for smallholders, or farmer cooperative micro-accounting ledgers.
 
 ### What Makes PRAYAAN Meaningfully Different?
 
 1. **Pure Logistics Utility vs. Closed-Loop Trader**: Unlike DeHaat or Ninjacart, PRAYAAN does not buy the farmer's crop or dictate trading margins. Transporters and farmers retain 100% commercial independence.
-2. **Deterministic Multi-Attribute Pooling vs. FTL Truck Boards**: Unlike BlackBuck, which matches one shipper's 16-tonne load to one truck, PRAYAAN consolidates three 2.5-tonne shipments from different smallholders into a single vehicle run along a shared corridor.
+2. **Deterministic Multi-Attribute Pooling vs. FTL Truck Boards**: Unlike BlackBuck or Vahak, which match one shipper's dedicated load to one truck, PRAYAAN consolidates three 2.5-tonne shipments from different smallholders into a single vehicle run along a shared corridor.
 3. **Decoupled Multi-Buyer Handshake**: Existing logistics platforms treat an entire truck as a single delivery manifest. If Buyer 2 rejects cargo or is absent, the driver cannot complete the trip. PRAYAAN decouples delivery acknowledgments so each buyer confirms only their cargo lot independently.
 4. **Zero-Commission Predictable SaaS**: By charging a transparent ₹899/month flat fee instead of taking a 5% to 15% transaction cut, PRAYAAN prevents freight rate inflation and fosters long-term transporter loyalty.

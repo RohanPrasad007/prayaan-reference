@@ -94,23 +94,25 @@ erDiagram
     USERS ||--o{ ORDERS : "places/receives"
     USERS ||--o{ SUBSCRIPTIONS : "maintains"
 
+    LISTINGS ||--o{ ORDERS : "ordered as"
     ORDERS ||--|| TRANSPORT_REQUESTS : "spawns"
     TRANSPORT_REQUESTS ||--o{ CONSIGNMENTS : "manifests as"
 
     VEHICLES ||--o{ TRIPS : "assigned to"
     TRIPS ||--|{ ROUTE_STOPS : "consists of"
-    ROUTE_STOPS ||--o{ CONSIGNMENTS : "loads/unloads"
+    ROUTE_STOPS ||--o{ CONSIGNMENTS : "pickup/drop point"
 
-    CONSIGNMENTS ||--o{ CUSTODY_EVENTS : "tracked by"
-    TRIPS ||--o{ SETTLEMENT_RECORDS : "generates"
+    CONSIGNMENTS ||--o{ CUSTODY_EVENTS : "audited by"
 
     USERS {
         uuid id PK
-        string phone UK
+        string phone_number UK
         enum role "SELLER, BUYER, FLEET_OWNER, DRIVER, ADMIN"
         string legal_name
-        string masked_aadhaar "Last 4 Digits Only"
-        jsonb metadata
+        string fpo_member_id
+        string masked_aadhaar "XXXX-XXXX-1234"
+        string preferred_language
+        boolean is_active
         timestamp created_at
     }
 
@@ -118,29 +120,49 @@ erDiagram
         uuid id PK
         uuid owner_id FK
         string registration_number UK
-        enum body_type "OPEN_BODY, CLOSED_CONTAINER, REEFER, TARPAULIN"
-        integer payload_capacity_kg "Max certified weight"
-        numeric usable_volume_m3 "Usable hold space"
-        integer slot_capacity "Default 100 slots"
-        boolean is_active
+        enum body_type "OPEN_BODY, CLOSED_CONTAINER, REEFER, TARPAULIN_COVERED"
+        integer rated_payload_kg "Max certified weight"
+        numeric usable_volume_m3 "Hold volume"
+        integer planning_slots "Default 100 slots"
+        boolean is_refrigerated
+        boolean is_hazmat_certified
         date fitness_valid_until
+        boolean is_active
+    }
+
+    LISTINGS {
+        uuid id PK
+        uuid seller_id FK
+        string commodity_name
+        string hsn_code
+        numeric quantity_quintals
+        bigint expected_price_paise_per_quintal
+        bigint agmarknet_modal_price_paise
+        text pickup_address
+        geometry pickup_location "Point (SRID 4326)"
+        boolean is_organic
+        date harvest_date
+        boolean is_active
     }
 
     ORDERS {
         uuid id PK
+        uuid listing_id FK
         uuid buyer_id FK
         uuid seller_id FK
-        string commodity_code "HSN / Commodity Tag"
+        numeric agreed_quantity_quintals
         bigint goods_value_paise "Integer Paise"
-        enum payment_status "PENDING, ADVANCE_ESCROWED, DELIVERED, DISBURSED"
-        timestamp contract_date
+        bigint advance_deposit_paise "20% Escrow Deposit"
+        boolean is_gst_exempt "Notification 2/2017-CT(Rate)"
+        text destination_address
+        geometry destination_location "Point (SRID 4326)"
+        timestamp delivery_deadline
+        integer version_id
     }
 
     TRANSPORT_REQUESTS {
         uuid id PK
         uuid order_id FK
-        geometry pickup_location "Point (SRID 4326)"
-        geometry drop_location "Point (SRID 4326)"
         integer weight_kg
         numeric volume_m3
         integer slot_demand
@@ -148,7 +170,9 @@ erDiagram
         enum ethylene_profile "NEUTRAL, HIGH_EMITTER, ETHYLENE_SENSITIVE"
         boolean is_odor_pungent
         boolean is_moisture_sensitive
-        enum request_status "OPEN_POOL, ASSIGNED_TO_TRIP, IN_TRANSIT, COMPLETED"
+        geometry pickup_location "Point (SRID 4326)"
+        geometry drop_location "Point (SRID 4326)"
+        enum status "OPEN_POOL, ASSIGNED_TO_TRIP, IN_TRANSIT, COMPLETED, CANCELLED"
     }
 
     TRIPS {
@@ -156,9 +180,21 @@ erDiagram
         uuid vehicle_id FK
         uuid driver_id FK
         string corridor_name "e.g., Nashik-Mumbai"
-        bigint total_freight_paise "Total negotiated leg freight"
-        enum trip_status "PLANNED, DISPATCHED, ACTIVE, COMPLETED, CANCELLED"
+        bigint total_negotiated_freight_paise "Total negotiated leg freight"
+        enum status "PLANNED, DISPATCHED, ACTIVE_IN_TRANSIT, COMPLETED, CANCELLED, BREAKDOWN_SOS"
         timestamp departure_time
+        timestamp completion_time
+        integer version_id
+    }
+
+    ROUTE_STOPS {
+        uuid id PK
+        uuid trip_id FK
+        integer stop_sequence
+        string stop_name
+        geometry stop_location "Point (SRID 4326)"
+        timestamp planned_arrival
+        timestamp actual_arrival
     }
 
     CONSIGNMENTS {
@@ -171,7 +207,7 @@ erDiagram
         bigint advance_freight_disbursed_paise "50% split at origin pickup"
         string loading_otp_hash "SHA-256 Hash"
         string delivery_otp_hash "SHA-256 Hash"
-        enum consignment_status "QUEUED, PICKED_UP, DELIVERED, DISPUTED"
+        enum status "QUEUED, PICKED_UP, DELIVERED, PARTIALLY_DELIVERED, DISPUTED_DAMAGED, REJECTED"
         integer version_id
         timestamp created_at
     }
@@ -179,10 +215,10 @@ erDiagram
     CUSTODY_EVENTS {
         uuid id PK
         uuid consignment_id FK
-        enum event_type "DOCK_GEOFENCE, PICKUP_OTP_VERIFIED, PHOTO_ATTACHED, DELIVERY_CONFIRMED"
+        enum event_type "DOCK_ARRIVAL_GEOFENCE, PICKUP_OTP_VERIFIED, PHOTO_EVIDENCE_ATTACHED, DEPARTURE_CONFIRMED, DELIVERY_OTP_VERIFIED, DISPUTE_RAISED"
         geometry recorded_location "Point (SRID 4326)"
         boolean is_mock_location_flagged
-        string photo_s3_uri
+        text photo_s3_uri
         timestamp event_timestamp
         uuid idempotency_key UK "UUIDv4 Replay Protection"
     }
@@ -190,15 +226,16 @@ erDiagram
     SUBSCRIPTIONS {
         uuid id PK
         uuid user_id FK
-        enum plan_tier "SELLER_MONTHLY, FLEET_MONTHLY"
-        bigint monthly_rate_paise "89,900 Paise (Rs 899)"
-        enum status "ACTIVE, INACTIVE_SEASONAL, PAST_DUE"
-        date next_renewal_date
+        enum tier "SELLER_MONTHLY, FLEET_OWNER_MONTHLY"
+        enum status "ACTIVE, SEASONAL_PAUSE, PAST_DUE, CANCELLED"
+        date current_period_start
+        date current_period_end
+        boolean auto_renew
     }
 ```
 
 > **Executable Schema Specification**:  
-> The full production DDL with PostGIS geometry extensions, foreign key cascades, partial indexes, and PostgreSQL Row-Level Security policies is codified in [`schema.sql`](file:///Users/rohanprasad/Documents/Rohan/code/hackathon/vt/vt/reference-repo/schema.sql) in the repository root.
+> The full production DDL with PostGIS geometry extensions, foreign key cascades, partial indexes, and PostgreSQL Row-Level Security policies is codified in [`schema.sql`](schema.sql) in the repository root.
 
 ---
 
@@ -323,40 +360,26 @@ The platform embeds deterministic recovery routines for ten critical rural freig
 PostgreSQL Row-Level Security (RLS) provides strong intra-database tenant isolation, but must never be described as "impenetrable." PRAYAAN documents both its protection layers and structural attack vectors:
 
 ```sql
--- Production RLS Policy Example: Consignment Visibility Isolation
+-- Production RLS Policy: Non-Recursive Inspection via SECURITY DEFINER Helpers
 ALTER TABLE consignments ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY consignments_access_policy ON consignments
-    FOR ALL
+CREATE POLICY consignments_select_policy ON consignments
+    FOR SELECT
     USING (
-        -- Seller access (Normalized join through transport_requests)
-        request_id IN (
-            SELECT tr.id FROM transport_requests tr 
-            JOIN orders o ON tr.order_id = o.id 
-            WHERE o.seller_id = NULLIF(current_setting('app.current_user_id', true), '')::UUID
-        )
-        OR
-        -- Buyer access (Normalized join through transport_requests)
-        request_id IN (
-            SELECT tr.id FROM transport_requests tr 
-            JOIN orders o ON tr.order_id = o.id 
-            WHERE o.buyer_id = NULLIF(current_setting('app.current_user_id', true), '')::UUID
-        )
-        OR
-        -- Fleet Owner access
-        trip_id IN (
-            SELECT t.id FROM trips t 
-            JOIN vehicles v ON t.vehicle_id = v.id 
-            WHERE v.owner_id = NULLIF(current_setting('app.current_user_id', true), '')::UUID
-        )
-        OR
-        -- Driver access
-        trip_id IN (
-            SELECT t.id FROM trips t 
-            WHERE t.driver_id = NULLIF(current_setting('app.current_user_id', true), '')::UUID
-        )
-        OR
-        current_setting('app.current_user_role', true) = 'ADMIN'
+        is_request_party(request_id, get_current_app_user_id())
+        OR is_trip_operator(trip_id, get_current_app_user_id())
+        OR is_app_admin()
+    );
+
+CREATE POLICY consignments_update_policy ON consignments
+    FOR UPDATE
+    USING (
+        is_trip_operator(trip_id, get_current_app_user_id())
+        OR is_app_admin()
+    )
+    WITH CHECK (
+        is_trip_operator(trip_id, get_current_app_user_id())
+        OR is_app_admin()
     );
 ```
 

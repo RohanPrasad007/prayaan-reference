@@ -1,0 +1,48 @@
+name: PRAYAAN Core CI & Algorithmic Verification
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  verify:
+    name: Algorithmic Verification & Reproducibility Suite
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Verify Cost Allocation Axioms (NMRS & Shapley)
+        run: |
+          make verify
+
+      - name: Execute Corridor Pooling Simulation Benchmark
+        run: |
+          make benchmark
+
+      - name: Run Audited Unit Economics & Projections Engine
+        run: |
+          make unit-economics
+
+  schema-lint:
+    name: Schema & SQL Syntax Verification
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Test PostgreSQL Schema & PostGIS Setup
+        run: |
+          docker compose up -d db
+          timeout 30 sh -c 'until docker compose exec -T db pg_isready -U postgres -d prayaan; do sleep 1; done'
+          docker compose exec -T db psql -U postgres -d prayaan -f /tests/schema_tests.sql
+          docker compose down -v

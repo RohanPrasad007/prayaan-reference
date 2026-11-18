@@ -11,10 +11,10 @@
 > ### ⏱️ 30-Second Executive TL;DR & Judge Fast-Track
 > - **System Boundary & Academic Integrity**: Stage 1 operations implement deterministic rule-based matching and 3-axis capacity verification. The advanced Adaptive Large Neighborhood Search (ALNS) meta-heuristics and 3D Bin Packing detailed here represent our planned Stage 4 scaling engine. Unverifiable claims of "95% pruning" or "guaranteed Pareto optimality" have been explicitly stripped.
 > - **Key Optimization Innovations**:
->   1. **Corridor Buffer Filtering**: Prunes the $O(N^2)$ pickup-and-delivery search space by enforcing detours $\le 25\text{ km}$ and corridor angular deviations $\le 30^\circ$.
+>   1. **Corridor Buffer Filtering**: Prunes the $O(N^2)$ pickup-and-delivery search space by enforcing a unified lateral corridor buffer $\delta_{\text{buffer}} = 10.0\text{ km}$ and time-window compatibility $\le 2.5\text{ hr}$.
 >   2. **ALNS Optimization**: Shaw removal + Regret-2 insertion meta-heuristic with Simulated Annealing acceptance.
 >   3. **3D Bin Packing & Axle Loading**: Verifies bounding-box fit and enforces Center-of-Gravity axle load limits ($CG_x \in [0.42L, 0.55L]$).
-> - **Reproducible Benchmark (`seed=42`)**: In a controlled 50-request synthetic testbed simulating the Nashik–Mumbai corridor, PRAYAAN Stage 4 reduces required trucks from 50 (uncoordinated direct charters) down to **17 trucks** (79.4% payload utilization) in **1,850 ms**.
+> - **Reproducible Benchmark (Dynamic Execution)**: In a controlled 50-request synthetic testbed simulating the Nashik–Mumbai corridor (evaluated via `scripts/benchmark_simulation.py` across seeds 42, 1337, 2026), PRAYAAN Stage 1 Deterministic Engine achieves **49.6% savings with ZERO time-window violations in 0.2 ms**, while Stage 4 ALNS converges to **17.3 ± 0.5 trucks (52.7% savings, 79.1% payload utilization, 0 violations in ~57 ms)**.
 > - **Judge Fast-Path (60 Seconds)**:
 >   - Read the integrity statement in [**Section 1: Algorithmic Integrity & System Boundary Disclosure**](#1-algorithmic-integrity--system-boundary-disclosure).
 >   - Review the 5-method comparison in [**Section 5: Testing & Benchmarking Protocol (Synthetic Testbed)**](#5-testing--benchmarking-protocol-synthetic-testbed).
@@ -174,48 +174,50 @@ To evaluate the algorithmic efficiency of PRAYAAN's pooling mechanisms prior to 
 
 ### A. Synthetic Dataset Generation Parameters
 
-- **Corridor Simulation**: Nashik $\leftrightarrow$ Mumbai Agricultural Transit Belt ($165\text{ km}$ corridor length, $\pm 15\text{ km}$ lateral rural buffer).
+- **Corridor Simulation**: Nashik $\leftrightarrow$ Mumbai Agricultural Transit Belt ($165\text{ km}$ corridor length, $\pm 10.0\text{ km}$ lateral rural buffer $\delta_{\text{buffer}} = 10.0\text{ km}$).
 - **Request Generation**:
-  - Sample size: $N \in \{10, 25, 50, 100\}$ shipment requests.
+  - Sample size: $N \in \{10, 25, 50, 100\}$ shipment requests (default instance: $N = 50$).
   - Consignment mass: Log-normal distribution with $\mu = 2,500\text{ kg}$, $\sigma = 1,000\text{ kg}$, clipped to $[500\text{ kg}, 5,000\text{ kg}]$.
   - Consignment density: Uniform distribution between $120\text{ kg/m}^3$ (leafy greens) and $650\text{ kg/m}^3$ (potatoes/onions).
   - Time windows: Uniformly generated with delivery deadlines spanning 6 to 18 hours.
-  - Random Seeds: Fixed seeds (`seed=42`, `seed=1337`, `seed=2026`) for complete experimental reproducibility.
+  - Random Seeds: Standard evaluation seeds (`seed=42`, `seed=1337`, `seed=2026`) for complete experimental reproducibility.
 
 ### B. Comparative Algorithmic Baseline Definitions
 
 We benchmark five distinct dispatch methodologies across identical synthetic request batches:
 
 1. **Baseline 1: No Pooling (Status Quo)**: Each request charters a dedicated commercial vehicle matching its load class.
-2. **Baseline 2: First-Fit Greedy Pooling**: Requests are assigned sequentially to the first available vehicle with residual capacity along the corridor.
-3. **Baseline 3: Nearest-Neighbor Insertion**: Requests are inserted into routes based solely on minimal spatial Euclidean detour.
-4. **Method 4: PRAYAAN Stage 1 Deterministic Engine**: Corridor-buffer filtering + multi-constraint capacity validation + NMRS cost allocation.
-5. **Method 5: PRAYAAN Stage 4 Target (ALNS + 3D Bin Packing)**: ALNS heuristic with Shaw destroy and Regret-2 repair.
+2. **Baseline 2: First-Fit Greedy Pooling**: Requests are assigned sequentially to the first open vehicle with residual weight/volume capacity along the corridor.
+3. **Baseline 3: Nearest-Neighbor Insertion**: Requests are inserted into routes based on minimal spatial Euclidean detour.
+4. **Method 4: PRAYAAN Stage 1 Deterministic Engine**: Spatial-temporal corridor-buffer filtering ($\delta_{\text{buffer}} \le 10.0\text{ km}$, $\Delta t \le 2.5\text{ hr}$) + 3-axis capacity validation + delivery time-window feasibility gating.
+5. **Method 5: PRAYAAN Stage 4 Target (ALNS + 3D Bin Packing)**: ALNS meta-heuristic with Shaw destroy and Regret-2 repair with Simulated Annealing acceptance.
 
 ---
 
-### C. Synthetic Comparative Performance Results (50-Request Instance, Seed=42)
+### C. Synthetic Comparative Performance Results (Multi-Seed Benchmark: Seeds 42, 1337, 2026)
 
-The following table records the computed benchmark results on the standardized 50-request synthetic testbed:
+The following table records the computed benchmark results dynamically generated by `scripts/benchmark_simulation.py` (mean $\pm$ standard deviation across seeds 42, 1337, 2026; seed=42 exact metrics in brackets):
 
 | Benchmark Metric                           | Baseline 1 (No Pooling) | Baseline 2 (First-Fit Greedy) | Baseline 3 (Nearest-Neighbor) | Method 4 (PRAYAAN Stage 1 Deterministic) | Method 5 (PRAYAAN Stage 4 ALNS Target) |
 | :----------------------------------------- | :---------------------: | :---------------------------: | :---------------------------: | :--------------------------------------: | :------------------------------------: |
-| **Total Commercial Vehicles Dispatched**   |        50 trucks        |           28 trucks           |           24 trucks           |                20 trucks                 |             **17 trucks**              |
-| **Average Payload Utilization ($W_V$)**    |          28.4%          |             51.2%             |             58.7%             |                  68.5%                   |               **79.4%**                |
-| **Average Volume Utilization ($U_V$)**     |          24.1%          |             46.8%             |             53.4%             |                  64.2%                   |               **76.1%**                |
-| **Total Route Kilometers Logged**          |        8,250 km         |           5,180 km            |           4,620 km            |                 3,940 km                 |              **3,410 km**              |
-| **Total Empty Deadhead Kilometers**        |     3,300 km (40%)      |        1,813 km (35%)         |        1,386 km (30%)         |               945 km (24%)               |            **614 km (18%)**            |
-| **Aggregate Shippers' Freight Bill**       |        ₹350,000         |           ₹248,000            |           ₹221,000            |                 ₹196,000                 |              **₹174,000**              |
-| **Average Shipper Savings vs. Baseline 1** |          0.0%           |             29.1%             |             36.8%             |                **44.0%**                 |               **50.3%**                |
-| **Unserved / Infeasible Requests**         |            0            |               4               |               3               |                    0                     |                   0                    |
-| **Delivery Time Window Violations**        |            0            |               6               |               4               |                    0                     |                   0                    |
-| **Computational Solve Time**               |    $< 10\text{ ms}$     |        $45\text{ ms}$         |        $120\text{ ms}$        |           **$210\text{ ms}$**            |         **$1,850\text{ ms}$**          |
+| **Total Commercial Vehicles Dispatched**   |        50 trucks        |           17 trucks           |      17.3 ± 0.5 [17] trucks   |          18.7 ± 0.5 [19] trucks          |        **17.3 ± 0.5 [17] trucks**      |
+| **Average Payload Utilization ($W_V$)**    |          27.4%          |             80.6%             |      79.1 ± 2.1% [80.6%]      |           73.4 ± 1.9% [72.1%]            |        **79.1 ± 2.1% [80.6%]**         |
+| **Average Volume Utilization ($U_V$)**     |          25.7%          |             75.5%             |      74.1 ± 2.0% [75.5%]      |           68.8 ± 1.8% [67.6%]            |        **74.1 ± 2.0% [75.5%]**         |
+| **Total Route Kilometers Logged**          |        8,250 km         |      3,634 ± 38 [3,609] km    |     3,371 ± 33 [3,345] km     |          3,572 ± 82 [3,635] km           |       **3,299 ± 62 [3,268] km**        |
+| **Total Empty Deadhead Kilometers**        |     3,300 km (40%)      |     1,272 ± 13 [1,263] km     |     1,011 ± 10 [1,004] km     |           857 ± 20 [873] km              |          **594 ± 11 [588] km**         |
+| **Aggregate Shippers' Freight Bill**       |        ₹350,000         |   ₹181,062 ± 1,694 [₹179,921] |  ₹168,822 ± 936 [₹168,067]    |       ₹176,325 ± 3,118 [₹178,769]        |      **₹165,576 ± 2,225 [₹164,565]**   |
+| **Average Shipper Savings vs. Baseline 1** |          0.0%           |      48.3 ± 0.5% [48.6%]      |      51.8 ± 0.3% [52.0%]      |           49.6 ± 0.9% [48.9%]            |         **52.7 ± 0.6% [53.0%]**        |
+| **Unserved / Infeasible Requests**         |            0            |               0               |               0               |                    0                     |                   0                    |
+| **Delivery Time Window Violations**        |            0            |        1.7 ± 0.5 [1]          |        2.0 ± 0.8 [1]          |                  **0**                   |                 **0**                  |
+| **Computational Solve Time**               |     $< 0.1\text{ ms}$   |        $0.3\text{ ms}$        |        $0.2\text{ ms}$        |             **$0.2\text{ ms}$**          |          **$56.8\text{ ms}$**          |
+
+*Note: Deadhead kilometers model backhaul empty return probabilities (B1: 40% uncoordinated, B2: 35%, B3: 30%, M4: 24%, M5: 18%). Solve times represent real execution on an Apple M-series processor measured via `time.perf_counter()`.*
 
 ### D. Algorithmic Insights from Benchmark Data:
 
-1. **The Trap of Pure Greedy Insertion (Baseline 2)**:
-   While First-Fit Greedy reduced vehicle count from 50 to 28, it caused 6 delivery window violations because it packed trucks without evaluating multi-stop detour accumulation.
+1. **The Flaw of Naive Heuristics (Baselines 2 & 3)**:
+   While First-Fit Greedy and Nearest-Neighbor pack trucks tightly into 17 vehicles, they operate without temporal synchronization. As a consequence, they produce **1 to 2 delivery time-window violations per batch** because vehicles accumulate stop delays along the corridor without verifying delivery deadlines.
 2. **Deterministic Corridor Rule Efficacy (Method 4)**:
-   PRAYAAN's Stage 1 deterministic engine captures the vast majority of economic benefits—achieving a **44.0% aggregate freight cost reduction** and lifting truck utilization to **68.5%**—while executing in just $210\text{ milliseconds}$ with zero constraint violations.
-3. **ALNS Optimization Lift (Method 5)**:
-   The Stage 4 ALNS meta-heuristic yields an additional 6.3% savings (reaching 50.3% savings) and minimizes empty returns to 18%, at the expense of a higher computation time ($1.85\text{ seconds}$), confirming its viability as an offline batch optimization layer.
+   PRAYAAN's Stage 1 deterministic engine enforces the **10.0 km corridor buffer** and **$\le 2.5\text{ hr}$ time-window gate**, completely eliminating time-window violations (**0 violations**) while securing **49.6% aggregate shipper cost savings** and executing in just **$0.2\text{ milliseconds}$**.
+3. **ALNS Meta-Heuristic Convergence (Method 5)**:
+   The Stage 4 ALNS meta-heuristic (Shaw Destroy + Regret-2 Repair) optimizes spatial clustering further, converging to 17.3 trucks with **79.1% payload utilization** and **52.7% savings** with zero violations in **$56.8\text{ milliseconds}$**, proving its viability as an automated batch planning engine.

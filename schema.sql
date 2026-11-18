@@ -88,7 +88,7 @@ CREATE TABLE users (
     role app_user_role NOT NULL,
     legal_name VARCHAR(150) NOT NULL,
     fpo_member_id VARCHAR(50),
-    masked_aadhaar VARCHAR(12) CHECK (masked_aadhaar ~ '^XXXX-XXXX-[0-9]{4}$'), -- Zero 12-digit storage
+    masked_aadhaar VARCHAR(14) CHECK (masked_aadhaar ~ '^XXXX-XXXX-[0-9]{4}$'), -- Zero 12-digit storage; 14 chars exactly
     preferred_language VARCHAR(10) DEFAULT 'hi', -- 'hi', 'mr', 'gu', 'en'
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -196,12 +196,13 @@ CREATE TABLE consignments (
     pickup_stop_id UUID NOT NULL REFERENCES route_stops(id),
     drop_stop_id UUID NOT NULL REFERENCES route_stops(id),
     allocated_freight_paise BIGINT NOT NULL CHECK (allocated_freight_paise > 0), -- NMRS Paise
-    advance_freight_disbursed_paise BIGINT DEFAULT 0, -- 50% split at origin pickup
+    advance_freight_disbursed_paise BIGINT NOT NULL DEFAULT 0 CHECK (advance_freight_disbursed_paise >= 0),
     loading_otp_hash VARCHAR(64) NOT NULL,   -- SHA-256 Hash of 6-digit OTP
     delivery_otp_hash VARCHAR(64) NOT NULL,  -- SHA-256 Hash of 6-digit OTP
     status consignment_status DEFAULT 'QUEUED',
     created_at TIMESTAMPTZ DEFAULT NOW(),
-    version_id INTEGER DEFAULT 1
+    version_id INTEGER DEFAULT 1,
+    CONSTRAINT chk_advance_freight_limit CHECK (advance_freight_disbursed_paise <= allocated_freight_paise)
 );
 
 -- Table: Chain of Custody Audit Events
@@ -248,61 +249,372 @@ CREATE INDEX idx_requests_drop ON transport_requests USING GIST (drop_location);
 CREATE INDEX idx_stops_location ON route_stops USING GIST (stop_location);
 CREATE INDEX idx_custody_location ON custody_events USING GIST (recorded_location);
 CREATE INDEX idx_consignments_trip ON consignments (trip_id, status);
+CREATE INDEX idx_consignments_request ON consignments (request_id);
 CREATE INDEX idx_outbox_unprocessed ON transactional_outbox (created_at) WHERE is_processed = FALSE;
 
 -- =====================================================================================
--- 5. Row-Level Security (RLS) Tenant Isolation Policies
+-- 5. Security Definer Helper Functions (RLS Acceleration & Non-Recursive Inspection)
 -- =====================================================================================
+
+CREATE OR REPLACE FUNCTION get_current_app_user_id()
+RETURNS UUID AS $$
+    SELECT NULLIF(current_setting('app.current_user_id', true), '')::UUID;
+$$ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public;
+
+CREATE OR REPLACE FUNCTION get_current_app_user_role()
+RETURNS VARCHAR AS $$
+    SELECT COALESCE(current_setting('app.current_user_role', true), '');
+$$ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public;
+
+CREATE OR REPLACE FUNCTION is_app_admin()
+RETURNS BOOLEAN AS $$
+    SELECT get_current_app_user_role() = 'ADMIN';
+$$ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public;
+
+-- Checks if a user is seller or buyer on the underlying order for a request
+CREATE OR REPLACE FUNCTION is_request_party(p_request_id UUID, p_user_id UUID)
+RETURNS BOOLEAN AS $$
+    SELECT EXISTS (
+        SELECT 1 FROM transport_requests tr
+        JOIN orders o ON tr.order_id = o.id
+        WHERE tr.id = p_request_id AND (o.seller_id = p_user_id OR o.buyer_id = p_user_id)
+    );
+$$ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public;
+
+-- Checks if a user is driver or fleet owner for a trip
+CREATE OR REPLACE FUNCTION is_trip_operator(p_trip_id UUID, p_user_id UUID)
+RETURNS BOOLEAN AS $$
+    SELECT EXISTS (
+        SELECT 1 FROM trips t
+        JOIN vehicles v ON t.vehicle_id = v.id
+        WHERE t.id = p_trip_id AND (t.driver_id = p_user_id OR v.owner_id = p_user_id)
+    );
+$$ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public;
+
+-- Checks if a user has a consignment booked on this trip
+CREATE OR REPLACE FUNCTION is_trip_shipper(p_trip_id UUID, p_user_id UUID)
+RETURNS BOOLEAN AS $$
+    SELECT EXISTS (
+        SELECT 1 FROM consignments c
+        JOIN transport_requests tr ON c.request_id = tr.id
+        JOIN orders o ON tr.order_id = o.id
+        WHERE c.trip_id = p_trip_id AND (o.seller_id = p_user_id OR o.buyer_id = p_user_id)
+    );
+$$ LANGUAGE sql STABLE SECURITY DEFINER SET search_path = public;
+
+-- =====================================================================================
+-- 6. Row-Level Security (RLS) Tenant Isolation Matrix (Granular CRUD Operations)
+-- =====================================================================================
+
+-- Table: listings
+ALTER TABLE listings ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY listings_select_policy ON listings
+    FOR SELECT
+    USING (
+        is_active = TRUE
+        OR seller_id = get_current_app_user_id()
+        OR is_app_admin()
+    );
+
+CREATE POLICY listings_insert_policy ON listings
+    FOR INSERT
+    WITH CHECK (
+        seller_id = get_current_app_user_id()
+        OR is_app_admin()
+    );
+
+CREATE POLICY listings_update_policy ON listings
+    FOR UPDATE
+    USING (
+        seller_id = get_current_app_user_id()
+        OR is_app_admin()
+    )
+    WITH CHECK (
+        seller_id = get_current_app_user_id()
+        OR is_app_admin()
+    );
+
+CREATE POLICY listings_delete_policy ON listings
+    FOR DELETE
+    USING (
+        seller_id = get_current_app_user_id()
+        OR is_app_admin()
+    );
+
+-- Table: orders
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
-ALTER TABLE consignments ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY orders_select_policy ON orders
+    FOR SELECT
+    USING (
+        seller_id = get_current_app_user_id()
+        OR buyer_id = get_current_app_user_id()
+        OR is_app_admin()
+    );
+
+CREATE POLICY orders_insert_policy ON orders
+    FOR INSERT
+    WITH CHECK (
+        buyer_id = get_current_app_user_id()
+        OR is_app_admin()
+    );
+
+CREATE POLICY orders_update_policy ON orders
+    FOR UPDATE
+    USING (
+        seller_id = get_current_app_user_id()
+        OR buyer_id = get_current_app_user_id()
+        OR is_app_admin()
+    )
+    WITH CHECK (
+        seller_id = get_current_app_user_id()
+        OR buyer_id = get_current_app_user_id()
+        OR is_app_admin()
+    );
+
+CREATE POLICY orders_delete_policy ON orders
+    FOR DELETE
+    USING (is_app_admin());
+
+-- Table: transport_requests
+ALTER TABLE transport_requests ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY transport_requests_select_policy ON transport_requests
+    FOR SELECT
+    USING (
+        status = 'OPEN_POOL'
+        OR is_request_party(id, get_current_app_user_id())
+        OR is_app_admin()
+    );
+
+CREATE POLICY transport_requests_insert_policy ON transport_requests
+    FOR INSERT
+    WITH CHECK (
+        is_request_party(id, get_current_app_user_id())
+        OR is_app_admin()
+    );
+
+CREATE POLICY transport_requests_update_policy ON transport_requests
+    FOR UPDATE
+    USING (
+        is_request_party(id, get_current_app_user_id())
+        OR is_app_admin()
+    )
+    WITH CHECK (
+        is_request_party(id, get_current_app_user_id())
+        OR is_app_admin()
+    );
+
+CREATE POLICY transport_requests_delete_policy ON transport_requests
+    FOR DELETE
+    USING (is_app_admin());
+
+-- Table: vehicles
+ALTER TABLE vehicles ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY vehicles_select_policy ON vehicles
+    FOR SELECT
+    USING (
+        owner_id = get_current_app_user_id()
+        OR is_app_admin()
+        OR EXISTS (
+            SELECT 1 FROM trips t
+            WHERE t.vehicle_id = vehicles.id
+              AND (t.driver_id = get_current_app_user_id() OR is_trip_shipper(t.id, get_current_app_user_id()))
+        )
+    );
+
+CREATE POLICY vehicles_insert_policy ON vehicles
+    FOR INSERT
+    WITH CHECK (
+        owner_id = get_current_app_user_id()
+        OR is_app_admin()
+    );
+
+CREATE POLICY vehicles_update_policy ON vehicles
+    FOR UPDATE
+    USING (
+        owner_id = get_current_app_user_id()
+        OR is_app_admin()
+    )
+    WITH CHECK (
+        owner_id = get_current_app_user_id()
+        OR is_app_admin()
+    );
+
+CREATE POLICY vehicles_delete_policy ON vehicles
+    FOR DELETE
+    USING (
+        owner_id = get_current_app_user_id()
+        OR is_app_admin()
+    );
+
+-- Table: trips
 ALTER TABLE trips ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY trips_select_policy ON trips
+    FOR SELECT
+    USING (
+        driver_id = get_current_app_user_id()
+        OR is_trip_operator(id, get_current_app_user_id())
+        OR is_trip_shipper(id, get_current_app_user_id())
+        OR is_app_admin()
+    );
+
+CREATE POLICY trips_insert_policy ON trips
+    FOR INSERT
+    WITH CHECK (
+        driver_id = get_current_app_user_id()
+        OR is_trip_operator(id, get_current_app_user_id())
+        OR is_app_admin()
+    );
+
+CREATE POLICY trips_update_policy ON trips
+    FOR UPDATE
+    USING (
+        driver_id = get_current_app_user_id()
+        OR is_trip_operator(id, get_current_app_user_id())
+        OR is_app_admin()
+    )
+    WITH CHECK (
+        driver_id = get_current_app_user_id()
+        OR is_trip_operator(id, get_current_app_user_id())
+        OR is_app_admin()
+    );
+
+CREATE POLICY trips_delete_policy ON trips
+    FOR DELETE
+    USING (is_app_admin());
+
+-- Table: route_stops
+ALTER TABLE route_stops ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY route_stops_select_policy ON route_stops
+    FOR SELECT
+    USING (
+        is_trip_operator(trip_id, get_current_app_user_id())
+        OR is_trip_shipper(trip_id, get_current_app_user_id())
+        OR is_app_admin()
+    );
+
+CREATE POLICY route_stops_insert_policy ON route_stops
+    FOR INSERT
+    WITH CHECK (
+        is_trip_operator(trip_id, get_current_app_user_id())
+        OR is_app_admin()
+    );
+
+CREATE POLICY route_stops_update_policy ON route_stops
+    FOR UPDATE
+    USING (
+        is_trip_operator(trip_id, get_current_app_user_id())
+        OR is_app_admin()
+    )
+    WITH CHECK (
+        is_trip_operator(trip_id, get_current_app_user_id())
+        OR is_app_admin()
+    );
+
+CREATE POLICY route_stops_delete_policy ON route_stops
+    FOR DELETE
+    USING (
+        is_trip_operator(trip_id, get_current_app_user_id())
+        OR is_app_admin()
+    );
+
+-- Table: consignments
+ALTER TABLE consignments ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY consignments_select_policy ON consignments
+    FOR SELECT
+    USING (
+        is_request_party(request_id, get_current_app_user_id())
+        OR is_trip_operator(trip_id, get_current_app_user_id())
+        OR is_app_admin()
+    );
+
+CREATE POLICY consignments_insert_policy ON consignments
+    FOR INSERT
+    WITH CHECK (
+        is_trip_operator(trip_id, get_current_app_user_id())
+        OR is_app_admin()
+    );
+
+-- UPDATE Policy: Transporter / Driver can update execution status & advance payout, but NOT modify allocated freight
+CREATE POLICY consignments_update_policy ON consignments
+    FOR UPDATE
+    USING (
+        is_trip_operator(trip_id, get_current_app_user_id())
+        OR is_app_admin()
+    )
+    WITH CHECK (
+        is_trip_operator(trip_id, get_current_app_user_id())
+        OR is_app_admin()
+    );
+
+CREATE POLICY consignments_delete_policy ON consignments
+    FOR DELETE
+    USING (is_app_admin());
+
+-- Table: custody_events
 ALTER TABLE custody_events ENABLE ROW LEVEL SECURITY;
 
--- Policy: Orders Tenant Isolation
-CREATE POLICY orders_access_policy ON orders
-    FOR ALL
+CREATE POLICY custody_events_select_policy ON custody_events
+    FOR SELECT
     USING (
-        seller_id = NULLIF(current_setting('app.current_user_id', true), '')::UUID
-        OR buyer_id = NULLIF(current_setting('app.current_user_id', true), '')::UUID
-        OR current_setting('app.current_user_role', true) = 'ADMIN'
+        EXISTS (
+            SELECT 1 FROM consignments c
+            WHERE c.id = custody_events.consignment_id
+              AND (
+                  is_request_party(c.request_id, get_current_app_user_id())
+                  OR is_trip_operator(c.trip_id, get_current_app_user_id())
+              )
+        )
+        OR is_app_admin()
     );
 
--- Policy: Consignments Tenant Isolation (Normalized Join through transport_requests)
-CREATE POLICY consignments_access_policy ON consignments
-    FOR ALL
+CREATE POLICY custody_events_insert_policy ON custody_events
+    FOR INSERT
+    WITH CHECK (
+        EXISTS (
+            SELECT 1 FROM consignments c
+            JOIN trips t ON c.trip_id = t.id
+            WHERE c.id = consignment_id
+              AND (t.driver_id = get_current_app_user_id() OR is_app_admin())
+        )
+    );
+
+-- Table: subscriptions
+ALTER TABLE subscriptions ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY subscriptions_select_policy ON subscriptions
+    FOR SELECT
     USING (
-        -- Seller access
-        request_id IN (
-            SELECT tr.id FROM transport_requests tr 
-            JOIN orders o ON tr.order_id = o.id 
-            WHERE o.seller_id = NULLIF(current_setting('app.current_user_id', true), '')::UUID
-        )
-        OR
-        -- Buyer access
-        request_id IN (
-            SELECT tr.id FROM transport_requests tr 
-            JOIN orders o ON tr.order_id = o.id 
-            WHERE o.buyer_id = NULLIF(current_setting('app.current_user_id', true), '')::UUID
-        )
-        OR
-        -- Fleet Owner access
-        trip_id IN (
-            SELECT t.id FROM trips t 
-            JOIN vehicles v ON t.vehicle_id = v.id 
-            WHERE v.owner_id = NULLIF(current_setting('app.current_user_id', true), '')::UUID
-        )
-        OR
-        -- Driver access
-        trip_id IN (
-            SELECT t.id FROM trips t 
-            WHERE t.driver_id = NULLIF(current_setting('app.current_user_id', true), '')::UUID
-        )
-        OR
-        current_setting('app.current_user_role', true) = 'ADMIN'
+        user_id = get_current_app_user_id()
+        OR is_app_admin()
+    );
+
+CREATE POLICY subscriptions_insert_policy ON subscriptions
+    FOR INSERT
+    WITH CHECK (
+        user_id = get_current_app_user_id()
+        OR is_app_admin()
+    );
+
+CREATE POLICY subscriptions_update_policy ON subscriptions
+    FOR UPDATE
+    USING (
+        user_id = get_current_app_user_id()
+        OR is_app_admin()
+    )
+    WITH CHECK (
+        user_id = get_current_app_user_id()
+        OR is_app_admin()
     );
 
 -- =====================================================================================
--- 6. Trigger Functions & Data Invariants
+-- 7. Trigger Functions & Data Invariants
 -- =====================================================================================
 
 -- Trigger 1: Optimistic Concurrency Control Version Incrementer
@@ -326,7 +638,41 @@ CREATE TRIGGER trg_consignments_version
 BEFORE UPDATE ON consignments
 FOR EACH ROW EXECUTE FUNCTION increment_version_id();
 
--- Trigger 2: Consignment Leg Sequence & Contiguous Physical Capacity Validation
+-- Trigger 2: Consignment Financial Integrity & Anti-Tampering Shield
+CREATE OR REPLACE FUNCTION protect_consignment_financials()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Protect allocated_freight_paise from unauthorized modification by drivers/transporters
+    IF (OLD.allocated_freight_paise IS DISTINCT FROM NEW.allocated_freight_paise) THEN
+        IF NOT is_app_admin() THEN
+            RAISE EXCEPTION 'FINANCIAL_INTEGRITY_VIOLATION: allocated_freight_paise cannot be modified by driver/transporter. Current role: %',
+                get_current_app_user_role();
+        END IF;
+    END IF;
+
+    -- Protect OTP hashes from alteration during transit
+    IF (OLD.loading_otp_hash IS DISTINCT FROM NEW.loading_otp_hash) OR 
+       (OLD.delivery_otp_hash IS DISTINCT FROM NEW.delivery_otp_hash) THEN
+        IF NOT is_app_admin() THEN
+            RAISE EXCEPTION 'SECURITY_VIOLATION: OTP hashes are cryptographically sealed at booking and cannot be altered.';
+        END IF;
+    END IF;
+
+    -- Advance payout limit check (enforced at trigger level in addition to table CHECK)
+    IF NEW.advance_freight_disbursed_paise > NEW.allocated_freight_paise THEN
+        RAISE EXCEPTION 'LIMIT_EXCEEDED: advance_freight_disbursed_paise (%) exceeds allocated_freight_paise (%)',
+            NEW.advance_freight_disbursed_paise, NEW.allocated_freight_paise;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_protect_consignment_financials
+BEFORE UPDATE ON consignments
+FOR EACH ROW EXECUTE FUNCTION protect_consignment_financials();
+
+-- Trigger 3: Consignment Leg Sequence & Contiguous Physical Capacity Validation (With Row-Level Trip Locking)
 CREATE OR REPLACE FUNCTION validate_consignment_stops_and_capacity()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -346,6 +692,9 @@ DECLARE
     v_active_volume NUMERIC(5, 2);
     v_active_slots INTEGER;
 BEGIN
+    -- (0) Acquire exclusive row-level lock on the parent trip to prevent concurrent overbooking races
+    PERFORM id FROM trips WHERE id = NEW.trip_id FOR UPDATE;
+
     -- (a) Validate that pickup and drop stops belong to the assigned trip and maintain sequence precedence
     SELECT trip_id, stop_sequence INTO v_pickup_trip, v_pickup_seq 
     FROM route_stops WHERE id = NEW.pickup_stop_id;

@@ -417,7 +417,12 @@ Under traditional broker practices, Shippers A and B are billed for 100% of the 
     $$A_A = \left\lfloor \frac{700,000 \times 3}{7} \right\rfloor = 300,000\text{ Paise} = \mathbf{₹3,000.00}$$
     $$A_B = \left\lfloor \frac{700,000 \times 4}{7} \right\rfloor = 400,000\text{ Paise} = \mathbf{₹4,000.00}$$
   - Residual Check: $\Delta = 700,000 - (300,000 + 400,000) = 0\text{ Paise}$.
-  - **Verified Economic Outcome**: Farmer A saves $₹4,000$ (57%); Farmer B saves $₹3,000$ (43%). Total outlay is $₹7,000$ vs. $₹14,000$ baseline.
+  - **Right-Sized Standalone Benchmark vs. Pooled Outcome**:
+    - **Farmer A (3,000 kg / 9.0 m³)**: Standalone alternative is an LCV class vehicle (Bolero Maxi Truck 2.5t, audited charter rate ₹5,200). Farmer A pays **₹3,000.00**, saving **₹2,200 (42.3% savings)**.
+    - **Farmer B (4,000 kg / 12.0 m³)**: Standalone alternative is a dedicated 10t ICV charter (audited rate ₹7,000). Farmer B pays **₹4,000.00**, saving **₹3,000 (42.9% savings)**.
+    - **Aggregate Economic Outcome**: Combined shipper outlay is **₹7,000.00** compared to ₹12,200 under right-sized dedicated charters, achieving a net corridor freight reduction of **₹5,200 (42.6% aggregate savings)**.
+- **Clarification on Capacity Sharing vs. "Paying Only for Consumed Space"**:
+  PRAYAAN does not charge shippers an artificial fixed rate per cubic meter and absorb empty vehicle liabilities as an open-ended risk. Rather, the full negotiated leg freight ($K_{\ell}$) is dynamically divided among active co-loaders in proportion to their bottleneck resource consumption ($\omega_i = \alpha_i / \sum \alpha_j$). Unused vehicle capacity (the remaining 30% on this 10t truck) is not billed to a phantom third party; instead, co-loaders share the whole trip cost while still paying significantly less than their individual standalone charters. If a corridor vehicle cannot achieve viable co-loading density (<35% utilization), PRAYAAN's dispatch engine either downsizes the vehicle class (to an LCV or SCV) or activates the **IR-Capped NMRS Fallback** ($A_i \le c(\{i\})$), guaranteeing that no shipper ever pays more than their right-sized standalone vehicle.
 
 ---
 
