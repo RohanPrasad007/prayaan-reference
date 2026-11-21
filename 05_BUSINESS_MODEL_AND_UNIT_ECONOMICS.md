@@ -121,8 +121,7 @@ To ensure full statutory tax compliance:
 - **Monthly Churn & Inactivity**:
   - Blended annual churn is modeled at **6.5% monthly**, reflecting agricultural seasonality (65% active paying cohort, 35% seasonal harvest pause).
   - Average Active Customer Lifetime: **15.4 months**.
-- **Customer Lifetime Value ($\text{LTV}$)**:
-  $$\text{LTV} = \frac{\text{Monthly Net Margin}}{\text{Monthly Churn}} = \frac{₹783.00}{0.065} = \mathbf{₹12,046.15}$$
+- **Customer Lifetime Value ($\text{LTV}$)**: $\text{LTV} = \frac{\text{Monthly Net Margin}}{\text{Monthly Churn}} = \frac{₹783.00}{0.065} = \mathbf{₹12,046.15}$
 - **LTV / CAC Ratios**:
   - Sellers (FPOs): $\frac{₹12,046}{₹1,850} = \mathbf{6.51\times}$ (Healthy SaaS benchmark: $> 3.0\times$).
   - Fleet Owners: $\frac{₹12,046}{₹3,200} = \mathbf{3.76\times}$.

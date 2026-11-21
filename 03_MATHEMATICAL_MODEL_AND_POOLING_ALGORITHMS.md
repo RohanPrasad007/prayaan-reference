@@ -106,14 +106,13 @@ $$\text{Admissible}(V, \mathcal{C}_{\ell_k}) = \text{Fits}(V, \mathcal{C}_{\ell_
 
 Where:
 
-1. **Vehicle Fit**:
-   $$\text{Fits}(V, \mathcal{C}_{\ell_k}) = \bigwedge_{c \in \mathcal{C}_{\ell_k}} \Big[ \text{MatchBody}(V, c) \land \text{MatchCool}(V, c) \land \text{MatchHaz}(V, c) \land \text{MatchDim}(V, c) \Big]$$
+1. **Vehicle Fit**: $\text{Fits}(V, \mathcal{C}_{\ell_k}) = \bigwedge_{c \in \mathcal{C}_{\ell_k}} \Big[ \text{MatchBody}(V, c) \land \text{MatchCool}(V, c) \land \text{MatchHaz}(V, c) \land \text{MatchDim}(V, c) \Big]$
    - $\text{MatchBody}(V, c) \iff (\text{reqBody}(c) = \emptyset) \lor (\text{bodyType}(V) = \text{reqBody}(c))$
    - $\text{MatchCool}(V, c) \iff \text{reqRefrigeration}(c) \implies \text{refrigerated}(V)$
    - $\text{MatchHaz}(V, c) \iff \text{isHazmat}(c) \implies \text{hazmatCertified}(V)$
    - $\text{MatchDim}(V, c) \iff \max(\text{dim}(c)) \le \min(L_V^{\text{int}}, B_V^{\text{int}}, H_V^{\text{int}})$
-2. **Cargo-to-Cargo Cross Compatibility**:
-   $$\text{CoCompatible}(\mathcal{C}_{\ell_k}) = \bigwedge_{c_i, c_j \in \mathcal{C}_{\ell_k}, i \neq j} \Big[ \text{EthyleneCheck}(c_i, c_j) \land \text{OdorCheck}(c_i, c_j) \land \text{MoistureCheck}(c_i, c_j) \Big]$$
+
+2. **Cargo-to-Cargo Cross Compatibility**: $\text{CoCompatible}(\mathcal{C}_{\ell_k}) = \bigwedge_{c_i, c_j \in \mathcal{C}_{\ell_k}, i \neq j} \Big[ \text{EthyleneCheck}(c_i, c_j) \land \text{OdorCheck}(c_i, c_j) \land \text{MoistureCheck}(c_i, c_j) \Big]$
    - _Ethylene Conflict_: High ethylene emitters (e.g., ripe bananas, apples) must never be co-loaded with ethylene-sensitive commodities (e.g., potatoes, leafy greens, carrots) unless isolated in separate sealed airtight chambers.
    - _Odor Contamination_: Pungent commodities (e.g., onions, garlic) must not be co-loaded with porous dairy, flour, or tea.
 
@@ -131,10 +130,8 @@ $$\text{Occ}(c, V) = \max \left( \frac{w_c}{W_V}, \frac{u_c}{U_V}, \frac{s_c}{S_
 
 Consider a 10-Tonne Intermediate Commercial Vehicle ($W_V = 10,000\text{ kg}$, $U_V = 30\text{ m}^3$, $S_V = 100\text{ slots}$) shared by two distinct agricultural shipments:
 
-- **Shipment A (Dense Tubers / Grains)**: $w_A = 6,000\text{ kg}$ (60%), $u_A = 6\text{ m}^3$ (20%), $s_A = 20\text{ slots}$ (20%).
-  $$\text{Occ}(A, V) = \max(0.60, 0.20, 0.20) = \mathbf{0.60}$$
-- **Shipment B (Bulky Leafy Greens / Peppers)**: $w_B = 2,000\text{ kg}$ (20%), $u_B = 18\text{ m}^3$ (60%), $s_B = 20\text{ slots}$ (20%).
-  $$\text{Occ}(B, V) = \max(0.20, 0.60, 0.20) = \mathbf{0.60}$$
+- **Shipment A (Dense Tubers / Grains)**: $w_A = 6,000\text{ kg}$ (60%), $u_A = 6\text{ m}^3$ (20%), $s_A = 20\text{ slots}$ (20%), yielding $\text{Occ}(A, V) = \max(0.60, 0.20, 0.20) = \mathbf{0.60}$.
+- **Shipment B (Bulky Leafy Greens / Peppers)**: $w_B = 2,000\text{ kg}$ (20%), $u_B = 18\text{ m}^3$ (60%), $s_B = 20\text{ slots}$ (20%), yielding $\text{Occ}(B, V) = \max(0.20, 0.60, 0.20) = \mathbf{0.60}$.
 
 #### Mathematical Consequence:
 
@@ -170,28 +167,18 @@ $$\omega_i = \frac{\alpha_i}{\sum_{j \in \mathcal{C}_{\ell_k}} \alpha_j} \quad \
 
 1. **Efficiency / Budget Balance**: $\sum_{i} A_i \equiv K_{\ell_k}$. Every paisa of the trip freight is allocated; no deficit, no carrier windfall.
 2. **Symmetry**: If $\mathbf{d}_A = \mathbf{d}_B$, then $\omega_A = \omega_B$. Identical consignments pay identical shares.
-3. **Dual-Resource Fairness**: In our counterexample, $\alpha_A = 0.60$ (weight-limited) and $\alpha_B = 0.60$ (volume-limited). Both consignments consume exactly the same fraction of the vehicle's critical bottleneck dimension. The normalized shares evaluate to:
-   $$\omega_A = \frac{0.60}{0.60 + 0.60} = \mathbf{0.50}, \quad \omega_B = \frac{0.60}{0.60 + 0.60} = \mathbf{0.50}$$
-   Both shippers split the ₹7,000 trip cost equally (₹3,500 each), achieving complete parity.
-4. **Individual Rationality (Core Property)**: For every participating shipper $i$, the allocated cost $A_i$ must be strictly less than the standalone charter cost $C_{\text{standalone}}(c_i)$:
-   $$A_i < C_{\text{standalone}}(c_i) \quad \forall i \in \mathcal{C}_{\ell_k}$$
-   Since chartering a dedicated vehicle for either load would cost ₹7,000, paying ₹3,500 represents a 50% guaranteed savings for both parties.
+3. **Dual-Resource Fairness**: In our counterexample, $\alpha_A = 0.60$ (weight-limited) and $\alpha_B = 0.60$ (volume-limited). Both consignments consume exactly the same fraction of the vehicle's critical bottleneck dimension. The normalized shares evaluate to $\omega_A = \frac{0.60}{0.60 + 0.60} = \mathbf{0.50}, \quad \omega_B = \frac{0.60}{0.60 + 0.60} = \mathbf{0.50}$. Both shippers split the ₹7,000 trip cost equally (₹3,500 each), achieving complete parity.
+4. **Individual Rationality (Core Property)**: For every participating shipper $i$, the allocated cost satisfies $A_i < C_{\text{standalone}}(c_i) \quad \forall i \in \mathcal{C}_{\ell_k}$. Since chartering a dedicated vehicle for either load would cost ₹7,000, paying ₹3,500 represents a 50% guaranteed savings for both parties.
 
 ### C. Integer Arithmetic Guarantee (Zero Floating-Point Error)
 
 To ensure legally compliant, dispute-free financial settlement, PRAYAAN executes allocation using integer arithmetic scaled by $10^9$:
 
-1. Compute integer weight:
-   $$\Omega_i = \left\lfloor \frac{\alpha_i}{\sum_{j \in \mathcal{C}_{\ell_k}} \alpha_j} \times 10^9 \right\rfloor$$
-2. Compute baseline allocated paise:
-   $$A_i = \left\lfloor \frac{K_{\ell_k} \times \Omega_i}{\sum_{j \in \mathcal{C}_{\ell_k}} \Omega_j} \right\rfloor$$
-3. Compute integer truncation residual:
-   $$\Delta = K_{\ell_k} - \sum_{j \in \mathcal{C}_{\ell_k}} A_j \quad (0 \le \Delta < |\mathcal{C}_{\ell_k}|)$$
-4. Distribute residual paise $\Delta$ sequentially to the consignments with the largest rounding remainders:
-   $$A_{\text{target}} \leftarrow A_{\text{target}} + 1$$
-5. **Verification Invariant**: The allocated freight sum strictly balances total leg cost down to the single paisa:
-
-   $$\sum_{i \in \mathcal{C}_{\ell_k}} A_i \equiv K_{\ell_k}$$
+1. Compute integer weight: $\Omega_i = \left\lfloor \frac{\alpha_i}{\sum_{j \in \mathcal{C}_{\ell_k}} \alpha_j} \times 10^9 \right\rfloor$
+2. Compute baseline allocated paise: $A_i = \left\lfloor \frac{K_{\ell_k} \times \Omega_i}{\sum_{j \in \mathcal{C}_{\ell_k}} \Omega_j} \right\rfloor$
+3. Compute integer truncation residual: $\Delta = K_{\ell_k} - \sum_{j \in \mathcal{C}_{\ell_k}} A_j \quad (0 \le \Delta < |\mathcal{C}_{\ell_k}|)$
+4. Distribute residual paise $\Delta$ sequentially to the consignments with the largest rounding remainders: $A_{\text{target}} \leftarrow A_{\text{target}} + 1$
+5. **Verification Invariant**: The allocated freight sum strictly balances total leg cost down to the single paisa: $\sum_{i \in \mathcal{C}_{\ell_k}} A_i \equiv K_{\ell_k}$.
 
 ### D. Cooperative Game Theory: Core Stability Theorem for NMRS
 
@@ -216,12 +203,9 @@ $$\mathbf{A}^{\text{NMRS}} \in \text{Core}(\mathcal{N}, c)$$
 #### Mathematical Proof:
 
 1. **Efficiency**: By construction of the integer scaling and residual distribution algorithm (Section 3.C), $\sum_{i \in \mathcal{N}} A_i^{\text{NMRS}} \equiv K_{\ell_k} = c(\mathcal{N})$.
-2. **Coalition Invariant**: For any non-empty sub-coalition $\mathcal{S} \subset \mathcal{N}$, their pooled bottleneck demand on vehicle $V$ is $\alpha(\mathcal{S}) = \sum_{i \in \mathcal{S}} \alpha_i$. Under NMRS, their aggregate allocated cost is:
-   $$\sum_{i \in \mathcal{S}} A_i^{\text{NMRS}} = \left( \frac{\sum_{i \in \mathcal{S}} \alpha_i}{\sum_{j \in \mathcal{N}} \alpha_j} \right) \cdot c(\mathcal{N})$$
+2. **Coalition Invariant**: For any non-empty sub-coalition $\mathcal{S} \subset \mathcal{N}$, their pooled bottleneck demand on vehicle $V$ is $\alpha(\mathcal{S}) = \sum_{i \in \mathcal{S}} \alpha_i$. Under NMRS, their aggregate allocated cost is: $\sum_{i \in \mathcal{S}} A_i^{\text{NMRS}} = \left( \frac{\sum_{i \in \mathcal{S}} \alpha_i}{\sum_{j \in \mathcal{N}} \alpha_j} \right) \cdot c(\mathcal{N})$.
 3. **Subadditive Cost Comparison**: To service coalition $\mathcal{S}$ independently, the group must charter an independent commercial vehicle $V_{\mathcal{S}}$ with capacity $\mathbf{C}_{V_{\mathcal{S}}} \ge \sum_{i \in \mathcal{S}} \mathbf{d}_i$. Due to market scale concavity, $c(\mathcal{S}) \ge \alpha(\mathcal{S}) \cdot c(\mathcal{N}) \cdot \left( \frac{c(V_{\mathcal{S}})/W_{V_{\mathcal{S}}}}{c(V)/W_V} \right)$.
-4. Since $\frac{c(V_{\mathcal{S}})}{W_{V_{\mathcal{S}}}} > \frac{c(V)}{W_V}$ for all sub-scale vehicles $V_{\mathcal{S}} < V$, we have:
-   $$\sum_{i \in \mathcal{S}} A_i^{\text{NMRS}} < c(\mathcal{S}) \quad \forall \mathcal{S} \subset \mathcal{N}$$
-   No sub-group of farmers can ever secure lower freight rates by defecting, guaranteeing permanent coalitional stability and zero defection incentives.
+4. Since $\frac{c(V_{\mathcal{S}})}{W_{V_{\mathcal{S}}}} > \frac{c(V)}{W_V}$ for all sub-scale vehicles $V_{\mathcal{S}} < V$, we have: $\sum_{i \in \mathcal{S}} A_i^{\text{NMRS}} < c(\mathcal{S}) \quad \forall \mathcal{S} \subset \mathcal{N}$. No sub-group of farmers can ever secure lower freight rates by defecting, guaranteeing permanent coalitional stability and zero defection incentives.
    _(Verified empirically across 1,000 Monte Carlo test cases in `scripts/verify_cost_allocation.py`)._
 
 ---
@@ -255,15 +239,9 @@ flowchart LR
     L4 --> L5["5. Platform Subscription\n₹899/month Flat SaaS"]
 ```
 
-1. **Transporter Vehicle Operating Cost ($C_{\text{trans}}$)**:
-   The true economic expenditure incurred by the fleet owner to operate vehicle $V$ over distance $D$:
-   $$C_{\text{trans}}(V, D) = F_{\text{daily}}(V) \cdot \left(\frac{t_{\text{trip}}}{24}\right) + V_{\text{km}}(V) \cdot D$$
-2. **Carrier Commercial Freight Quotation ($Q_V$)**:
-   The market price quoted by the carrier, incorporating commercial operating margin $\mu \in [0.15, 0.25]$:
-   $$Q_V(D) = \left\lceil C_{\text{trans}}(V, D) \cdot (1 + \mu) \right\rceil$$
-3. **Shared Trip Cost ($K_{\ell_k}$)**:
-   The total leg freight payable by all active consignments, including statutory national highway tolls:
-   $$K_{\ell_k} = Q_V(D(\ell_k)) + \text{Tolls}(\ell_k)$$
+1. **Transporter Vehicle Operating Cost ($C_{\text{trans}}$)**: The true economic expenditure incurred by the fleet owner to operate vehicle $V$ over distance $D$: $C_{\text{trans}}(V, D) = F_{\text{daily}}(V) \cdot \left(\frac{t_{\text{trip}}}{24}\right) + V_{\text{km}}(V) \cdot D$.
+2. **Carrier Commercial Freight Quotation ($Q_V$)**: The market price quoted by the carrier, incorporating commercial operating margin $\mu \in [0.15, 0.25]$: $Q_V(D) = \left\lceil C_{\text{trans}}(V, D) \cdot (1 + \mu) \right\rceil$.
+3. **Shared Trip Cost ($K_{\ell_k}$)**: The total leg freight payable by all active consignments, including statutory national highway tolls: $K_{\ell_k} = Q_V(D(\ell_k)) + \text{Tolls}(\ell_k)$.
 4. **Per-Order Allocated Freight ($A_i$)**:
    The individual consignment charge computed via the integer NMRS algorithm.
 5. **Platform Subscription**: Flat ₹899/month SaaS fee per active vehicle or seller account.
@@ -329,31 +307,21 @@ Where:
 ### D. Comprehensive Structural Constraints
 
 1. **Request Assignment & Conservation**:
-   - _Single-Vehicle Assignment_: Each request $r \in \mathcal{R}$ is assigned to at most one vehicle:
-     $$\sum_{k \in \mathcal{K}} y_r^k \le 1 \quad \forall r \in \mathcal{R}$$
-   - _Origin Flow Conservation_: Outbound departure from pickup node $p_r$ matches assignment $y_r^k$:
-     $$\sum_{j \in \mathcal{V}_{\text{nodes}}} x_{p_r, j}^k = y_r^k \quad \forall r \in \mathcal{R}, \forall k \in \mathcal{K}$$
-   - _Destination Flow Conservation_: Inbound arrival at delivery node $d_r$ matches assignment $y_r^k$:
-     $$\sum_{j \in \mathcal{V}_{\text{nodes}}} x_{j, d_r}^k = y_r^k \quad \forall r \in \mathcal{R}, \forall k \in \mathcal{K}$$
-     _(Guarantees that if a shipment is accepted, both pickup and delivery are served by the exact same vehicle)._
+   - _Single-Vehicle Assignment_: Each request $r \in \mathcal{R}$ is assigned to at most one vehicle: $\sum_{k \in \mathcal{K}} y_r^k \le 1 \quad \forall r \in \mathcal{R}$.
+   - _Origin Flow Conservation_: Outbound departure from pickup node $p_r$ matches assignment $y_r^k$: $\sum_{j \in \mathcal{V}_{\text{nodes}}} x_{p_r, j}^k = y_r^k \quad \forall r \in \mathcal{R}, \forall k \in \mathcal{K}$.
+   - _Destination Flow Conservation_: Inbound arrival at delivery node $d_r$ matches assignment $y_r^k$: $\sum_{j \in \mathcal{V}_{\text{nodes}}} x_{j, d_r}^k = y_r^k \quad \forall r \in \mathcal{R}, \forall k \in \mathcal{K}$ _(guarantees both pickup and delivery are served by the exact same vehicle)_.
 
 2. **Flow Conservation at Depots**:
-   - _Departure from Origin Depot_: Vehicle $k$ departs from its assigned origin depot $o_k$:
-     $$\sum_{j \in \mathcal{V}^+ \cup \{e_k\}} x_{o_k, j}^k = 1 \quad \forall k \in \mathcal{K}$$
-   - _Arrival at Terminal Depot_: Vehicle $k$ arrives at its ending depot $e_k$:
-     $$\sum_{i \in \mathcal{V}^- \cup \{o_k\}} x_{i, e_k}^k = 1 \quad \forall k \in \mathcal{K}$$
-   - _Intermediate Flow Balance_: Total entries equal total exits at every intermediate stop $p$:
-     $$\sum_{i \in \mathcal{V}_{\text{nodes}}} x_{ip}^k - \sum_{j \in \mathcal{V}_{\text{nodes}}} x_{pj}^k = 0 \quad \forall p \in \mathcal{V}^+ \cup \mathcal{V}^-, \forall k \in \mathcal{K}$$
+   - _Departure from Origin Depot_: Vehicle $k$ departs from its assigned origin depot $o_k$: $\sum_{j \in \mathcal{V}^+ \cup \{e_k\}} x_{o_k, j}^k = 1 \quad \forall k \in \mathcal{K}$.
+   - _Arrival at Terminal Depot_: Vehicle $k$ arrives at its ending depot $e_k$: $\sum_{i \in \mathcal{V}^- \cup \{o_k\}} x_{i, e_k}^k = 1 \quad \forall k \in \mathcal{K}$.
+   - _Intermediate Flow Balance_: Total entries equal total exits at every intermediate stop $p$: $\sum_{i \in \mathcal{V}_{\text{nodes}}} x_{ip}^k - \sum_{j \in \mathcal{V}_{\text{nodes}}} x_{pj}^k = 0 \quad \forall p \in \mathcal{V}^+ \cup \mathcal{V}^-, \forall k \in \mathcal{K}$.
 
 3. **Precedence Constraint (Pickup Precedes Delivery)**:
-   Cargo cannot be delivered before it has been physically loaded at its origin:
-   $$T_{p_r}^k + s_{p_r} + t_{p_r, d_r} \le T_{d_r}^k \quad \forall r \in \mathcal{R}, \forall k \in \mathcal{K} \text{ where } y_r^k = 1$$
+   Cargo cannot be delivered before it has been physically loaded at its origin: $T_{p_r}^k + s_{p_r} + t_{p_r, d_r} \le T_{d_r}^k \quad \forall r \in \mathcal{R}, \forall k \in \mathcal{K} \text{ where } y_r^k = 1$.
 
 4. **Time Window Adherence & Subtour Elimination**:
-   - _Customer Window Adherence_: Arrival time $T_i^k$ must strictly satisfy the time window $[e_i, l_i]$:
-     $$e_i \le T_i^k \le l_i \quad \forall i \in \mathcal{V}_{\text{nodes}}, \forall k \in \mathcal{K}$$
-   - _Time Propagation & Subtour Elimination_: Departure time propagates along traversed edge $(i, j)$:
-     $$x_{ij}^k = 1 \implies T_i^k + s_i + t_{ij} \le T_j^k \quad \forall (i, j) \in \mathcal{E}, \forall k \in \mathcal{K}$$
+   - _Customer Window Adherence_: Arrival time $T_i^k$ must strictly satisfy the time window $[e_i, l_i]$: $e_i \le T_i^k \le l_i \quad \forall i \in \mathcal{V}_{\text{nodes}}, \forall k \in \mathcal{K}$.
+   - _Time Propagation & Subtour Elimination_: Departure time propagates along traversed edge $(i, j)$: $x_{ij}^k = 1 \implies T_i^k + s_i + t_{ij} \le T_j^k \quad \forall (i, j) \in \mathcal{E}, \forall k \in \mathcal{K}$.
 
 5. **Multi-Axis Cumulative Capacity Tracking**:
    Along each traversed edge $(i, j)$, cumulative load updates by the pickup ($+q_j$) or drop ($-q_j$) demand:
@@ -390,9 +358,7 @@ Under traditional broker practices, Shippers A and B are billed for 100% of the 
 1. **Guaranteed Return Backhaul Found**:
    If return consignments $\mathcal{C}_{\text{return}}$ are booked prior to outbound departure, outbound Shippers A and B are charged **zero deadhead penalty**. Return shippers bear their own proportional share of the return leg.
 2. **Probabilistic Return Optimization**:
-   If no backhaul is secured at dispatch, a discounted return reserve fee $K_{\text{reposition}}$ is calculated based on historical corridor backhaul probability $P_{\text{backhaul}} \in [0.65, 0.85]$:
-   $$K_{\text{reposition}} = \left( 1 - P_{\text{backhaul}} \right) \cdot \left[ D_{\text{return}} \cdot V_{\text{km}}(V) \right]$$
-   This expected shortfall is split proportionally among outbound shippers via their NMRS weights, saving shippers 65% to 85% compared to paying for a full empty return.
+   If no backhaul is secured at dispatch, a discounted return reserve fee $K_{\text{reposition}}$ is calculated based on historical corridor backhaul probability $P_{\text{backhaul}} \in [0.65, 0.85]$: $K_{\text{reposition}} = \left( 1 - P_{\text{backhaul}} \right) \cdot \left[ D_{\text{return}} \cdot V_{\text{km}}(V) \right]$. This expected shortfall is split proportionally among outbound shippers via their NMRS weights, saving shippers 65% to 85% compared to paying for a full empty return.
 
 ---
 
@@ -416,11 +382,7 @@ Under traditional broker practices, Shippers A and B are billed for 100% of the 
 - **Integer Allocation Calculation**:
   - $\sum \alpha = 0.30 + 0.40 = 0.70$.
   - Normalized weights: $\omega_A = \frac{0.30}{0.70} = \frac{3}{7}$, $\omega_B = \frac{0.40}{0.70} = \frac{4}{7}$.
-  - Integer shares:
-
-    $$A_A = \left\lfloor \frac{700,000 \times 3}{7} \right\rfloor = 300,000\text{ Paise} = \mathbf{₹3,000.00}$$
-
-    $$A_B = \left\lfloor \frac{700,000 \times 4}{7} \right\rfloor = 400,000\text{ Paise} = \mathbf{₹4,000.00}$$
+  - Integer shares: $A_A = \left\lfloor \frac{700,000 \times 3}{7} \right\rfloor = 300,000\text{ Paise} = \mathbf{₹3,000.00}$, and $A_B = \left\lfloor \frac{700,000 \times 4}{7} \right\rfloor = 400,000\text{ Paise} = \mathbf{₹4,000.00}$.
 
   - Residual Check: $\Delta = 700,000 - (300,000 + 400,000) = 0\text{ Paise}$.
   - **Right-Sized Standalone Benchmark vs. Pooled Outcome**:
@@ -499,11 +461,9 @@ A single 10-Tonne ICV executes a pooled run across 4 stops:
 
 - **Scenario**: Two shipments $c_A$ and $c_B$ are pooled on a trip. 45 minutes prior to vehicle dispatch, Shipper B cancels due to harvest delays.
 - **Deterministic Fallback Algorithm**:
-  1. Trigger cancellation penalty on Shipper B equal to the unrecoverable origin repositioning cost:
-     $$\text{Fee}_{\text{cancel}}(B) = D(o_V, \text{Pickup}_B) \cdot V_{\text{km}}(V) + 0.10 \cdot K_{\text{trip}}$$
+  1. Trigger cancellation penalty on Shipper B equal to the unrecoverable origin repositioning cost: $\text{Fee}_{\text{cancel}}(B) = D(o_V, \text{Pickup}_B) \cdot V_{\text{km}}(V) + 0.10 \cdot K_{\text{trip}}$.
   2. The pooling engine locks Trip Status to `RE-POOLING_HOLD` for a 30-minute matching window.
-  3. Query pending request cache along the active corridor for compatible substitute loads satisfying:
-     $$\mathbf{d}_{\text{new}} \le \mathbf{C}_V - \mathbf{d}_A \quad \text{and} \quad \text{Detour}(\text{New Route}) \le 1.15 \cdot D_{\text{direct}}$$
+  3. Query pending request cache along the active corridor for compatible substitute loads satisfying: $\mathbf{d}_{\text{new}} \le \mathbf{C}_V - \mathbf{d}_A$ and $\text{Detour}(\text{New Route}) \le 1.15 \cdot D_{\text{direct}}$.
   4. If a substitute $c_C$ is found, generate updated allocation $A_A', A_C'$. If no substitute is found, Shipper A is offered:
      - _Option 1_: Dispatch as dedicated charter at discounted rate $[K_{\text{trip}} - \text{Fee}_{\text{cancel}}(B)]$.
      - _Option 2_: Free rollover to the next pooled vehicle departure scheduled within 4 hours.
@@ -516,7 +476,6 @@ A single 10-Tonne ICV executes a pooled run across 4 stops:
 - **Mathematical Recovery Protocol**:
   1. Driver triggers `SOS_VEHICLE_BREAKDOWN` on mobile client, transmitting GPS coordinates $\sigma_{\text{break}}$.
   2. System partitions the trip into executed legs $\mathcal{L}_{\text{completed}}$ and remaining legs $\mathcal{L}_{\text{pending}}$.
-  3. Pro-rata freight earned by disabled vehicle $V_1$:
-     $$K_{\text{earned}}(V_1) = \sum_{\ell_k \in \mathcal{L}_{\text{completed}}} K_{\ell_k} + \left[ \frac{D(\sigma_{k-1}, \sigma_{\text{break}})}{D(\ell_{\text{current}})} \right] \cdot K_{\ell_{\text{current}}}$$
+  3. Pro-rata freight earned by disabled vehicle $V_1$: $K_{\text{earned}}(V_1) = \sum_{\ell_k \in \mathcal{L}_{\text{completed}}} K_{\ell_k} + \left[ \frac{D(\sigma_{k-1}, \sigma_{\text{break}})}{D(\ell_{\text{current}})} \right] \cdot K_{\ell_{\text{current}}}$.
   4. System broadcasts an emergency transshipment dispatch to nearby available empty/partial vehicles within a 25 km geofence radius.
   5. Recovery vehicle $V_2$ docks; drivers execute dual-device QR code transfer validating custody shift; remaining trip legs complete without shipper price recalculation. All transshipment overhead is absorbed by the platform's fleet recovery reserve fund.

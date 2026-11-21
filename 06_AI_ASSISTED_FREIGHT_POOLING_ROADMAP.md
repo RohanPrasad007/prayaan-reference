@@ -80,8 +80,7 @@ flowchart LR
   - Earliest pickup deadline $e_{p_r}$ and latest delivery window $l_{d_r}$.
   - Defined corridor centerline polyline $\mathcal{P}_{\text{corridor}}$.
 - **Output**: Clustered candidate request subsets $\mathcal{R}_{\text{cluster}} \subset \mathcal{R}$ whose origin and destination projections lie within an allowable orthogonal buffer distance $\delta_{\max}$ (typically $10\text{ km}$) of the corridor spine.
-- **Objective Function**:
-  $$\min \sum_{r \in \mathcal{R}_{\text{cluster}}} \text{Dist}_{\perp}\left(p_r, \mathcal{P}_{\text{corridor}}\right) + \text{Dist}_{\perp}\left(d_r, \mathcal{P}_{\text{corridor}}\right)$$
+- **Objective Function**: $\min \sum_{r \in \mathcal{R}_{\text{cluster}}} \text{Dist}_{\perp}\left(p_r, \mathcal{P}_{\text{corridor}}\right) + \text{Dist}_{\perp}\left(d_r, \mathcal{P}_{\text{corridor}}\right)$
 - **Constraints**:
   1. Directional alignment: Vector dot product $\vec{v}(p_r \rightarrow d_r) \cdot \vec{v}(\mathcal{P}_{\text{corridor}}) > 0$ (rejects counter-flow shipments).
   2. Maximum allowable detour: $\text{Detour}(r) \le 1.15 \cdot \text{DirectDistance}(r)$.
@@ -97,18 +96,11 @@ flowchart LR
 - **Operational Need**: Exact solvers (e.g., branch-and-cut in CPLEX/Gurobi) fail to scale beyond 20–25 stops within interactive web dispatch response times ($< 3\text{ seconds}$). ALNS provides high-quality heuristic approximations for large request batches.
 - **Input Data**: Set of clustered requests $\mathcal{R}_{\text{cluster}}$, vehicle profiles $\mathcal{K}$, road network distance/duration cost matrix $C_{ij}$, and time windows $[e_i, l_i]$.
 - **Output**: Optimized vehicle route sequences $\mathcal{T}_k = \langle \sigma_0, \sigma_1, \dots, \sigma_M \rangle$ and request assignment vector $\mathbf{y}^k$.
-- **Objective Function**:
-  $$\min \sum_{k \in \mathcal{K}} \sum_{(i, j) \in \mathcal{E}} c_{ij}^k x_{ij}^k + \lambda_{\text{unserved}} \sum_{r \in \mathcal{R}} \left( 1 - \sum_{k \in \mathcal{K}} y_r^k \right) \cdot \text{Penalty}_r + \lambda_{\text{detour}} \sum_{k \in \mathcal{K}} \text{DetourTime}(k)$$
+- **Objective Function**: $\min \sum_{k \in \mathcal{K}} \sum_{(i, j) \in \mathcal{E}} c_{ij}^k x_{ij}^k + \lambda_{\text{unserved}} \sum_{r \in \mathcal{R}} \left( 1 - \sum_{k \in \mathcal{K}} y_r^k \right) \cdot \text{Penalty}_r + \lambda_{\text{detour}} \sum_{k \in \mathcal{K}} \text{DetourTime}(k)$
 - **Destroy & Repair Heuristics**:
-  1. **Shaw Removal (Destroy)**:
-     Removes a set of $q$ closely related requests based on a composite relatedness metric:
-     $$R(r_1, r_2) = \phi_1 \left( \frac{d_{p_1, p_2} + d_{d_1, d_2}}{\max D} \right) + \phi_2 \left( \frac{|T_{p_1} - T_{p_2}| + |T_{d_1} - T_{d_2}|}{\max T} \right) + \phi_3 \left( \frac{|w_1 - w_2|}{\max W} \right)$$
-  2. **Regret-$k$ Insertion (Repair)**:
-     Sequentially reinserts unassigned requests into routes where the cost difference between the best insertion position and the $k$-th best insertion position is maximized:
-     $$\Delta c_r^{(k)} = \sum_{j=2}^k \left( \text{Cost}(r, \text{pos}_j) - \text{Cost}(r, \text{pos}_1) \right)$$
-     Requests with high regret are prioritized, avoiding suboptimal assignment traps.
-- **Acceptance Criterion**: Simulated Annealing acceptance probability:
-  $$P(\text{accept}) = \begin{cases} 1 & \text{if } \text{Cost}(\mathcal{S}_{\text{new}}) < \text{Cost}(\mathcal{S}_{\text{current}}) \\ \exp\left( -\frac{\text{Cost}(\mathcal{S}_{\text{new}}) - \text{Cost}(\mathcal{S}_{\text{current}})}{T} \right) & \text{otherwise} \end{cases}$$
+  1. **Shaw Removal (Destroy)**: Removes a set of $q$ closely related requests based on a composite relatedness metric: $R(r_1, r_2) = \phi_1 \left( \frac{d_{p_1, p_2} + d_{d_1, d_2}}{\max D} \right) + \phi_2 \left( \frac{|T_{p_1} - T_{p_2}| + |T_{d_1} - T_{d_2}|}{\max T} \right) + \phi_3 \left( \frac{|w_1 - w_2|}{\max W} \right)$.
+  2. **Regret-$k$ Insertion (Repair)**: Sequentially reinserts unassigned requests into routes where the cost difference between the best insertion position and the $k$-th best insertion position is maximized: $\Delta c_r^{(k)} = \sum_{j=2}^k \left( \text{Cost}(r, \text{pos}_j) - \text{Cost}(r, \text{pos}_1) \right)$. Requests with high regret are prioritized, avoiding suboptimal assignment traps.
+- **Acceptance Criterion**: Simulated Annealing acceptance probability: $P(\text{accept}) = \begin{cases} 1 & \text{if } \text{Cost}(\mathcal{S}_{\text{new}}) < \text{Cost}(\mathcal{S}_{\text{current}}) \\ \exp\left( -\frac{\text{Cost}(\mathcal{S}_{\text{new}}) - \text{Cost}(\mathcal{S}_{\text{current}})}{T} \right) & \text{otherwise} \end{cases}$.
 - **Computational Complexity**: $\mathcal{O}(I \cdot q \cdot |\mathcal{K}| \cdot |\mathcal{R}|^2)$, where $I$ is the number of iterations ($I \approx 500$) and $q$ is the removal batch size ($q \in [0.1|\mathcal{R}|, 0.3|\mathcal{R}|]$).
 - **Advantages**: Highly adaptive; balances route compactness with tight delivery time windows.
 - **Limitations**: Meta-heuristic nature means global optimality is not mathematically guaranteed; solution quality depends on cooling schedule tuning.
@@ -124,15 +116,9 @@ flowchart LR
   - Vehicle cargo bed dimensions $(L_V, B_V, H_V)$, front axle tare rating $W_{\text{front}}$, and rear axle tare rating $W_{\text{rear}}$.
 - **Output**: 3D spatial coordinate coordinates $(x_c, y_c, z_c)$ for each package within the truck hold.
 - **Physical Constraints & Heuristics**:
-  1. **First-Off, Last-On (FILO) Stacking**:
-     Consignments scheduled for earlier delivery stops must not be physically obstructed by consignments delivering at later stops:
-     $$\text{seq}(c_1) < \text{seq}(c_2) \implies y_{c_1} \ge y_{c_2} \quad (\text{where } y \text{ points toward the rear loading door})$$
-  2. **Vertical Crush Resistance**:
-     $$\sum_{c_{\text{above}} \text{ resting on } c} w_{c_{\text{above}}} \le \sigma_{\text{crush}}(c) \cdot \text{Area}_{\text{contact}}$$
-     _(Fragile tomatoes or bell peppers are never loaded beneath heavy potato or grain sacks)._
-  3. **Axle Load Center-of-Gravity Balance**:
-     The longitudinal center of gravity $CG_x$ must remain strictly between the front and rear axle limits under all partial unload states:
-     $$CG_x = \frac{\sum_{c \in \mathcal{C}_{\text{active}}} w_c \cdot x_c + W_{\text{tare}} \cdot x_{\text{chassis}}}{\sum_{c \in \mathcal{C}_{\text{active}}} w_c + W_{\text{tare}}} \in [x_{\text{minAxle}}, x_{\text{maxAxle}}]$$
+  1. **First-Off, Last-On (FILO) Stacking**: Consignments scheduled for earlier delivery stops must not be physically obstructed by consignments delivering at later stops: $\text{seq}(c_1) < \text{seq}(c_2) \implies y_{c_1} \ge y_{c_2}$ (where $y$ points toward the rear loading door).
+  2. **Vertical Crush Resistance**: $\sum_{c_{\text{above}} \text{ resting on } c} w_{c_{\text{above}}} \le \sigma_{\text{crush}}(c) \cdot \text{Area}_{\text{contact}}$ _(fragile tomatoes or bell peppers are never loaded beneath heavy potato or grain sacks)_.
+  3. **Axle Load Center-of-Gravity Balance**: The longitudinal center of gravity $CG_x$ must remain strictly between the front and rear axle limits under all partial unload states: $CG_x = \frac{\sum_{c \in \mathcal{C}_{\text{active}}} w_c \cdot x_c + W_{\text{tare}} \cdot x_{\text{chassis}}}{\sum_{c \in \mathcal{C}_{\text{active}}} w_c + W_{\text{tare}}} \in [x_{\text{minAxle}}, x_{\text{maxAxle}}]$.
 - **Computational Complexity**: $\mathcal{O}(N^3)$ using the Extreme-Point (EP) spatial placement heuristic.
 - **Advantages**: Eliminates catastrophic road accidents caused by shifting agricultural loads and guarantees zero transit crushing disputes.
 - **Limitations**: Real-world agricultural packaging (irregular jute bags) rarely conforms to perfect rectangular cuboids; requires conservative safety margins.
@@ -145,11 +131,7 @@ flowchart LR
 - **Operational Need**: Static straight-line (Euclidean) distance severely underestimates rural transit times and fuel burn across ghat roads and unpaved state highways.
 - **Input Data**: Road network graph from OpenStreetMap (OSM) processed via an internal OpenRouteService (ORS) / OSRM engine.
 - **Output**: Real-time road distance $D(\ell_k)$ and estimated transit duration $t(\ell_k)$ incorporating historical road segment speeds.
-- **Deterministic Baseline Formulation**:
-
-  $$D(\ell_k) = \text{ORSNetworkDistance}(\sigma_{k-1}, \sigma_k)$$
-
-  $$K_{\ell_k} = \left\lfloor \frac{D(\ell_k) \cdot \text{RatePerKm} \cdot \text{Multiplier}_{\text{body}}}{10^7} \right\rfloor + \text{Tolls}(\ell_k)$$
+- **Deterministic Baseline Formulation**: Network road distance $D(\ell_k) = \text{ORSNetworkDistance}(\sigma_{k-1}, \sigma_k)$, and leg freight $K_{\ell_k} = \left\lfloor \frac{D(\ell_k) \cdot \text{RatePerKm} \cdot \text{Multiplier}_{\text{body}}}{10^7} \right\rfloor + \text{Tolls}(\ell_k)$.
 - **Advantages**: High precision; avoids unpredictable cloud API cost spikes by running an internal self-hosted routing instance.
 
 ---

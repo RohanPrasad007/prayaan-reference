@@ -189,8 +189,7 @@ To ensure complete scientific integrity, PRAYAAN distinguishes between:
 
 1. **Emissions Avoided (True Net Abatement)**:
    - When two farmers who would have chartered two independent 10-tonne trucks running half-empty consolidate into a single 10-tonne vehicle, the second truck's entire fuel burn is completely eliminated from the highway corridor.
-   - **Net Avoided Emissions**:
-     $$\Delta E = E(\text{Truck}_1, w_A) + E(\text{Truck}_2, w_B) - E(\text{Pooled Truck}, w_A + w_B)$$
+   - **Net Avoided Emissions**: $\Delta E = E(\text{Truck}_1, w_A) + E(\text{Truck}_2, w_B) - E(\text{Pooled Truck}, w_A + w_B)$
 2. **Emissions Shifted (Zero Abatement)**:
    - If an aggregator merely re-routes an existing truck to make three distant, circuitous detours, the additional detour mileage may consume _more_ diesel than dispatching a smaller dedicated vehicle.
    - PRAYAAN prevents emission-shifting by enforcing a strict **Maximum Detour Constraint ($\le 15\%$ total corridor detour)** before any pooling match is authorized.
