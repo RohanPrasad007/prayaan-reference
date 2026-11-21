@@ -77,7 +77,6 @@ flowchart TD
     end
 ```
 
-
 ### A. Independent Resource Enforcement
 
 Let vehicle $V$ possess rated capacity $\mathbf{C}_V = (W_V, U_V, S_V)^T$. For each transit leg $\ell_k \in \mathcal{L}$, the aggregate cargo demand must simultaneously satisfy three independent linear inequalities:
@@ -147,13 +146,13 @@ Consider a 10-Tonne Intermediate Commercial Vehicle ($W_V = 10,000\text{ kg}$, $
 
 To establish a fair, stable, and mathematically defensible cost allocation policy, we evaluate five candidate mechanisms:
 
-| Mechanism | Formulation Formula | Core Strengths | Critical Weaknesses | Recommendation |
-| :--- | :--- | :--- | :--- | :--- |
-| **1. Weight-Share** | $w_i / \sum w_j$ | Simple; transparent; traditional metric. | Penalizes dense cargo; ignores cube space. | **INSUFFICIENT** |
-| **2. Volume-Share** | $u_i / \sum u_j$ | Captures physical space consumption. | Penalizes bulky cargo; ignores weight limits. | **INSUFFICIENT** |
-| **3. Normalized Max Resource Share (NMRS)** | $\alpha_i / \sum \alpha_j$<br>where $\alpha_i = \max(\dots)$ | Balances dual bottlenecks; guarantees 100% budget balance. | Approximates game-theoretic core; computationally lightweight. | **RECOMMENDED**<br>*(Primary Policy)* |
-| **4. Shapley Value** | $\phi_i = \sum [v(S \cup \{i\}) - v(S)] \frac{\|S\|!(n-\|S\|-1)!}{n!}$ | Axiomatically fair; coalitionally stable in cooperative games. | Combinatorial complexity $\mathcal{O}(2^N)$; difficult to audit in field. | **BENCHMARK**<br>*(Reference Model)* |
-| **5. Floor Area / Slot Share** | $s_i / \sum s_j$ | Simple pallet / slot accounting. | Ignores vertical stack height and weight. | **LIMITED** |
+| Mechanism                                   | Formulation Formula                                                    | Core Strengths                                                 | Critical Weaknesses                                                       | Recommendation                        |
+| :------------------------------------------ | :--------------------------------------------------------------------- | :------------------------------------------------------------- | :------------------------------------------------------------------------ | :------------------------------------ |
+| **1. Weight-Share**                         | $w_i / \sum w_j$                                                       | Simple; transparent; traditional metric.                       | Penalizes dense cargo; ignores cube space.                                | **INSUFFICIENT**                      |
+| **2. Volume-Share**                         | $u_i / \sum u_j$                                                       | Captures physical space consumption.                           | Penalizes bulky cargo; ignores weight limits.                             | **INSUFFICIENT**                      |
+| **3. Normalized Max Resource Share (NMRS)** | $\alpha_i / \sum \alpha_j$<br>where $\alpha_i = \max(\dots)$           | Balances dual bottlenecks; guarantees 100% budget balance.     | Approximates game-theoretic core; computationally lightweight.            | **RECOMMENDED**<br>_(Primary Policy)_ |
+| **4. Shapley Value**                        | $\phi_i = \sum [v(S \cup \{i\}) - v(S)] \frac{\|S\|!(n-\|S\|-1)!}{n!}$ | Axiomatically fair; coalitionally stable in cooperative games. | Combinatorial complexity $\mathcal{O}(2^N)$; difficult to audit in field. | **BENCHMARK**<br>_(Reference Model)_  |
+| **5. Floor Area / Slot Share**              | $s_i / \sum s_j$                                                       | Simple pallet / slot accounting.                               | Ignores vertical stack height and weight.                                 | **LIMITED**                           |
 
 #### Detailed Proof of Selected Policy: Normalized Maximum Resource Share (NMRS)
 
@@ -190,8 +189,9 @@ To ensure legally compliant, dispute-free financial settlement, PRAYAAN executes
    $$\Delta = K_{\ell_k} - \sum_{j \in \mathcal{C}_{\ell_k}} A_j \quad (0 \le \Delta < |\mathcal{C}_{\ell_k}|)$$
 4. Distribute residual paise $\Delta$ sequentially to the consignments with the largest rounding remainders:
    $$A_{\text{target}} \leftarrow A_{\text{target}} + 1$$
-5. Verification invariant:
-   $$\sum_{i \in \mathcal{C}_{\ell_k}} A_i \equiv K_{\ell_k} \quad (\text{Exact down to the last single paisa})$$
+5. **Verification Invariant**: The allocated freight sum strictly balances total leg cost down to the single paisa:
+
+   $$\sum_{i \in \mathcal{C}_{\ell_k}} A_i \equiv K_{\ell_k}$$
 
 ### D. Cooperative Game Theory: Core Stability Theorem for NMRS
 
@@ -201,14 +201,17 @@ Let $\mathcal{N} = \{1, 2, \dots, n\}$ be the set of shippers sharing transit le
 
 The **Core** of the cooperative freight pooling game is formally defined as:
 
-$$\text{Core}(\mathcal{N}, c) = \left\{ \mathbf{A} \in \mathbb{R}^n \;\Bigg|\; \sum_{i \in \mathcal{N}} A_i = c(\mathcal{N}) \quad \text{and} \quad \sum_{i \in \mathcal{S}} A_i \le c(\mathcal{S}) \quad \forall \mathcal{S} \subset \mathcal{N} \right\}$$
+$$\text{Core}(\mathcal{N}, c) = \left\lbrace \mathbf{A} \in \mathbb{R}^n \;\Bigg|\; \sum_{i \in \mathcal{N}} A_i = c(\mathcal{N}) \quad \text{and} \quad \sum_{i \in \mathcal{S}} A_i \le c(\mathcal{S}) \quad \forall \mathcal{S} \subset \mathcal{N} \right\rbrace$$
 
-#### Theorem (Core Membership under Subadditive Fleet Economics):
+#### Theorem: Core Membership under Subadditive Fleet Economics
 
-> _Let the commercial road freight market exhibit strict capacity cost subadditivity, such that unit capacity cost decreases monotonically across vehicle tiers:_
-> $$\frac{C_{\text{market}}(\text{MHCV})}{W_{\text{MHCV}}} < \frac{C_{\text{market}}(\text{ICV})}{W_{\text{ICV}}} < \frac{C_{\text{market}}(\text{LCV})}{W_{\text{LCV}}} < \frac{C_{\text{market}}(\text{SCV})}{W_{\text{SCV}}}$$
-> _If the pooled cargo set $\mathcal{N}$ is physically feasible on vehicle $V$ ($\sum_{i \in \mathcal{N}} \alpha_i \le 1.0$), then the integer Normalized Maximum Resource Share allocation vector $\mathbf{A}^{\text{NMRS}}$ lies strictly within the Core of the cooperative game:_
-> $$\mathbf{A}^{\text{NMRS}} \in \text{Core}(\mathcal{N}, c)$$
+Let the commercial road freight market exhibit strict capacity cost subadditivity, such that unit capacity cost decreases monotonically across vehicle tiers:
+
+$$\frac{C_{\text{market}}(\text{MHCV})}{W_{\text{MHCV}}} < \frac{C_{\text{market}}(\text{ICV})}{W_{\text{ICV}}} < \frac{C_{\text{market}}(\text{LCV})}{W_{\text{LCV}}} < \frac{C_{\text{market}}(\text{SCV})}{W_{\text{SCV}}}$$
+
+If the pooled cargo set $\mathcal{N}$ is physically feasible on vehicle $V$ ($\sum_{i \in \mathcal{N}} \alpha_i \le 1.0$), then the integer Normalized Maximum Resource Share allocation vector $\mathbf{A}^{\text{NMRS}}$ lies strictly within the Core of the cooperative game:
+
+$$\mathbf{A}^{\text{NMRS}} \in \text{Core}(\mathcal{N}, c)$$
 
 #### Mathematical Proof:
 
@@ -238,8 +241,7 @@ flowchart TD
         Flawed -. "Economically Impossible" .-> Official
         Official --> Market
     end
-````
-
+```
 
 ### B. Decoupled Cost Architecture
 
@@ -251,8 +253,7 @@ flowchart LR
     L2 --> L3["3. Shared Trip Cost\nQuotation + Road Tolls"]
     L3 --> L4["4. Allocated Order Freight\nNMRS Fair-Share Proportional"]
     L4 --> L5["5. Platform Subscription\n₹899/month Flat SaaS"]
-````
-
+```
 
 1. **Transporter Vehicle Operating Cost ($C_{\text{trans}}$)**:
    The true economic expenditure incurred by the fleet owner to operate vehicle $V$ over distance $D$:
@@ -328,35 +329,44 @@ Where:
 ### D. Comprehensive Structural Constraints
 
 1. **Request Assignment & Conservation**:
-   $$\sum_{k \in \mathcal{K}} y_r^k \le 1 \quad \forall r \in \mathcal{R}$$
-   $$\sum_{j \in \mathcal{V}_{\text{nodes}}} x_{p_r, j}^k = y_r^k \quad \forall r \in \mathcal{R}, \forall k \in \mathcal{K}$$
-   $$\sum_{j \in \mathcal{V}_{\text{nodes}}} x_{j, d_r}^k = y_r^k \quad \forall r \in \mathcal{R}, \forall k \in \mathcal{K}$$
-   _(Guarantees that if a shipment is accepted, both its pickup and delivery are served by the exact same vehicle)._
+   - _Single-Vehicle Assignment_: Each request $r \in \mathcal{R}$ is assigned to at most one vehicle:
+     $$\sum_{k \in \mathcal{K}} y_r^k \le 1 \quad \forall r \in \mathcal{R}$$
+   - _Origin Flow Conservation_: Outbound departure from pickup node $p_r$ matches assignment $y_r^k$:
+     $$\sum_{j \in \mathcal{V}_{\text{nodes}}} x_{p_r, j}^k = y_r^k \quad \forall r \in \mathcal{R}, \forall k \in \mathcal{K}$$
+   - _Destination Flow Conservation_: Inbound arrival at delivery node $d_r$ matches assignment $y_r^k$:
+     $$\sum_{j \in \mathcal{V}_{\text{nodes}}} x_{j, d_r}^k = y_r^k \quad \forall r \in \mathcal{R}, \forall k \in \mathcal{K}$$
+     _(Guarantees that if a shipment is accepted, both pickup and delivery are served by the exact same vehicle)._
 
 2. **Flow Conservation at Depots**:
-   $$\sum_{j \in \mathcal{V}^+ \cup \{e_k\}} x_{o_k, j}^k = 1 \quad \forall k \in \mathcal{K}$$
-   $$\sum_{i \in \mathcal{V}^- \cup \{o_k\}} x_{i, e_k}^k = 1 \quad \forall k \in \mathcal{K}$$
-   $$\sum_{i \in \mathcal{V}_{\text{nodes}}} x_{ip}^k - \sum_{j \in \mathcal{V}_{\text{nodes}}} x_{pj}^k = 0 \quad \forall p \in \mathcal{V}^+ \cup \mathcal{V}^-, \forall k \in \mathcal{K}$$
+   - _Departure from Origin Depot_: Vehicle $k$ departs from its assigned origin depot $o_k$:
+     $$\sum_{j \in \mathcal{V}^+ \cup \{e_k\}} x_{o_k, j}^k = 1 \quad \forall k \in \mathcal{K}$$
+   - _Arrival at Terminal Depot_: Vehicle $k$ arrives at its ending depot $e_k$:
+     $$\sum_{i \in \mathcal{V}^- \cup \{o_k\}} x_{i, e_k}^k = 1 \quad \forall k \in \mathcal{K}$$
+   - _Intermediate Flow Balance_: Total entries equal total exits at every intermediate stop $p$:
+     $$\sum_{i \in \mathcal{V}_{\text{nodes}}} x_{ip}^k - \sum_{j \in \mathcal{V}_{\text{nodes}}} x_{pj}^k = 0 \quad \forall p \in \mathcal{V}^+ \cup \mathcal{V}^-, \forall k \in \mathcal{K}$$
 
 3. **Precedence Constraint (Pickup Precedes Delivery)**:
+   Cargo cannot be delivered before it has been physically loaded at its origin:
    $$T_{p_r}^k + s_{p_r} + t_{p_r, d_r} \le T_{d_r}^k \quad \forall r \in \mathcal{R}, \forall k \in \mathcal{K} \text{ where } y_r^k = 1$$
-   _(Guarantees cargo cannot be delivered before it has been physically loaded)._
 
-4. **Time Window Adherence**:
-   $$e_i \le T_i^k \le l_i \quad \forall i \in \mathcal{V}_{\text{nodes}}, \forall k \in \mathcal{K}$$
-   $$x_{ij}^k = 1 \implies T_i^k + s_i + t_{ij} \le T_j^k \quad (\text{Subtour Elimination & Time Tracking})$$
+4. **Time Window Adherence & Subtour Elimination**:
+   - _Customer Window Adherence_: Arrival time $T_i^k$ must strictly satisfy the time window $[e_i, l_i]$:
+     $$e_i \le T_i^k \le l_i \quad \forall i \in \mathcal{V}_{\text{nodes}}, \forall k \in \mathcal{K}$$
+   - _Time Propagation & Subtour Elimination_: Departure time propagates along traversed edge $(i, j)$:
+     $$x_{ij}^k = 1 \implies T_i^k + s_i + t_{ij} \le T_j^k \quad \forall (i, j) \in \mathcal{E}, \forall k \in \mathcal{K}$$
 
 5. **Multi-Axis Cumulative Capacity Tracking**:
-   $$x_{ij}^k = 1 \implies L_{j, w}^k = L_{i, w}^k + q_{j, w} \quad \forall (i, j) \in \mathcal{E}, \forall k \in \mathcal{K}$$
-   $$x_{ij}^k = 1 \implies L_{j, u}^k = L_{i, u}^k + q_{j, u} \quad \forall (i, j) \in \mathcal{E}, \forall k \in \mathcal{K}$$
-   $$x_{ij}^k = 1 \implies L_{j, s}^k = L_{i, s}^k + q_{j, s} \quad \forall (i, j) \in \mathcal{E}, \forall k \in \mathcal{K}$$
-   Where the load demand at node $j$ is:
-   $$q_{j, w} = \begin{cases} +w_r & \text{if } j = p_r \in \mathcal{V}^+ \\ -w_r & \text{if } j = d_r \in \mathcal{V}^- \end{cases}, \quad q_{j, u} = \begin{cases} +u_r & \text{if } j = p_r \\ -u_r & \text{if } j = d_r \end{cases}, \quad q_{j, s} = \begin{cases} +s_r & \text{if } j = p_r \\ -s_r & \text{if } j = d_r \end{cases}$$
+   Along each traversed edge $(i, j)$, cumulative load updates by the pickup ($+q_j$) or drop ($-q_j$) demand:
+   - _Payload Mass Propagation_: $x_{ij}^k = 1 \implies L_{j, w}^k = L_{i, w}^k + q_{j, w} \quad \forall (i, j) \in \mathcal{E}, \forall k \in \mathcal{K}$
+   - _Hold Volume Propagation_: $x_{ij}^k = 1 \implies L_{j, u}^k = L_{i, u}^k + q_{j, u} \quad \forall (i, j) \in \mathcal{E}, \forall k \in \mathcal{K}$
+   - _Bed Slot Propagation_: $x_{ij}^k = 1 \implies L_{j, s}^k = L_{i, s}^k + q_{j, s} \quad \forall (i, j) \in \mathcal{E}, \forall k \in \mathcal{K}$
+   - _Node Demand Values_: $q_{j, w} = +w_r$ at pickup, $-w_r$ at drop; $q_{j, u} = +u_r$ at pickup, $-u_r$ at drop; $q_{j, s} = +s_r$ at pickup, $-s_r$ at drop.
 
-6. **Leg-Wise Admissibility Limits**:
-   $$0 \le L_{i, w}^k \le W_k \quad \forall i \in \mathcal{V}_{\text{nodes}}, \forall k \in \mathcal{K}$$
-   $$0 \le L_{i, u}^k \le U_k \quad \forall i \in \mathcal{V}_{\text{nodes}}, \forall k \in \mathcal{K}$$
-   $$0 \le L_{i, s}^k \le S_k \quad \forall i \in \mathcal{V}_{\text{nodes}}, \forall k \in \mathcal{K}$$
+6. **Leg-Wise Physical Admissibility Limits**:
+   At every visited node $i \in \mathcal{V}_{\text{nodes}}$, cumulative vehicle loads must never exceed rated limits:
+   - _Payload Mass Limit_: $0 \le L_{i, w}^k \le W_k \quad \forall i \in \mathcal{V}_{\text{nodes}}, \forall k \in \mathcal{K}$
+   - _Usable Volume Limit_: $0 \le L_{i, u}^k \le U_k \quad \forall i \in \mathcal{V}_{\text{nodes}}, \forall k \in \mathcal{K}$
+   - _Bed Floor Footprint Limit_: $0 \le L_{i, s}^k \le S_k \quad \forall i \in \mathcal{V}_{\text{nodes}}, \forall k \in \mathcal{K}$
 
 ---
 
@@ -371,8 +381,7 @@ flowchart LR
     P1["Phase 1: Loaded Outbound\nPickups A & B in Nashik\nEn route to Mumbai"] --> P2["Phase 2: Terminal Handoff\nDrops at Vashi & Kalyan\nAPMC wholesale docks"]
     P2 --> P3["Phase 3: Repositioning\nEmpty or Partial run to\nThane Industrial Hub"]
     P3 --> P4["Phase 4: Return Pooled\nLoad C & D back to\nNashik rural belt"]
-````
-
+```
 
 ### B. Equitable Allocation of Repositioning Costs
 
@@ -408,13 +417,17 @@ Under traditional broker practices, Shippers A and B are billed for 100% of the 
   - $\sum \alpha = 0.30 + 0.40 = 0.70$.
   - Normalized weights: $\omega_A = \frac{0.30}{0.70} = \frac{3}{7}$, $\omega_B = \frac{0.40}{0.70} = \frac{4}{7}$.
   - Integer shares:
+
     $$A_A = \left\lfloor \frac{700,000 \times 3}{7} \right\rfloor = 300,000\text{ Paise} = \mathbf{₹3,000.00}$$
+
     $$A_B = \left\lfloor \frac{700,000 \times 4}{7} \right\rfloor = 400,000\text{ Paise} = \mathbf{₹4,000.00}$$
+
   - Residual Check: $\Delta = 700,000 - (300,000 + 400,000) = 0\text{ Paise}$.
   - **Right-Sized Standalone Benchmark vs. Pooled Outcome**:
     - **Farmer A (3,000 kg / 9.0 m³)**: Standalone alternative is an LCV class vehicle (Bolero Maxi Truck 2.5t, audited charter rate ₹5,200). Farmer A pays **₹3,000.00**, saving **₹2,200 (42.3% savings)**.
     - **Farmer B (4,000 kg / 12.0 m³)**: Standalone alternative is a dedicated 10t ICV charter (audited rate ₹7,000). Farmer B pays **₹4,000.00**, saving **₹3,000 (42.9% savings)**.
     - **Aggregate Economic Outcome**: Combined shipper outlay is **₹7,000.00** compared to ₹12,200 under right-sized dedicated charters, achieving a net corridor freight reduction of **₹5,200 (42.6% aggregate savings)**.
+
 - **Clarification on Capacity Sharing vs. "Paying Only for Consumed Space"**:
   PRAYAAN does not charge shippers an artificial fixed rate per cubic meter and absorb empty vehicle liabilities as an open-ended risk. Rather, the full negotiated leg freight ($K_{\ell}$) is dynamically divided among active co-loaders in proportion to their bottleneck resource consumption ($\omega_i = \alpha_i / \sum \alpha_j$). Unused vehicle capacity (the remaining 30% on this 10t truck) is not billed to a phantom third party; instead, co-loaders share the whole trip cost while still paying significantly less than their individual standalone charters. If a corridor vehicle cannot achieve viable co-loading density (<35% utilization), PRAYAAN's dispatch engine either downsizes the vehicle class (to an LCV or SCV) or activates the **IR-Capped NMRS Fallback** ($A_i \le c(\{i\})$), guaranteeing that no shipper ever pays more than their right-sized standalone vehicle.
 
@@ -507,4 +520,3 @@ A single 10-Tonne ICV executes a pooled run across 4 stops:
      $$K_{\text{earned}}(V_1) = \sum_{\ell_k \in \mathcal{L}_{\text{completed}}} K_{\ell_k} + \left[ \frac{D(\sigma_{k-1}, \sigma_{\text{break}})}{D(\ell_{\text{current}})} \right] \cdot K_{\ell_{\text{current}}}$$
   4. System broadcasts an emergency transshipment dispatch to nearby available empty/partial vehicles within a 25 km geofence radius.
   5. Recovery vehicle $V_2$ docks; drivers execute dual-device QR code transfer validating custody shift; remaining trip legs complete without shipper price recalculation. All transshipment overhead is absorbed by the platform's fleet recovery reserve fund.
-```

@@ -254,7 +254,6 @@ flowchart LR
     S5 --> S6["06 DELIVER\nBuyer verifies delivery\nOTP & confirms custody"]
 ```
 
-
 ### Stage 01: Crop Listing (`LIST`)
 
 - The producer registers available crop inventory specifying commodity, quantity, harvest date, and GPS pickup coordinates.
@@ -325,8 +324,7 @@ sequenceDiagram
     end
     Gateway-->>SyncWorker: Batch Sync Acknowledged
     SyncWorker->>SQLite: UPDATE journal SET sync_status = 'SYNCED'
-````
-
+```
 
 ### Protocol Technical Guarantees:
 
@@ -383,7 +381,7 @@ CREATE POLICY consignments_update_policy ON consignments
         is_trip_operator(trip_id, get_current_app_user_id())
         OR is_app_admin()
     );
-````
+```
 
 #### Known RLS Attack Vectors & Mitigations:
 
@@ -447,9 +445,10 @@ flowchart TD
     end
 ```
 
-
 ### Deterministic 50/50 Split-Milestone Freight Disbursal Policy
+
 To solve the structural working capital deficit faced by rural truck drivers without incurring unhedged credit risk:
+
 1. **Collateralized Escrow Buffer**: Agricultural freight typically represents 10%–14% of the commodity value. When the buyer commits the standard **20% advance cargo deposit**, this deposit holds enough capital to cover **140% to 200% of the total freight charges**.
 2. **Milestone 1 (50% at Pickup)**: Upon driver entry of the 6-digit loading bay OTP and submission of cargo photo proof (`PICKUP_OTP_VERIFIED`), the system issues an automated payment webhook to the licensed Payment Aggregator, immediately transferring 50% of the allocated leg freight (`advance_freight_disbursed_paise`) to the transporter via UPI. This funds on-corridor diesel and FASTag toll expenses.
 3. **Milestone 2 (50% at Delivery)**: Upon buyer verification of the delivery OTP (`DELIVERY_OTP_VERIFIED`), the remaining 50% freight balance is released alongside the net crop value payout to the farmer. If a delivery dispute arises, the remaining 50% freight and crop balance are held in escrow pending 30-minute photo arbitration.
@@ -461,4 +460,3 @@ To maintain absolute compliance with RBI regulations:
 - PRAYAAN does **not** operate an internal banking wallet or unlicensed escrow pool.
 - All funds flow through a **commercial Payment Aggregator (Razorpay / Cashfree) operating an RBI-regulated Nodal / Escrow Account** under the Payment and Settlement Systems Act, 2007.
 - In prototype demonstrations, payment webhooks are clearly designated `SIMULATED_GATEWAY_SANDBOX`.
-```

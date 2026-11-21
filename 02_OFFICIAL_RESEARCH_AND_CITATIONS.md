@@ -84,7 +84,6 @@ flowchart TD
     end
 ```
 
-
 ### B. Empty Running vs. Payload Underutilization
 
 These two concepts describe fundamentally different physical failure modes and must never be conflated:
@@ -226,4 +225,3 @@ To ensure complete scientific integrity, PRAYAAN distinguishes between:
 8. **World Resources Institute (WRI) India, Confederation of Indian Industry (CII), & TERI**. _India GHG Program: Technical Guidance for Calculating GHG Emissions from Road Freight Transport_. [https://indiaghgp.org](https://indiaghgp.org).
 9. **Ministry of Law and Justice, Government of India** (August 2023). _The Digital Personal Data Protection Act, 2023 (Act No. 22 of 2023)_. The Gazette of India, Extraordinary.
 10. **Reserve Bank of India (RBI)** (March 2020 / July 2022). _Guidelines on Regulation of Payment Aggregators and Payment Gateways (DPSS.CO.PD.No.1810/02.14.008/2019-20)_. Reserve Bank of India, Mumbai. [https://www.rbi.org.in](https://www.rbi.org.in).
-```

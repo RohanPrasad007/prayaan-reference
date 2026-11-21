@@ -44,7 +44,6 @@ flowchart TD
     end
 ```
 
-
 ---
 
 ## 2. Stage Breakdown & Deliverables
@@ -106,10 +105,9 @@ flowchart TD
 
 ## 3. Milestones & Risk Gate Management
 
-| Milestone Gate | Planned Target | Primary Risk | Embedded Mitigation |
-| :--- | :---: | :--- | :--- |
-| **Gate 1: Prototype Code Freeze** | Current Milestone<br>(Tech4Bharat) | Architecture complexity & model error. | Deterministic capacity validation & integer paise math. |
-| **Gate 2: Field Validation Audit**<br>(120 Primary Interviews) | Month 3 | Low farmer digital trust & commingling fear. | Partner directly with established FPOs/KVKs & independent lot seals. |
-| **Gate 3: Pilot 100-Trip Run**<br>(Nashik $\leftrightarrow$ Mumbai Corridor) | Month 6 | Loading dock delays & vehicle detention. | 60-min wait timeout & detention compensation. |
-| **Gate 4: Multi-Corridor Scaling**<br>(10 Regional Arteries) | Month 18 | Driver churn & commission broker pushback. | Transparent ₹899 SaaS; zero transaction cuts. |
-```
+| Milestone Gate                                                               |           Planned Target           | Primary Risk                                 | Embedded Mitigation                                                  |
+| :--------------------------------------------------------------------------- | :--------------------------------: | :------------------------------------------- | :------------------------------------------------------------------- |
+| **Gate 1: Prototype Code Freeze**                                            | Current Milestone<br>(Tech4Bharat) | Architecture complexity & model error.       | Deterministic capacity validation & integer paise math.              |
+| **Gate 2: Field Validation Audit**<br>(120 Primary Interviews)               |              Month 3               | Low farmer digital trust & commingling fear. | Partner directly with established FPOs/KVKs & independent lot seals. |
+| **Gate 3: Pilot 100-Trip Run**<br>(Nashik $\leftrightarrow$ Mumbai Corridor) |              Month 6               | Loading dock delays & vehicle detention.     | 60-min wait timeout & detention compensation.                        |
+| **Gate 4: Multi-Corridor Scaling**<br>(10 Regional Arteries)                 |              Month 18              | Driver churn & commission broker pushback.   | Transparent ₹899 SaaS; zero transaction cuts.                        |

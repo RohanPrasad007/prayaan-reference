@@ -146,7 +146,9 @@ flowchart LR
 - **Input Data**: Road network graph from OpenStreetMap (OSM) processed via an internal OpenRouteService (ORS) / OSRM engine.
 - **Output**: Real-time road distance $D(\ell_k)$ and estimated transit duration $t(\ell_k)$ incorporating historical road segment speeds.
 - **Deterministic Baseline Formulation**:
+
   $$D(\ell_k) = \text{ORSNetworkDistance}(\sigma_{k-1}, \sigma_k)$$
+
   $$K_{\ell_k} = \left\lfloor \frac{D(\ell_k) \cdot \text{RatePerKm} \cdot \text{Multiplier}_{\text{body}}}{10^7} \right\rfloor + \text{Tolls}(\ell_k)$$
 - **Advantages**: High precision; avoids unpredictable cloud API cost spikes by running an internal self-hosted routing instance.
 

@@ -50,7 +50,6 @@ flowchart TD
     end
 ```
 
-
 ---
 
 ## 2. Approved Subscription Structure & Commercial Viability
@@ -92,9 +91,11 @@ To eliminate administrative friction within Farmer Producer Organizations:
    - A single 10-tonne truck run covers the software overhead for the entire month, turning the logistics desk into a self-sustaining service center.
 
 ### D. Driver Working-Capital Solution: Deterministic 50/50 Split Disbursal
+
 A major operational failure mode in Indian commercial transport is the **driver liquidity trap**: small fleet owners and owner-drivers frequently operate on razor-thin cash reserves and lack the working capital required to purchase diesel (₹3,000–₹4,500 for a 165 km ICV run) and pay FASTag highway tolls before departure. In unorganized markets, this forces drivers into predatory daily loans (3%–5% monthly interest) from local mandi brokers.
 
 PRAYAAN eliminates this informal debt trap through a **collateralized 50/50 split freight payment protocol**:
+
 1. **The Collateral Anchor**: During commercial contracting (Stage 03), the wholesale buyer deposits a standard **20% advance order deposit** into the licensed Payment Aggregator nodal escrow account. Because road freight typically represents only 10%–14% of landed agricultural commodity value, this 20% cargo deposit covers **over 140% of the entire freight commitment**.
 2. **Milestone 1 (50% Disbursal at Farmgate Pickup)**: Upon physical verification of the 6-digit loading bay OTP and load-bed photo proof (`PICKUP_OTP_VERIFIED`), the platform automatically triggers an instant UPI transfer releasing **50% of the allocated leg freight** directly to the transporter or driver's bank account. This provides guaranteed, debt-free working capital for origin diesel and FASTag toll plazas before the truck departs onto the arterial corridor.
 3. **Milestone 2 (50% Disbursal at Terminal Delivery)**: The remaining 50% freight balance is automatically released upon delivery confirmation OTP (`DELIVERY_OTP_VERIFIED`) by the buyer, alongside the net crop value payout to the farmer.
@@ -106,6 +107,7 @@ PRAYAAN eliminates this informal debt trap through a **collateralized 50/50 spli
 ### A. Subscription Pricing & Statutory GST Architecture
 
 To ensure full statutory tax compliance:
+
 - **Base Software Subscription**: **₹899.00 / month** per active Seller (FPO) or Fleet Owner account.
 - **Statutory GST (18%)**: **₹161.82 / month** (sac code 998313 / SaaS information technology services), collected and remitted to the GST portal.
 - **Gross Customer Monthly Invoice**: **₹1,060.82 / month**.
@@ -130,18 +132,18 @@ To ensure full statutory tax compliance:
 
 The following financial model budgets the ongoing technical and operational overhead for servicing 1,000 active subscribers:
 
-| Cost Item                                      | Monthly Expenditure | Unit Cost Metric       | Technical & Operational Description                                                 |
-| :--------------------------------------------- | :-----------------: | :--------------------- | :---------------------------------------------------------------------------------- |
-| **Cloud Hosting & Database**                   |       ₹45,000       | ₹45 / user / mo        | AWS / DigitalOcean: PostgreSQL RDS, Redis cluster, S3 storage, API Gateway.         |
-| **SMS & WhatsApp OTP Gateways**                |       ₹35,000       | ₹3.50 / trip           | Transactional SMS for login OTPs and WhatsApp delivery links (Gupshup / Twilio).    |
-| **Map APIs & Geocoding**                       |       ₹28,000       | ₹0.15 / routing call   | OpenRouteService self-hosted instance + Mapbox geocoding lookup tier.               |
-| **Payment Gateway MDR**                        |       ₹8,000        | Blended 0.2%           | UPI payments are 0% MDR (RBI mandate); card/netbanking transactions incur 1.8% MDR. |
-| **Core Engineering & Dev Salaries**            |      ₹120,000       | Fixed monthly          | Two core software engineers (1 Full-Stack/DevOps + 1 Mobile/Systems).               |
-| **Customer Support Desk**                      |       ₹65,000       | Fixed monthly          | Two regional language support executives (Hindi/Marathi) managing transit disputes. |
-| **Field Ground Personnel**                     |       ₹80,000       | Fixed monthly          | Two corridor field coordinators servicing APMC mandi docks and transport nagars.    |
-| **Transit Liability & Cyber Insurance**        |       ₹15,000       | Fixed monthly          | Commercial liability, platform errors & omissions, and transit cyber risk policy.   |
-| **Funded Fleet-Recovery Escrow Reserve**       |       ₹20,000       | Fixed monthly          | Contingency escrow pool funding rapid breakdown towing and replacement dispatch.    |
-| **Total Monthly OpEx (at 1,000 Subscribers)**  |    **₹416,000**     | **₹416 / user / mo**   | Comprehensive operational expenditure covering direct tech and personnel.          |
+| Cost Item                                     | Monthly Expenditure | Unit Cost Metric     | Technical & Operational Description                                                 |
+| :-------------------------------------------- | :-----------------: | :------------------- | :---------------------------------------------------------------------------------- |
+| **Cloud Hosting & Database**                  |       ₹45,000       | ₹45 / user / mo      | AWS / DigitalOcean: PostgreSQL RDS, Redis cluster, S3 storage, API Gateway.         |
+| **SMS & WhatsApp OTP Gateways**               |       ₹35,000       | ₹3.50 / trip         | Transactional SMS for login OTPs and WhatsApp delivery links (Gupshup / Twilio).    |
+| **Map APIs & Geocoding**                      |       ₹28,000       | ₹0.15 / routing call | OpenRouteService self-hosted instance + Mapbox geocoding lookup tier.               |
+| **Payment Gateway MDR**                       |       ₹8,000        | Blended 0.2%         | UPI payments are 0% MDR (RBI mandate); card/netbanking transactions incur 1.8% MDR. |
+| **Core Engineering & Dev Salaries**           |      ₹120,000       | Fixed monthly        | Two core software engineers (1 Full-Stack/DevOps + 1 Mobile/Systems).               |
+| **Customer Support Desk**                     |       ₹65,000       | Fixed monthly        | Two regional language support executives (Hindi/Marathi) managing transit disputes. |
+| **Field Ground Personnel**                    |       ₹80,000       | Fixed monthly        | Two corridor field coordinators servicing APMC mandi docks and transport nagars.    |
+| **Transit Liability & Cyber Insurance**       |       ₹15,000       | Fixed monthly        | Commercial liability, platform errors & omissions, and transit cyber risk policy.   |
+| **Funded Fleet-Recovery Escrow Reserve**      |       ₹20,000       | Fixed monthly        | Contingency escrow pool funding rapid breakdown towing and replacement dispatch.    |
+| **Total Monthly OpEx (at 1,000 Subscribers)** |    **₹416,000**     | **₹416 / user / mo** | Comprehensive operational expenditure covering direct tech and personnel.           |
 
 ### D. Break-Even Subscriber Analysis
 
@@ -157,27 +159,28 @@ The platform achieves operational cash-flow break-even at **384 active subscribe
 
 ## 4. Three-Year Multi-Scenario Financial Projections
 
-| Financial Parameter | Year 1 (1 Corridor) | Year 2 (4 Corridors) | Year 3 (10 Corridors) |
-| :--- | :---: | :---: | :---: |
-| **Active Seller Subscribers (FPOs)** | 120 | 650 | 2,400 |
-| **Active Fleet Owners (Trucks)** | 180 | 1,100 | 4,200 |
-| **Total Active Subscribers** | **300** | **1,750** | **6,600** |
-| Gross Recognized Revenue (Net GST) | ₹32.36 Lakhs | ₹188.79 Lakhs | ₹712.01 Lakhs |
-| Direct Variable Technology Costs | (₹4.18 Lakhs) | (₹24.36 Lakhs) | (₹91.87 Lakhs) |
-| Fixed Operational Overhead (OpEx) | (₹36.00 Lakhs) | (₹79.20 Lakhs) | (₹162.00 Lakhs) |
-| **Operating EBITDA** | **(₹7.81 Lakhs)** | **₹85.23 Lakhs** | **₹458.14 Lakhs** |
-| **Operating EBITDA Margin** | **-24.1%** *(Seed Phase)* | **+45.1%** | **+64.3%** |
-*Note: Generated dynamically via `scripts/unit_economics.py`. Year 1 reflects an intentional seed-stage development deficit while establishing the core engineering team, turning cash-flow positive in Month 9 upon surpassing the 384 active subscriber milestone.*
+| Financial Parameter                  |    Year 1 (1 Corridor)    | Year 2 (4 Corridors) | Year 3 (10 Corridors) |
+| :----------------------------------- | :-----------------------: | :------------------: | :-------------------: |
+| **Active Seller Subscribers (FPOs)** |            120            |         650          |         2,400         |
+| **Active Fleet Owners (Trucks)**     |            180            |        1,100         |         4,200         |
+| **Total Active Subscribers**         |          **300**          |      **1,750**       |       **6,600**       |
+| Gross Recognized Revenue (Net GST)   |       ₹32.36 Lakhs        |    ₹188.79 Lakhs     |     ₹712.01 Lakhs     |
+| Direct Variable Technology Costs     |       (₹4.18 Lakhs)       |    (₹24.36 Lakhs)    |    (₹91.87 Lakhs)     |
+| Fixed Operational Overhead (OpEx)    |      (₹36.00 Lakhs)       |    (₹79.20 Lakhs)    |    (₹162.00 Lakhs)    |
+| **Operating EBITDA**                 |     **(₹7.81 Lakhs)**     |   **₹85.23 Lakhs**   |   **₹458.14 Lakhs**   |
+| **Operating EBITDA Margin**          | **-24.1%** _(Seed Phase)_ |      **+45.1%**      |      **+64.3%**       |
+
+_Note: Generated dynamically via `scripts/unit_economics.py`. Year 1 reflects an intentional seed-stage development deficit while establishing the core engineering team, turning cash-flow positive in Month 9 upon surpassing the 384 active subscriber milestone._
 
 ### B. Macroeconomic & Climate Shock Sensitivity Stress-Test
 
 To assess business model resilience against severe agricultural and macroeconomic volatility in rural India, PRAYAAN’s unit economics have been stress-tested across three high-impact risk scenarios:
 
-| Shock Dimension                                         | Modeled Stress Condition                                                                                                    | Operational & Financial Impact                                                                                            | PRAYAAN Embedded Structural Defense                                                                                                                                                                                   |
-| :------------------------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Shock 1: Severe Monsoon Drought / Crop Failure**      | 40% drop in marketable agricultural surplus in the Nashik belt; active paying cohort contracts to 45% (55% seasonal pause). | Gross monthly revenue contracts by 32% (to ₹22.0 Lakhs in Y1). Direct technology costs decrease proportionally.           | **Ultra-Lean Fixed Base**: Fixed operational overhead can be throttled to baseline maintenance (₹180k/month). Baseline break-even subscriber threshold (384) adjusts to 450 under peak contraction. Runway exceeds 18 months without external equity injection.                    |
-| **Shock 2: High Diesel Price Inflation (₹115 / Liter)** | Geopolitical crude spike drives diesel from ₹92 to ₹115/L (+25% variable vehicle operating cost).                           | Independent 10t ICV charter rates surge from ₹7,000 to ₹8,600. Unorganized fleet operators face acute margin compression. | **Counter-Cyclical Demand Catalyst**: High diesel prices _accelerate_ transporter and farmer adoption of PRAYAAN, because running half-empty trucks becomes financially fatal. Inbound pooling demand spikes by +35%. |
-| **Shock 3: 50% Slower FPO Sales Conversion Cycles**     | Extended FPO board committee approvals double sales cycle from 45 to 90 days; Y1 active FPO count caps at 60.               | Y1 gross revenue declines to ₹16.2 Lakhs.                                                                                 | **Cash-Flow Survival Floor**: Zero-debt capitalization and elastic cloud billing maintain positive EBITDA (+₹1.8 Lakhs) even at 50% target onboarding velocity.                                                       |
+| Shock Dimension                                         | Modeled Stress Condition                                                                                                    | Operational & Financial Impact                                                                                            | PRAYAAN Embedded Structural Defense                                                                                                                                                                                                                             |
+| :------------------------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Shock 1: Severe Monsoon Drought / Crop Failure**      | 40% drop in marketable agricultural surplus in the Nashik belt; active paying cohort contracts to 45% (55% seasonal pause). | Gross monthly revenue contracts by 32% (to ₹22.0 Lakhs in Y1). Direct technology costs decrease proportionally.           | **Ultra-Lean Fixed Base**: Fixed operational overhead can be throttled to baseline maintenance (₹180k/month). Baseline break-even subscriber threshold (384) adjusts to 450 under peak contraction. Runway exceeds 18 months without external equity injection. |
+| **Shock 2: High Diesel Price Inflation (₹115 / Liter)** | Geopolitical crude spike drives diesel from ₹92 to ₹115/L (+25% variable vehicle operating cost).                           | Independent 10t ICV charter rates surge from ₹7,000 to ₹8,600. Unorganized fleet operators face acute margin compression. | **Counter-Cyclical Demand Catalyst**: High diesel prices _accelerate_ transporter and farmer adoption of PRAYAAN, because running half-empty trucks becomes financially fatal. Inbound pooling demand spikes by +35%.                                           |
+| **Shock 3: 50% Slower FPO Sales Conversion Cycles**     | Extended FPO board committee approvals double sales cycle from 45 to 90 days; Y1 active FPO count caps at 60.               | Y1 gross revenue declines to ₹16.2 Lakhs.                                                                                 | **Cash-Flow Survival Floor**: Zero-debt capitalization and elastic cloud billing maintain positive EBITDA (+₹1.8 Lakhs) even at 50% target onboarding velocity.                                                                                                 |
 
 ---
 
@@ -185,18 +188,20 @@ To assess business model resilience against severe agricultural and macroeconomi
 
 To ensure complete transparency before competition juries, PRAYAAN explicitly segregates all economic savings claims into three rigorous, mutually exclusive tiers:
 
-| Impact Category | Valuation Basis & Operational Scope | Baseline Comparison | Farmer / Shipper Savings | Evidence Status |
-| :--- | :--- | :--- | :---: | :--- |
-| **1. Theoretical Maximum (Combinatorial Bound)** | Single shared 10t ICV loaded to 100% capacity with zero detour along 165 km corridor. | Dedicated unpooled charter of right-sized standalone vehicles. | **Up to 42.6% – 57.1%** | `MATHEMATICAL MODEL`<br>(Combinatorial ideal bound; details in Doc 03 Case 1). |
-| **2. Synthetic Testbed (Simulated Corridor)** | Batch of 50 LTL shipment requests along Nashik–Mumbai corridor with realistic detours and time windows. | Dedicated charters matching individual shipment classes (Baseline 1). | **48.9% – 53.0%**<br>(Mean: **49.6%** Det., **52.7%** ALNS) | `REPRODUCIBLE CODE`<br>(Tested across seeds 42, 1337, 2026 in `scripts/benchmark_simulation.py`). |
-| **3. Measured Field Evidence (Real-World Trials)** | Physical commercial dispatches across Nashik–Mumbai agricultural belt. | Prevailing local mandi truck broker spot rates. | *[Empty — Not yet conducted]* | `STATUS: NOT YET CONDUCTED — VALIDATION REQUIRED`<br>(Planned for Stage 2 pilot; zero data fabricated). |
+| Impact Category                                    | Valuation Basis & Operational Scope                                                                     | Baseline Comparison                                                   |                  Farmer / Shipper Savings                   | Evidence Status                                                                                         |
+| :------------------------------------------------- | :------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------------- | :---------------------------------------------------------: | :------------------------------------------------------------------------------------------------------ |
+| **1. Theoretical Maximum (Combinatorial Bound)**   | Single shared 10t ICV loaded to 100% capacity with zero detour along 165 km corridor.                   | Dedicated unpooled charter of right-sized standalone vehicles.        |                   **Up to 42.6% – 57.1%**                   | `MATHEMATICAL MODEL`<br>(Combinatorial ideal bound; details in Doc 03 Case 1).                          |
+| **2. Synthetic Testbed (Simulated Corridor)**      | Batch of 50 LTL shipment requests along Nashik–Mumbai corridor with realistic detours and time windows. | Dedicated charters matching individual shipment classes (Baseline 1). | **48.9% – 53.0%**<br>(Mean: **49.6%** Det., **52.7%** ALNS) | `REPRODUCIBLE CODE`<br>(Tested across seeds 42, 1337, 2026 in `scripts/benchmark_simulation.py`).       |
+| **3. Measured Field Evidence (Real-World Trials)** | Physical commercial dispatches across Nashik–Mumbai agricultural belt.                                  | Prevailing local mandi truck broker spot rates.                       |                _[Empty — Not yet conducted]_                | `STATUS: NOT YET CONDUCTED — VALIDATION REQUIRED`<br>(Planned for Stage 2 pilot; zero data fabricated). |
 
 ---
 
 ## 6. Comprehensive Field-Validation Protocol
 
 > [!NOTE]
+>
 > ### STATUS: NOT YET CONDUCTED — VALIDATION REQUIRED
+>
 > The questionnaires, sampling methodologies, and data collection frameworks below represent PRAYAAN's pre-pilot field validation protocol. No interviews have been conducted to date.
 
 ### A. Sampling Methodology & Cohort Sizing
@@ -270,7 +275,7 @@ Q14. Would you pay a flat ₹899/month subscription if it provided guaranteed ve
 [ ] Definitely yes [ ] Only if trial is free [ ] No, prefer commission per load
 Q15. What is your average monthly expenditure on tyre replacements, maintenance, and commercial EMI?
 
-````
+```
 
 ---
 
@@ -284,15 +289,14 @@ flowchart LR
     S2["Multi-Stop Detour Cost (Q11)"] --> P2["Detour Buffer & Pickup Cost\nin m-PDVRPTW Model"]
     S3["Loading Dock Wait Time (Q06)"] --> P3["Time Windows & Dock Timeout\n(Default: 60 min)"]
     S4["Dedicated Charter Rates (Q03)"] --> P4["Standalone Cost Benchmark C_standalone\nfor Core Stability & IR Verification"]
-````
+```
 
-
-| Survey Metric Collected | Algorithmic Variable in PRAYAAN Model | Mathematical Role |
-| :--- | :--- | :--- |
-| **Observed Return Empty Trip Rate** (Q05) | $P_{\text{backhaul}}$ in repositioning formula | Calibrates $K_{\text{reposition}} = (1 - P_{\text{backhaul}}) \cdot [D_{\text{return}} \cdot V_{\text{km}}]$ |
-| **Multi-Stop Detour Compensation** (Q11) | Pickup Service Cost $s_p$ & $\delta_{\max}$ | Bounds maximum orthogonal detour corridor envelope ($\le 10\text{ km}$) |
-| **Observed Loading Dock Wait Time** (Q06) | Pickup Time Window $[e_p, l_p]$ | Sets dock timeout threshold (default: 60 min) to prevent driver detention |
-| **Baseline Dedicated Charter Rates** (Q03) | Standalone Cost $c(\{i\})$ | Verifies Individual Rationality ($A_i \le c(\{i\})$) and $\ge 30\%$ savings |
+| Survey Metric Collected                    | Algorithmic Variable in PRAYAAN Model          | Mathematical Role                                                                                            |
+| :----------------------------------------- | :--------------------------------------------- | :----------------------------------------------------------------------------------------------------------- |
+| **Observed Return Empty Trip Rate** (Q05)  | $P_{\text{backhaul}}$ in repositioning formula | Calibrates $K_{\text{reposition}} = (1 - P_{\text{backhaul}}) \cdot [D_{\text{return}} \cdot V_{\text{km}}]$ |
+| **Multi-Stop Detour Compensation** (Q11)   | Pickup Service Cost $s_p$ & $\delta_{\max}$    | Bounds maximum orthogonal detour corridor envelope ($\le 10\text{ km}$)                                      |
+| **Observed Loading Dock Wait Time** (Q06)  | Pickup Time Window $[e_p, l_p]$                | Sets dock timeout threshold (default: 60 min) to prevent driver detention                                    |
+| **Baseline Dedicated Charter Rates** (Q03) | Standalone Cost $c(\{i\})$                     | Verifies Individual Rationality ($A_i \le c(\{i\})$) and $\ge 30\%$ savings                                  |
 
 ### E. Evidence Requirements Before Platform Impact Claims Can Be Made
 

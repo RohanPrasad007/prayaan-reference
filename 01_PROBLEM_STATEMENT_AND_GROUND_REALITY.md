@@ -74,7 +74,6 @@ flowchart LR
     D2 --> D3
 ```
 
-
 ### Key Stakeholders & Operating Roles
 
 1. **Marginal and Smallholder Farmers (86.2% of Indian landholdings per 10th Agricultural Census)**:
@@ -127,8 +126,7 @@ flowchart TD
     RC2 --> Impact
     RC3 --> Impact
     RC4 --> Impact
-````
-
+```
 
 ### The Underutilization vs. Overloading Paradox in Indian Trucking
 
@@ -219,26 +217,25 @@ flowchart TD
         E4["4. Unverified Hypotheses\n- Farmer willingness to co-load produce with peers\n- Driver compliance with digital loading bay OTPs"]
         E5["5. Field Research Protocols\n- Planned 120-interview field study across Nashik corridor\n- STATUS: PLANNED - NOT YET CONDUCTED"]
     end
-````
-
+```
 
 ### Detailed Classification Table
 
-| Topic / Metric                    | Claimed Value                                   | Evidence Category       | Supporting Source / Justification                                              |
-| :-------------------------------- | :---------------------------------------------- | :---------------------- | :----------------------------------------------------------------------------- |
-| **National Logistics Cost**       | 7.97%–8.35% of GDP (macro); 16.9% for MSMEs     | `VERIFIED EVIDENCE`     | DPIIT & NCAER (_Assessment of Logistics Cost in India_, Dec 2023).             |
-| **Empty Commercial Running**      | 28% to 43% of truck kilometers                  | `VERIFIED EVIDENCE`     | NITI Aayog & RMI (_Fast Tracking Freight in India_, June 2021).                |
-| **Smallholder Farm Distribution** | 86.2% of Indian operational landholdings        | `VERIFIED EVIDENCE`     | Ministry of Agriculture & Farmers Welfare (_10th Agricultural Census_).        |
-| **Fresh Produce E-Way Exemption** | Unprocessed vegetables/grains exempt            | `VERIFIED EVIDENCE`     | CGST Rules Rule 138(14)(e) & Notification No. 2/2017-Central Tax (Rate).       |
-| **Diesel $\text{CO}_2$ Factor**   | 2.644 kg $\text{CO}_2$ per liter of diesel      | `VERIFIED EVIDENCE`     | India GHG Program (WRI India / TERI / CII) & IPCC Guidelines.                  |
-| **Mandi Price Benchmark**         | Modal price in ₹/quintal                        | `VERIFIED EVIDENCE`     | Directorate of Marketing & Inspection (AGMARKNET daily feeds).                 |
-| **Commercial Road Freight Rate**  | ₹3.78 per tonne-km national road average        | `COMMERCIAL EVIDENCE`   | NCAER / DPIIT (Dec 2023); varies from ₹1.51 (heavy trailers) to ₹11.03 (SCVs). |
-| **10-Tonne Truck Corridor Rate**  | ₹7,000 for Nashik $\rightarrow$ Mumbai (165 km) | `COMMERCIAL EVIDENCE`   | Regional truck union rate cards (approx. ₹40–₹45/km for 10t ICV roundtrip).    |
+| Topic / Metric                    | Claimed Value                                   | Evidence Category       | Supporting Source / Justification                                                               |
+| :-------------------------------- | :---------------------------------------------- | :---------------------- | :---------------------------------------------------------------------------------------------- |
+| **National Logistics Cost**       | 7.97%–8.35% of GDP (macro); 16.9% for MSMEs     | `VERIFIED EVIDENCE`     | DPIIT & NCAER (_Assessment of Logistics Cost in India_, Dec 2023).                              |
+| **Empty Commercial Running**      | 28% to 43% of truck kilometers                  | `VERIFIED EVIDENCE`     | NITI Aayog & RMI (_Fast Tracking Freight in India_, June 2021).                                 |
+| **Smallholder Farm Distribution** | 86.2% of Indian operational landholdings        | `VERIFIED EVIDENCE`     | Ministry of Agriculture & Farmers Welfare (_10th Agricultural Census_).                         |
+| **Fresh Produce E-Way Exemption** | Unprocessed vegetables/grains exempt            | `VERIFIED EVIDENCE`     | CGST Rules Rule 138(14)(e) & Notification No. 2/2017-Central Tax (Rate).                        |
+| **Diesel $\text{CO}_2$ Factor**   | 2.644 kg $\text{CO}_2$ per liter of diesel      | `VERIFIED EVIDENCE`     | India GHG Program (WRI India / TERI / CII) & IPCC Guidelines.                                   |
+| **Mandi Price Benchmark**         | Modal price in ₹/quintal                        | `VERIFIED EVIDENCE`     | Directorate of Marketing & Inspection (AGMARKNET daily feeds).                                  |
+| **Commercial Road Freight Rate**  | ₹3.78 per tonne-km national road average        | `COMMERCIAL EVIDENCE`   | NCAER / DPIIT (Dec 2023); varies from ₹1.51 (heavy trailers) to ₹11.03 (SCVs).                  |
+| **10-Tonne Truck Corridor Rate**  | ₹7,000 for Nashik $\rightarrow$ Mumbai (165 km) | `COMMERCIAL EVIDENCE`   | Regional truck union rate cards (approx. ₹40–₹45/km for 10t ICV roundtrip).                     |
 | **SaaS Pricing Model**            | ₹899/month for sellers & fleet owners           | `TEAM ASSUMPTION`       | Calibrated to cover cloud hosting, maps, SMS gateways, and rural support with 87% gross margin. |
-| **Corridor Buffer Threshold**     | 10 km spatial detour envelope                   | `TEAM ASSUMPTION`       | Engineering heuristic to restrict circuitous routing along arterial highways.  |
-| **Farmer Willingness to Pool**    | Farmers accept shared truck space               | `UNVERIFIED HYPOTHESIS` | Requires field confirmation regarding produce commingling concerns.            |
-| **Driver Smartphone Compliance**  | Drivers reliably trigger loading OTPs           | `UNVERIFIED HYPOTHESIS` | Requires testing in low-literacy and remote village loading docks.             |
-| **Actual Farmgate Savings**       | 40%–50% net freight cost reduction              | `FIELD VALIDATION REQ.` | **STATUS: NOT YET CONDUCTED — VALIDATION REQUIRED**.                           |
+| **Corridor Buffer Threshold**     | 10 km spatial detour envelope                   | `TEAM ASSUMPTION`       | Engineering heuristic to restrict circuitous routing along arterial highways.                   |
+| **Farmer Willingness to Pool**    | Farmers accept shared truck space               | `UNVERIFIED HYPOTHESIS` | Requires field confirmation regarding produce commingling concerns.                             |
+| **Driver Smartphone Compliance**  | Drivers reliably trigger loading OTPs           | `UNVERIFIED HYPOTHESIS` | Requires testing in low-literacy and remote village loading docks.                              |
+| **Actual Farmgate Savings**       | 40%–50% net freight cost reduction              | `FIELD VALIDATION REQ.` | **STATUS: NOT YET CONDUCTED — VALIDATION REQUIRED**.                                            |
 
 ---
 
@@ -271,18 +268,18 @@ Recognizing that elderly smallholders may lack smartphones:
 
 To establish competition-readiness, PRAYAAN is evaluated against existing commercial and government logistics platforms:
 
-| Architectural Capability | BlackBuck | Porter | Rivigo | DeHaat | Ninjacart | KisanRath | e-NAM | Vahak | PRAYAAN |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **1. Small Shipment LTL Pooling** | No (FTL) | No | Parcels | Captive | Captive | No | No | No (FTL) | **YES (Core)** |
-| **2. Multi-Stop Pickups & Drops** | Rare | No | Hub-Hub | Hub-Hub | Hub-Hub | No | No | Rare | **YES (Corridor)** |
-| **3. Rural Transporter Inclusivity** | Yes | Urban | Drivers | Closed | Closed | Directory | Directory | Yes | **YES (Open SaaS)** |
-| **4. 3-Axis Capacity Validation** | No (Wt) | No (Wt) | Volume | Closed | Closed | No | No | No | **YES (3-Axis)** |
-| **5. Offline Driver Workflows** | Basic | No | Yes | No | Basic | No | No | Basic | **YES (SQLite)** |
-| **6. Vernacular Voice-First Access** | Limited | No | No | Yes | Internal | Basic | Multilingual | Limited | **YES (Bhashini)** |
-| **7. Transparent Cost Allocation** | Brokerage | Dynamic | Tariffs | Margin | Margin | N/A | N/A | Bidding | **YES (Paise NMRS)** |
-| **8. Decoupled Delivery Confirmation** | No | No | Hub-Hub | No | Internal | No | No | No | **YES (Dual OTP)** |
+| Architectural Capability               | BlackBuck | Porter  | Rivigo  | DeHaat  | Ninjacart | KisanRath |    e-NAM     |  Vahak   |       PRAYAAN        |
+| :------------------------------------- | :-------: | :-----: | :-----: | :-----: | :-------: | :-------: | :----------: | :------: | :------------------: |
+| **1. Small Shipment LTL Pooling**      | No (FTL)  |   No    | Parcels | Captive |  Captive  |    No     |      No      | No (FTL) |    **YES (Core)**    |
+| **2. Multi-Stop Pickups & Drops**      |   Rare    |   No    | Hub-Hub | Hub-Hub |  Hub-Hub  |    No     |      No      |   Rare   |  **YES (Corridor)**  |
+| **3. Rural Transporter Inclusivity**   |    Yes    |  Urban  | Drivers | Closed  |  Closed   | Directory |  Directory   |   Yes    | **YES (Open SaaS)**  |
+| **4. 3-Axis Capacity Validation**      |  No (Wt)  | No (Wt) | Volume  | Closed  |  Closed   |    No     |      No      |    No    |   **YES (3-Axis)**   |
+| **5. Offline Driver Workflows**        |   Basic   |   No    |   Yes   |   No    |   Basic   |    No     |      No      |  Basic   |   **YES (SQLite)**   |
+| **6. Vernacular Voice-First Access**   |  Limited  |   No    |   No    |   Yes   | Internal  |   Basic   | Multilingual | Limited  |  **YES (Bhashini)**  |
+| **7. Transparent Cost Allocation**     | Brokerage | Dynamic | Tariffs | Margin  |  Margin   |    N/A    |     N/A      | Bidding  | **YES (Paise NMRS)** |
+| **8. Decoupled Delivery Confirmation** |    No     |   No    | Hub-Hub |   No    | Internal  |    No     |      No      |    No    |  **YES (Dual OTP)**  |
 
-> _*Assessment Basis: Technical review of publicly available product features, developer docs, and published regulatory filings._
+> _\*Assessment Basis: Technical review of publicly available product features, developer docs, and published regulatory filings._
 
 ### Analysis of Intercity LTL & Load-Board Platforms (Why They Differ)
 
@@ -296,4 +293,3 @@ To establish competition-readiness, PRAYAAN is evaluated against existing commer
 2. **Deterministic Multi-Attribute Pooling vs. FTL Truck Boards**: Unlike BlackBuck or Vahak, which match one shipper's dedicated load to one truck, PRAYAAN consolidates three 2.5-tonne shipments from different smallholders into a single vehicle run along a shared corridor.
 3. **Decoupled Multi-Buyer Handshake**: Existing logistics platforms treat an entire truck as a single delivery manifest. If Buyer 2 rejects cargo or is absent, the driver cannot complete the trip. PRAYAAN decouples delivery acknowledgments so each buyer confirms only their cargo lot independently.
 4. **Zero-Commission Predictable SaaS**: By charging a transparent ₹899/month flat fee instead of taking a 5% to 15% transaction cut, PRAYAAN prevents freight rate inflation and fosters long-term transporter loyalty.
-```
