@@ -8,7 +8,9 @@
 ---
 
 > [!IMPORTANT]
+>
 > ### ⏱️ 30-Second Executive TL;DR & Judge Fast-Track
+>
 > - **The Core Problem**: When 3 or 4 farmers co-load tomatoes, onions, and cabbage onto a shared truck, how do you verify physical fit and divide the freight bill so that no farmer feels cheated and no truck is overloaded?
 > - **The Operations Research Solution**:
 >   1. **3-Axis Capacity Validation**: Simultaneously constrains Payload Weight ($\text{kg}$), Usable Volume ($\text{m}^3$ scaled by packing efficiency $\eta_{\text{pack}} \in [0.78, 0.85]$), and Bed Planning Slots ($100$ discrete units).
@@ -50,23 +52,31 @@ Throughout this document, vectors are denoted in boldface ($\mathbf{x}$), sets i
 
 In road freight, vehicles are bounded by multiple independent physical thresholds. A vehicle is constrained by weight limits (Gross Vehicle Weight rating) or volumetric limits ("cubing out") long before mass limits are approached.
 
+```mermaid
+flowchart TD
+    subgraph Space ["3-Axis Physical Feasibility Enclosure: C_V = (W_V, U_V, S_V)"]
+        direction TB
+        subgraph Ax1 ["Axis 1: Mass Boundary (W_V in kg)"]
+            M1["Gross Vehicle Weight Rating"]
+            M2["Prevents structural & axle overloading"]
+        end
+        subgraph Ax2 ["Axis 2: Volume Boundary (U_V in m³)"]
+            V1["Usable Volumetric Capacity"]
+            V2["Prevents light, bulky cargo from cubing out"]
+        end
+        subgraph Ax3 ["Axis 3: Floor Footprint (S_V in % Slots)"]
+            S1["Floor Bed Pallet/Crate Area"]
+            S2["Prevents floor saturation from non-stackable lots"]
+        end
+        SpaceCheck{"All 3 Dimensions Satisfied Simultaneously?"}
+        Ax1 --> SpaceCheck
+        Ax2 --> SpaceCheck
+        Ax3 --> SpaceCheck
+        SpaceCheck -- "Yes" --> Feasible["Feasible Consolidated Loading State"]
+        SpaceCheck -- "No" --> Infeasible["Infeasible: Reject or Split Consignment"]
+    end
 ```
-                  Volumetric Boundary (U_V) [m^3]
-                         ^
-                         |           +---------------------------+
-                         |          /                           /|
-                         |         /     FEASIBLE LOADING      / |
-                         |        /           SPACE           /  |
-                         |       +---------------------------+   |
-                         |       |                           |   |
-                         |       |   c_1 (Bulky, Light)      |   +  Package Floor Slots
-                         |       |   e.g., Bell Peppers      |  /   (S_V) [% Bed Area]
-                         |       |                           | /
-                         |       |   c_2 (Dense, Heavy)      |/
-                         |       |   e.g., Potatoes, Grains  |
-                         +-------+---------------------------+----->
-                        0       0                             Weight Boundary (W_V) [kg]
-```
+
 
 ### A. Independent Resource Enforcement
 
@@ -99,9 +109,9 @@ Where:
 
 1. **Vehicle Fit**:
    $$\text{Fits}(V, \mathcal{C}_{\ell_k}) = \bigwedge_{c \in \mathcal{C}_{\ell_k}} \Big[ \text{MatchBody}(V, c) \land \text{MatchCool}(V, c) \land \text{MatchHaz}(V, c) \land \text{MatchDim}(V, c) \Big]$$
-   - $\text{MatchBody}(V, c) \iff (\text{req\_body}(c) = \emptyset) \lor (\text{body\_type}(V) = \text{req\_body}(c))$
-   - $\text{MatchCool}(V, c) \iff \text{req\_refrigeration}(c) \implies \text{refrigerated}(V)$
-   - $\text{MatchHaz}(V, c) \iff \text{is\_hazmat}(c) \implies \text{hazmat\_certified}(V)$
+   - $\text{MatchBody}(V, c) \iff (\text{reqBody}(c) = \emptyset) \lor (\text{bodyType}(V) = \text{reqBody}(c))$
+   - $\text{MatchCool}(V, c) \iff \text{reqRefrigeration}(c) \implies \text{refrigerated}(V)$
+   - $\text{MatchHaz}(V, c) \iff \text{isHazmat}(c) \implies \text{hazmatCertified}(V)$
    - $\text{MatchDim}(V, c) \iff \max(\text{dim}(c)) \le \min(L_V^{\text{int}}, B_V^{\text{int}}, H_V^{\text{int}})$
 2. **Cargo-to-Cargo Cross Compatibility**:
    $$\text{CoCompatible}(\mathcal{C}_{\ell_k}) = \bigwedge_{c_i, c_j \in \mathcal{C}_{\ell_k}, i \neq j} \Big[ \text{EthyleneCheck}(c_i, c_j) \land \text{OdorCheck}(c_i, c_j) \land \text{MoistureCheck}(c_i, c_j) \Big]$$
@@ -137,26 +147,13 @@ Consider a 10-Tonne Intermediate Commercial Vehicle ($W_V = 10,000\text{ kg}$, $
 
 To establish a fair, stable, and mathematically defensible cost allocation policy, we evaluate five candidate mechanisms:
 
-```
-+----------------------------------------------------------------------------------------------------------------+
-|                                    COST ALLOCATION MECHANISM COMPARISON                                        |
-+-------------------+----------------------------+-----------------------+---------------------+-----------------+
-| Mechanism         | Formulation Formula        | Core Strengths        | Critical Weaknesses | Recommendation  |
-+-------------------+----------------------------+-----------------------+---------------------+-----------------+
-| 1. Weight-Share   | w_i / \sum w_j             | Simple; transparent;  | Penalizes dense     | INSUFFICIENT    |
-|                   |                            | traditional metric.   | cargo; ignores cube.|                 |
-| 2. Volume-Share   | u_i / \sum u_j             | Captures space        | Penalizes bulky;    | INSUFFICIENT    |
-|                   |                            | consumption.          | ignores weight limit|                 |
-| 3. Normalized Max | \alpha_i / \sum \alpha_j   | Balances dual bottle- | Approximates game-  | RECOMMENDED     |
-|    Resource Share | where \alpha_i = max(...)  | necks; guarantees     | theoretic core; easy| (Primary Policy)|
-|    (NMRS)         |                            | 100% budget balance.  | to compute on-device|                 |
-| 4. Shapley Value  | \phi_i = \sum [v(S\cup{i}) | Axiomatically fair;   | Combinatorial       | BENCHMARK       |
-|    (Coop Game)    | - v(S)] * (|S|!(n-|S|-1)!)/| coalitionally stable  | complexity O(2^N);  | (Reference Model|
-|                   | n!                         | in cooperative games. | hard to audit.      |                  |
-| 5. Floor Area /   | s_i / \sum s_j             | Simple pallet/slot    | Ignores vertical    | LIMITED         |
-|    Slot Share     |                            | accounting.           | height and weight.  |                 |
-+-------------------+----------------------------+-----------------------+---------------------+-----------------+
-```
+| Mechanism | Formulation Formula | Core Strengths | Critical Weaknesses | Recommendation |
+| :--- | :--- | :--- | :--- | :--- |
+| **1. Weight-Share** | $w_i / \sum w_j$ | Simple; transparent; traditional metric. | Penalizes dense cargo; ignores cube space. | **INSUFFICIENT** |
+| **2. Volume-Share** | $u_i / \sum u_j$ | Captures physical space consumption. | Penalizes bulky cargo; ignores weight limits. | **INSUFFICIENT** |
+| **3. Normalized Max Resource Share (NMRS)** | $\alpha_i / \sum \alpha_j$<br>where $\alpha_i = \max(\dots)$ | Balances dual bottlenecks; guarantees 100% budget balance. | Approximates game-theoretic core; computationally lightweight. | **RECOMMENDED**<br>*(Primary Policy)* |
+| **4. Shapley Value** | $\phi_i = \sum [v(S \cup \{i\}) - v(S)] \frac{\|S\|!(n-\|S\|-1)!}{n!}$ | Axiomatically fair; coalitionally stable in cooperative games. | Combinatorial complexity $\mathcal{O}(2^N)$; difficult to audit in field. | **BENCHMARK**<br>*(Reference Model)* |
+| **5. Floor Area / Slot Share** | $s_i / \sum s_j$ | Simple pallet / slot accounting. | Ignores vertical stack height and weight. | **LIMITED** |
 
 #### Detailed Proof of Selected Policy: Normalized Maximum Resource Share (NMRS)
 
@@ -230,37 +227,32 @@ $$\text{Core}(\mathcal{N}, c) = \left\{ \mathbf{A} \in \mathbb{R}^n \;\Bigg|\; \
 
 ### A. Resolution of the ₹3.78/t-km vs. ₹3.78/km Inconsistency
 
-```
-+---------------------------------------------------------------------------------------------------+
-|                         RESOLUTION OF FREIGHT RATE INCONSISTENCY                                  |
-+---------------------------------------------------------------------------------------------------+
-|  THE CRITICAL DISTINCTION:                                                                        |
-|  - DPIIT / NCAER Benchmark: ₹3.78 per TONNE-KILOMETER (t-km).                                     |
-|    This is an aggregate measure: 1 tonne of freight moved 1 kilometer.                            |
-|  - Older Team Meeting Notes: Mistakenly referenced "₹3.78/km as a base freight rate".           |
-|                                                                                                   |
-|  MATHEMATICAL REALITY CHECK FOR A 10-TONNE ICV:                                                   |
-|  - If billed at ₹3.78 per VEHICLE-km:                                                             |
-|    A 165 km trip would yield: 165 km * ₹3.78 = ₹623.70!                                          |
-|    Diesel alone costs: (165 km / 4.5 km/L) * ₹92/L = ₹3,373.33. Transporter loses ₹2,750 on fuel! |
-|  - If evaluated at ₹3.78 per TONNE-km carrying 7 tonnes:                                          |
-|    7 tonnes * 165 km * ₹3.78/t-km = ₹4,365.90 (Commercial haul benchmark).                       |
-|  - Prevailing Market Corridor Rate (Nashik -> Mumbai):                                            |
-|    ₹7,000 for full 10t charter (approx. ₹42.42 per vehicle-kilometer).                            |
-+---------------------------------------------------------------------------------------------------+
-```
+```mermaid
+flowchart TD
+    subgraph RateReconciliation ["Resolution of Freight Rate Multiplier Inconsistency"]
+        direction TB
+        Flawed["Flawed Interpretation: ₹3.78 per VEHICLE-km\n- 165 km trip = ₹623.70 total freight\n- Diesel alone costs ₹3,373.33 (Transporter loses ₹2,750 on fuel!)"]
+        Official["Official DPIIT / NCAER Benchmark: ₹3.78 per TONNE-km\n- 7 tonnes * 165 km * ₹3.78/t-km = ₹4,365.90 macro baseline"]
+        Market["Prevailing Market Corridor Rate (Nashik -> Mumbai)\n- ₹7,000 for full 10t ICV charter (~₹42.42 per vehicle-km)"]
+
+        Flawed -. "Economically Impossible" .-> Official
+        Official --> Market
+    end
+````
+
 
 ### B. Decoupled Cost Architecture
 
 PRAYAAN enforces strict architectural separation between six commercial layers:
 
-```
-[ 1. Transporter Operating Cost ] ---> [ 2. Commercial Quotation ] ---> [ 3. Shared Trip Cost ]
-  (Fixed Daily + Variable /km)          (OpCost + Operating Margin)      (Quotation + Road Tolls)
-                                                                                   |
-[ 5. Platform Subscription ]    <--- [ 4. Allocated Order Freight ] <--------------+
-  (₹899/month Flat SaaS)                (Fair-Share Proportional)
-```
+```mermaid
+flowchart LR
+    L1["1. Transporter Operating Cost\nFixed Daily + Variable /km"] --> L2["2. Commercial Quotation\nOpCost + Operating Margin"]
+    L2 --> L3["3. Shared Trip Cost\nQuotation + Road Tolls"]
+    L3 --> L4["4. Allocated Order Freight\nNMRS Fair-Share Proportional"]
+    L4 --> L5["5. Platform Subscription\n₹899/month Flat SaaS"]
+````
+
 
 1. **Transporter Vehicle Operating Cost ($C_{\text{trans}}$)**:
    The true economic expenditure incurred by the fleet owner to operate vehicle $V$ over distance $D$:
@@ -374,11 +366,13 @@ Where:
 
 In rural transport, a commercial vehicle's movement cannot be modeled as an isolated one-way segment. PRAYAAN decomposes vehicle operations into four distinct operational phases:
 
-```
-[Phase 1: Loaded Outbound] ----> [Phase 2: Terminal Handoff] ----> [Phase 3: Repositioning] ----> [Phase 4: Return Pooled]
-  Pickups A & B in Nashik          Drops at Vashi & Kalyan           Empty or Partial run to          Load C & D back to
-  En route to Mumbai               APMC wholesale docks              Thane Industrial Hub             Nashik rural belt
-```
+```mermaid
+flowchart LR
+    P1["Phase 1: Loaded Outbound\nPickups A & B in Nashik\nEn route to Mumbai"] --> P2["Phase 2: Terminal Handoff\nDrops at Vashi & Kalyan\nAPMC wholesale docks"]
+    P2 --> P3["Phase 3: Repositioning\nEmpty or Partial run to\nThane Industrial Hub"]
+    P3 --> P4["Phase 4: Return Pooled\nLoad C & D back to\nNashik rural belt"]
+````
+
 
 ### B. Equitable Allocation of Repositioning Costs
 
@@ -513,3 +507,4 @@ A single 10-Tonne ICV executes a pooled run across 4 stops:
      $$K_{\text{earned}}(V_1) = \sum_{\ell_k \in \mathcal{L}_{\text{completed}}} K_{\ell_k} + \left[ \frac{D(\sigma_{k-1}, \sigma_{\text{break}})}{D(\ell_{\text{current}})} \right] \cdot K_{\ell_{\text{current}}}$$
   4. System broadcasts an emergency transshipment dispatch to nearby available empty/partial vehicles within a 25 km geofence radius.
   5. Recovery vehicle $V_2$ docks; drivers execute dual-device QR code transfer validating custody shift; remaining trip legs complete without shipper price recalculation. All transshipment overhead is absorbed by the platform's fleet recovery reserve fund.
+```

@@ -10,21 +10,21 @@
 ## 0. Judge Fast-Track Skim Guide (Time-Budget Reading Paths)
 
 > [!IMPORTANT]
+>
 > ### ⏱️ Short on Time? Choose Your Reading Track Below:
+>
 > Depending on your judging role and available evaluation time, use these targeted navigation paths to inspect the core breakthroughs and technical proofs without getting bogged down in documentation density:
 >
-> * ⚡ **If you have 2 Minutes (Executive & Problem-Solution Scan)**:
+> - ⚡ **If you have 2 Minutes (Executive & Problem-Solution Scan)**:
 >   1. **Ecosystem & Value Proposition**: See [Section 1 below](#1-executive-summary) for the 3-sided coordination model.
 >   2. **Competitor Differentiation**: Review [`01_PROBLEM_STATEMENT... Section 11`](01_PROBLEM_STATEMENT_AND_GROUND_REALITY.md#11-competitor-analysis--genuine-technical-differentiation) for an 8-platform side-by-side comparison (BlackBuck, Porter, Rivigo, DeHaat, Ninjacart, KisanRath, e-NAM, Vahak).
 >   3. **Commercial Model**: Review [`05_BUSINESS_MODEL... Section 3`](05_BUSINESS_MODEL_AND_UNIT_ECONOMICS.md#3-financial-unit-economics--break-even-analysis) for the ₹899/month SaaS unit economics (384 subscriber break-even under expanded OpEx with full engineering & recovery reserve, ₹783/mo gross margin per subscriber — 87.1% gross margin).
->
-> * 🔍 **If you have 5 Minutes (Architecture, Engineering & Feasibility)**:
+> - 🔍 **If you have 5 Minutes (Architecture, Engineering & Feasibility)**:
 >   1. **Tri-Client Topology & Offline Sync**: Review [`04_SYSTEM_ARCHITECTURE... Section 1 & 5`](04_SYSTEM_ARCHITECTURE_AND_SPECIFICATIONS.md#1-system-topology--architectural-principles) for Mermaid architecture and the offline SQLite transactional journal.
 >   2. **Driver Working-Capital Solution**: Review [`04_SYSTEM_ARCHITECTURE... Section 8`](04_SYSTEM_ARCHITECTURE_AND_SPECIFICATIONS.md#8-statutory-e-way-bill--payment-gateway-workflows) for the 50/50 split freight disbursal backed by the buyer's 20% advance escrow deposit.
 >   3. **Empirical Citations & Integrity**: Review [`02_OFFICIAL_RESEARCH... Section 2 & 3`](02_OFFICIAL_RESEARCH_AND_CITATIONS.md#2-institutional-source-audit-table) for the 10-point government audit table and macro vs. micro logistics cost reconciliation.
 >   4. **Pilot Deployment**: Review [`07_IMPLEMENTATION_ROADMAP... Section 1`](07_IMPLEMENTATION_ROADMAP_AND_MILESTONES.md#1-guiding-execution-philosophy) for the 4-stage Nashik–Mumbai pilot plan.
->
-> * 🔬 **If you have 10+ Minutes (Deep-Dive Mathematical, Algorithmic & Code Audit)**:
+> - 🔬 **If you have 10+ Minutes (Deep-Dive Mathematical, Algorithmic & Code Audit)**:
 >   1. **Operations Research & Game Theory**: Review [`03_MATHEMATICAL_MODEL... Section 3.D & 7`](03_MATHEMATICAL_MODEL_AND_POOLING_ALGORITHMS.md#d-cooperative-game-theory-core-stability-theorem-for-nmrs) for the NMRS Core Stability Theorem, $10^9$ integer paise scaling, and 6 worked arithmetic examples.
 >   2. **Production Database Integrity**: Inspect [`schema.sql`](schema.sql) for PostGIS spatial indexing, `ethylene_category` enums, and the PL/pgSQL trigger `validate_consignment_stops_and_capacity()`.
 >   3. **Zero-Hardcoding Live Verification**: Run the verification scripts directly in your terminal:
@@ -41,18 +41,22 @@
 
 By digitally uniting rural producers (via Farmer Producer Organizations and rural aggregators), regional commercial fleet owners, and wholesale buyers, PRAYAAN converts isolated agricultural shipments into optimized, multi-stop pooled truckloads along shared arterial highway corridors. Every transaction is underpinned by **deterministic 3-axis capacity validation (weight, volume, slots)**, **transparent proportional cost-sharing (Normalized Maximum Resource Share in integer paise)**, and **tamper-evident loading-bay to doorstep cryptographic chain-of-custody protocols**.
 
+```mermaid
+flowchart TD
+    subgraph Platform ["PRAYAAN: One Corridor. Shared Truckloads."]
+        direction TB
+        Core["PRAYAAN Coordination Core\n- Deterministic 3-Axis Capacity Engine\n- Integer NMRS Fair Cost Allocation\n- Split-Milestone UPI Payment Protocol\n- Offline-First Cryptographic Chain of Custody"]
+
+        P1["Producers & FPOs\n- Crop listing & AGMARKNET baseline\n- Bilateral digital RFQ negotiation\n- 6-Digit loading bay custody OTP\n- Proportional fair freight (≥30% savings)"]
+        P2["Regional Fleet Owners (SRTOs)\n- Corridor-based load discovery\n- Multi-consignment pooling planner\n- 3-Axis capacity enforcement\n- Return backhaul matching"]
+        P3["Wholesale Buyers\n- Direct farmgate producer discovery\n- Transparent landed price quotation\n- Decoupled single-order delivery OTP\n- Guaranteed loading custody proof"]
+
+        P1 <--> Core
+        P2 <--> Core
+        P3 <--> Core
+    end
 ```
-+-----------------------------------------------------------------------------------------------+
-|                                            PRAYAAN                                            |
-|                               One Corridor. Shared Truckloads.                                |
-+-------------------------------+-------------------------------+-------------------------------+
-|     Producers & FPOs          |     Regional Fleet Owners     |       Wholesale Buyers        |
-| - Crop listing & AGMARKNET    | - Corridor load discovery     | - Direct producer discovery   |
-| - Bilateral RFQ negotiation   | - Multi-consignment pooling   | - Transparent landed cost     |
-| - 6-Digit loading bay OTP     | - 3-Axis capacity audit       | - Decoupled single-order POD  |
-| - Proportional fair freight   | - Backhaul return matching    | - Guaranteed loading custody  |
-+-------------------------------+-------------------------------+-------------------------------+
-```
+
 
 ---
 
@@ -123,5 +127,6 @@ In accordance with official **Tech4Bharat 2026** evaluation standards under **Th
 
 ## 6. Repository License & Team Acknowledgement
 
-Developed for **Tech4Bharat 2026** by **Team Kernal500**.  
+Developed for **Tech4Bharat 2026** by **Team Kernal500**.
 Distributed under the [MIT License](LICENSE).
+```

@@ -8,8 +8,10 @@
 ---
 
 > [!IMPORTANT]
+>
 > ### ⏱️ 30-Second Executive TL;DR & Judge Fast-Track
-> - **Execution Philosophy**: *"Validate locally. Measure rigorously. Scale responsibly."* — Moving sequentially from an audited technical prototype to controlled single-corridor field trials, empirical data collection, and regional expansion.
+>
+> - **Execution Philosophy**: _"Validate locally. Measure rigorously. Scale responsibly."_ — Moving sequentially from an audited technical prototype to controlled single-corridor field trials, empirical data collection, and regional expansion.
 > - **The 4 Implementation Stages**:
 >   - **Stage 1 (Current)**: Verified working prototype with tri-client architecture, deterministic 3-axis capacity validation, integer NMRS cost splitting, and offline SQLite driver journal.
 >   - **Stage 2 (Months 1–6)**: Controlled pilot on the high-density Nashik–Mumbai agricultural corridor (~165 km) with 10 FPOs, 25 fleet operators (50 trucks), and 20 APMC wholesale buyers.
@@ -27,40 +29,21 @@
 
 Rural freight in Bharat operates in an unforgiving physical environment characterized by unpaved feeder roads, intermittent cellular connectivity, extreme produce perishability, and tight operating margins. **PRAYAAN** follows a disciplined, staged execution methodology moving from an audited architectural prototype to controlled field trials, verified empirical data collection, and regional expansion.
 
+```mermaid
+flowchart TD
+    subgraph Roadmap ["PRAYAAN Four-Stage Implementation Roadmap"]
+        direction TB
+        S1["Stage 1: Working Platform (Current Milestone — Complete)\n- Tri-client architecture: Vendor Web, Fleet Portal, Driver Mobile\n- Deterministic 3-axis capacity validation & integer NMRS math\n- Low-bandwidth loading OTP verification & decoupled multi-buyer delivery\n- Status: VERIFIED PROTOTYPE — CODEBASE & DOCS COMPLETE"]
+        S2["Stage 2: Controlled Pilot & Field Validation (Months 1–6)\n- Corridor: Nashik <-> Mumbai (~165 km)\n- 120 Primary field interviews (Producers, Transporters, Traders)\n- Cohort: 10 FPOs, 25 Fleets (50 trucks), 20 APMC Buyers\n- Status: PLANNED (PROTOCOL READY — NOT YET CONDUCTED)"]
+        S3["Stage 3: Operational Harvesting & Evidence Gathering (Months 6–12)\n- Elevate truck capacity utilization from <45% to >=70%\n- Verify 30% to 45% farmgate freight cost reduction\n- Measure deadhead reduction along the corridor\n- Status: PLANNED"]
+        S4["Stage 4: Scalable Rural Network & Advanced Heuristics (Months 12–24)\n- Production ALNS meta-heuristic & 3D Bin Packing engine\n- Replicate across 10 Western/Central India agricultural corridors\n- Direct DPI integration: ULIP / VAHAN / ONDC\n- Status: PLANNED"]
+
+        S1 --> S2
+        S2 --> S3
+        S3 --> S4
+    end
 ```
-+---------------------------------------------------------------------------------------------------+
-|                                 FOUR-STAGE DELIVERY ROADMAP                                       |
-+---------------------------------------------------------------------------------------------------+
-  STAGE 1: WORKING PLATFORM (Current Milestone: Working Prototype Completed)
-  - Unified Commerce, Fleet Portal, and Driver Mobile Client architecture
-  - Deterministic 3-axis physical capacity audit & integer NMRS fair-share cost mathematics
-  - Low-bandwidth loading bay OTP verification & decoupled multi-buyer delivery
-  - Status: VERIFIED PROTOTYPE — CODEBASE & DOCUMENTATION COMPLETE
-                                 |
-                                 v
-  STAGE 2: CONTROLLED PILOT & FIELD VALIDATION (Target: Months 1–6)
-  - Deployment on single high-density agricultural corridor (Nashik <-> Mumbai, ~165 km)
-  - Execution of 120 primary field interviews (Producers, Transporters, Mandi Traders)
-  - Cohort: 10 FPOs / Village Aggregators, 25 Commercial Fleets (50 trucks), 20 APMC Buyers
-  - Live testing of 6-digit loading OTPs, photo evidence, and offline SQLite synchronization
-  - Status: PLANNED — PROTOCOL READY (STATUS: NOT YET CONDUCTED — VALIDATION REQUIRED)
-                                 |
-                                 v
-  STAGE 3: OPERATIONAL HARVESTING & EVIDENCE GATHERING (Target: Months 6–12)
-  - Empirical measurement of truck capacity utilization (Target: Elevate from <45% to >=70%)
-  - Quantification of actual farmgate freight savings (Target: 30% to 45% reduction)
-  - Measurement of deadhead kilometer reduction along the test corridor
-  - Software hardening and offline synchronization tuning based on field telemetry
-  - Status: PLANNED
-                                 |
-                                 v
-  STAGE 4: SCALABLE RURAL NETWORK & ADVANCED ALGORITHMS (Target: Months 12–24)
-  - Integration of ALNS meta-heuristic and 3D Bin Packing engine (as specified in Doc 06)
-  - Multi-corridor expansion across 10 major rural agricultural transit belts in Western/Central India
-  - Integration with national digital public infrastructure (ULIP / VAHAN / ONDC)
-  - Status: PLANNED
-+---------------------------------------------------------------------------------------------------+
-```
+
 
 ---
 
@@ -123,22 +106,10 @@ Rural freight in Bharat operates in an unforgiving physical environment characte
 
 ## 3. Milestones & Risk Gate Management
 
-```
-+---------------------------------------------------------------------------------------------------+
-|                                 MILESTONE GATES & RISK CONTROLS                                   |
-+------------------------------------+------------------+------------------+------------------------+
-| Milestone Gate                     | Planned Target   | Primary Risk     | Embedded Mitigation    |
-+------------------------------------+------------------+------------------+------------------------+
-| **Gate 1: Prototype Code Freeze**  | Current Milestone| Architecture     | Deterministic capacity |
-|                                    | (Tech4Bharat)    | complexity.      | & integer paise math.  |
-|                                    |                  |                  |                        |
-| **Gate 2: Field Validation Audit** | Month 3          | Low farmer       | Partner directly with  |
-| (120 Primary Interviews)           |                  | digital trust.   | established FPOs/KVKs. |
-|                                    |                  |                  |                        |
-| **Gate 3: Pilot 100-Trip Run**     | Month 6          | Loading dock     | 60-min wait timeout &  |
-| (Nashik <-> Mumbai Corridor)       |                  | delays.          | detention compensation.|
-|                                    |                  |                  |                        |
-| **Gate 4: Multi-Corridor Scaling** | Month 18         | Driver churn &   | Transparent ₹899 SaaS; |
-| (10 Regional Arteries)             |                  | broker pushback. | zero transaction cuts. |
-+------------------------------------+------------------+------------------+------------------------+
+| Milestone Gate | Planned Target | Primary Risk | Embedded Mitigation |
+| :--- | :---: | :--- | :--- |
+| **Gate 1: Prototype Code Freeze** | Current Milestone<br>(Tech4Bharat) | Architecture complexity & model error. | Deterministic capacity validation & integer paise math. |
+| **Gate 2: Field Validation Audit**<br>(120 Primary Interviews) | Month 3 | Low farmer digital trust & commingling fear. | Partner directly with established FPOs/KVKs & independent lot seals. |
+| **Gate 3: Pilot 100-Trip Run**<br>(Nashik $\leftrightarrow$ Mumbai Corridor) | Month 6 | Loading dock delays & vehicle detention. | 60-min wait timeout & detention compensation. |
+| **Gate 4: Multi-Corridor Scaling**<br>(10 Regional Arteries) | Month 18 | Driver churn & commission broker pushback. | Transparent ₹899 SaaS; zero transaction cuts. |
 ```

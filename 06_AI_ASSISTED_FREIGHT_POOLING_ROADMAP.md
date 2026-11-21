@@ -8,7 +8,9 @@
 ---
 
 > [!IMPORTANT]
+>
 > ### ⏱️ 30-Second Executive TL;DR & Judge Fast-Track
+>
 > - **System Boundary & Academic Integrity**: Stage 1 operations implement deterministic rule-based matching and 3-axis capacity verification. The advanced Adaptive Large Neighborhood Search (ALNS) meta-heuristics and 3D Bin Packing detailed here represent our planned Stage 4 scaling engine. Unverifiable claims of "95% pruning" or "guaranteed Pareto optimality" have been explicitly stripped.
 > - **Key Optimization Innovations**:
 >   1. **Corridor Buffer Filtering**: Prunes the $O(N^2)$ pickup-and-delivery search space by enforcing a unified lateral corridor buffer $\delta_{\text{buffer}} = 10.0\text{ km}$ and time-window compatibility $\le 2.5\text{ hr}$.
@@ -24,20 +26,16 @@
 
 ## 1. Algorithmic Integrity & System Boundary Disclosure
 
-```
-=====================================================================================================
-SYSTEM BOUNDARY & IMPLEMENTATION STATUS DISCLOSURE:
-In strict compliance with academic honesty and hackathon integrity guidelines:
-- PRAYAAN's Stage 1 Prototype implements DETERMINISTIC RULE-BASED MATCHING, 3-axis capacity
-  verification, and integer fair-share cost mathematics.
-- The advanced meta-heuristics (ALNS, 3D Bin Packing) and Machine Learning models detailed in this
-  document represent our STAGE 4 PLANNED ENHANCEMENT LAYER.
-- All benchmark metrics presented in Section 5 represent a controlled SYNTHETIC TESTBED PROTOCOL
-  and must not be conflated with verified real-world operational results.
-- Unverifiable claims of "95% pruning", "guaranteed Pareto optimality", or "guaranteed 50% carbon
-  cuts" have been stripped from this specification.
-=====================================================================================================
-```
+> [!IMPORTANT]
+>
+> ### System Boundary & Implementation Status Disclosure
+>
+> In strict compliance with academic honesty and hackathon integrity guidelines:
+>
+> - **Stage 1 Prototype**: Implements **deterministic rule-based matching**, 3-axis capacity verification, and integer fair-share cost mathematics.
+> - **Stage 4 Planned Enhancement Layer**: The advanced meta-heuristics (ALNS, 3D Bin Packing) and Machine Learning models detailed in this document represent our planned future scaling layer.
+> - **Synthetic Testbed Protocol**: All benchmark metrics presented in Section 5 represent a controlled synthetic simulation and must not be conflated with verified real-world operational results.
+> - **Integrity Audit**: Unverifiable claims of "95% pruning", "guaranteed Pareto optimality", or "guaranteed 50% carbon cuts" have been stripped from this specification.
 
 ---
 
@@ -134,7 +132,7 @@ flowchart LR
      _(Fragile tomatoes or bell peppers are never loaded beneath heavy potato or grain sacks)._
   3. **Axle Load Center-of-Gravity Balance**:
      The longitudinal center of gravity $CG_x$ must remain strictly between the front and rear axle limits under all partial unload states:
-     $$CG_x = \frac{\sum_{c \in \mathcal{C}_{\text{active}}} w_c \cdot x_c + W_{\text{tare}} \cdot x_{\text{chassis}}}{\sum_{c \in \mathcal{C}_{\text{active}}} w_c + W_{\text{tare}}} \in [x_{\text{min\_axle}}, x_{\text{max\_axle}}]$$
+     $$CG_x = \frac{\sum_{c \in \mathcal{C}_{\text{active}}} w_c \cdot x_c + W_{\text{tare}} \cdot x_{\text{chassis}}}{\sum_{c \in \mathcal{C}_{\text{active}}} w_c + W_{\text{tare}}} \in [x_{\text{minAxle}}, x_{\text{maxAxle}}]$$
 - **Computational Complexity**: $\mathcal{O}(N^3)$ using the Extreme-Point (EP) spatial placement heuristic.
 - **Advantages**: Eliminates catastrophic road accidents caused by shifting agricultural loads and guarantees zero transit crushing disputes.
 - **Limitations**: Real-world agricultural packaging (irregular jute bags) rarely conforms to perfect rectangular cuboids; requires conservative safety margins.
@@ -148,7 +146,7 @@ flowchart LR
 - **Input Data**: Road network graph from OpenStreetMap (OSM) processed via an internal OpenRouteService (ORS) / OSRM engine.
 - **Output**: Real-time road distance $D(\ell_k)$ and estimated transit duration $t(\ell_k)$ incorporating historical road segment speeds.
 - **Deterministic Baseline Formulation**:
-  $$D(\ell_k) = \text{ORS\_NetworkDistance}(\sigma_{k-1}, \sigma_k)$$
+  $$D(\ell_k) = \text{ORSNetworkDistance}(\sigma_{k-1}, \sigma_k)$$
   $$K_{\ell_k} = \left\lfloor \frac{D(\ell_k) \cdot \text{RatePerKm} \cdot \text{Multiplier}_{\text{body}}}{10^7} \right\rfloor + \text{Tolls}(\ell_k)$$
 - **Advantages**: High precision; avoids unpredictable cloud API cost spikes by running an internal self-hosted routing instance.
 
@@ -200,18 +198,18 @@ The following table records the computed benchmark results dynamically generated
 
 | Benchmark Metric                           | Baseline 1 (No Pooling) | Baseline 2 (First-Fit Greedy) | Baseline 3 (Nearest-Neighbor) | Method 4 (PRAYAAN Stage 1 Deterministic) | Method 5 (PRAYAAN Stage 4 ALNS Target) |
 | :----------------------------------------- | :---------------------: | :---------------------------: | :---------------------------: | :--------------------------------------: | :------------------------------------: |
-| **Total Commercial Vehicles Dispatched**   |        50 trucks        |           17 trucks           |      17.3 ± 0.5 [17] trucks   |          18.7 ± 0.5 [19] trucks          |        **17.3 ± 0.5 [17] trucks**      |
+| **Total Commercial Vehicles Dispatched**   |        50 trucks        |           17 trucks           |    17.3 ± 0.5 [17] trucks     |          18.7 ± 0.5 [19] trucks          |       **17.3 ± 0.5 [17] trucks**       |
 | **Average Payload Utilization ($W_V$)**    |          27.4%          |             80.6%             |      79.1 ± 2.1% [80.6%]      |           73.4 ± 1.9% [72.1%]            |        **79.1 ± 2.1% [80.6%]**         |
 | **Average Volume Utilization ($U_V$)**     |          25.7%          |             75.5%             |      74.1 ± 2.0% [75.5%]      |           68.8 ± 1.8% [67.6%]            |        **74.1 ± 2.0% [75.5%]**         |
-| **Total Route Kilometers Logged**          |        8,250 km         |      3,634 ± 38 [3,609] km    |     3,371 ± 33 [3,345] km     |          3,572 ± 82 [3,635] km           |       **3,299 ± 62 [3,268] km**        |
-| **Total Empty Deadhead Kilometers**        |     3,300 km (40%)      |     1,272 ± 13 [1,263] km     |     1,011 ± 10 [1,004] km     |           857 ± 20 [873] km              |          **594 ± 11 [588] km**         |
-| **Aggregate Shippers' Freight Bill**       |        ₹350,000         |   ₹181,062 ± 1,694 [₹179,921] |  ₹168,822 ± 936 [₹168,067]    |       ₹176,325 ± 3,118 [₹178,769]        |      **₹165,576 ± 2,225 [₹164,565]**   |
-| **Average Shipper Savings vs. Baseline 1** |          0.0%           |      48.3 ± 0.5% [48.6%]      |      51.8 ± 0.3% [52.0%]      |           49.6 ± 0.9% [48.9%]            |         **52.7 ± 0.6% [53.0%]**        |
+| **Total Route Kilometers Logged**          |        8,250 km         |     3,634 ± 38 [3,609] km     |     3,371 ± 33 [3,345] km     |          3,572 ± 82 [3,635] km           |       **3,299 ± 62 [3,268] km**        |
+| **Total Empty Deadhead Kilometers**        |     3,300 km (40%)      |     1,272 ± 13 [1,263] km     |     1,011 ± 10 [1,004] km     |            857 ± 20 [873] km             |         **594 ± 11 [588] km**          |
+| **Aggregate Shippers' Freight Bill**       |        ₹350,000         |  ₹181,062 ± 1,694 [₹179,921]  |   ₹168,822 ± 936 [₹168,067]   |       ₹176,325 ± 3,118 [₹178,769]        |    **₹165,576 ± 2,225 [₹164,565]**     |
+| **Average Shipper Savings vs. Baseline 1** |          0.0%           |      48.3 ± 0.5% [48.6%]      |      51.8 ± 0.3% [52.0%]      |           49.6 ± 0.9% [48.9%]            |        **52.7 ± 0.6% [53.0%]**         |
 | **Unserved / Infeasible Requests**         |            0            |               0               |               0               |                    0                     |                   0                    |
-| **Delivery Time Window Violations**        |            0            |        1.7 ± 0.5 [1]          |        2.0 ± 0.8 [1]          |                  **0**                   |                 **0**                  |
-| **Computational Solve Time**               |     $< 0.1\text{ ms}$   |        $0.3\text{ ms}$        |        $0.2\text{ ms}$        |             **$0.2\text{ ms}$**          |          **$56.8\text{ ms}$**          |
+| **Delivery Time Window Violations**        |            0            |         1.7 ± 0.5 [1]         |         2.0 ± 0.8 [1]         |                  **0**                   |                 **0**                  |
+| **Computational Solve Time**               |    $< 0.1\text{ ms}$    |        $0.3\text{ ms}$        |        $0.2\text{ ms}$        |           **$0.2\text{ ms}$**            |          **$56.8\text{ ms}$**          |
 
-*Note: Deadhead kilometers model backhaul empty return probabilities (B1: 40% uncoordinated, B2: 35%, B3: 30%, M4: 24%, M5: 18%). Solve times represent real execution on an Apple M-series processor measured via `time.perf_counter()`.*
+_Note: Deadhead kilometers model backhaul empty return probabilities (B1: 40% uncoordinated, B2: 35%, B3: 30%, M4: 24%, M5: 18%). Solve times represent real execution on an Apple M-series processor measured via `time.perf_counter()`._
 
 ### D. Algorithmic Insights from Benchmark Data:
 

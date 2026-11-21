@@ -8,7 +8,9 @@
 ---
 
 > [!IMPORTANT]
+>
 > ### ⏱️ 30-Second Executive TL;DR & Judge Fast-Track
+>
 > - **The Core Problem**: 86.2% of Indian farmers are smallholders producing sub-scale Less-Than-Truckload (LTL) harvests (1–4 tonnes). They are trapped between paying exorbitant full-truck charter rates or surrendering 10%–15% margins to informal village middlemen. Meanwhile, regional commercial trucks run at <50% capacity and log 28%–43% empty return kilometers (deadheading).
 > - **The PRAYAAN Solution**: A corridor-based digital freight pooling architecture that aggregates multi-producer LTL shipments into shared medium commercial vehicles along arterial highway routes using deterministic 3-axis capacity validation, FPO micro-ledger billing, and vernacular Bhashini voice interfaces.
 > - **Defensibility & Truthfulness**: We do not claim fabricated field data (`STATUS: NOT YET CONDUCTED — VALIDATION REQUIRED`). The problem and solution are grounded in official DPIIT, NCAER, MoAFW, and NITI Aayog benchmarks.
@@ -34,25 +36,44 @@ In India, agriculture and allied rural micro, small, and medium enterprises (MSM
 
 To design a defensible logistics architecture, the socio-economic and infrastructural reality of rural Indian transport must be mapped across its primary nodes and intermediaries:
 
+```mermaid
+flowchart LR
+    subgraph Origin ["1. Origin Tier"]
+        O1["Smallholder Farmer\n(1-3 Acres / 1-4 MT)"]
+        O2["Commercial Grower\n(5-15 MT Perishables)"]
+        O3["Rural Cottage MSME\n(Handicraft / Processed)"]
+    end
+
+    subgraph Consolidation ["2. Intermediate Consolidation"]
+        C1["Village Aggregation Point\n(Informal Village Square)"]
+        C2["Farmer Producer Org (FPO)\n(Custom Hiring / PACS)"]
+        C3["Local Commission Broker\n(Manual Phone Dispatch)"]
+    end
+
+    subgraph Transit ["3. Transit Corridor"]
+        T1["Small Fleet Owner / Driver\n(1-5 Trucks: SCV / LCV / ICV)"]
+        T2["Arterial Highway Corridor\n(SH / NH Corridors)"]
+    end
+
+    subgraph Terminal ["4. Terminal Tier"]
+        D1["APMC Mandi Wholesale"]
+        D2["Urban Retail & Processors"]
+        D3["End Consumer"]
+    end
+
+    O1 --> C1
+    O2 --> C2
+    O3 --> C3
+    C1 --> C2
+    C2 --> T1
+    C3 --> T1
+    T1 --> T2
+    T2 --> D1
+    T2 --> D2
+    D1 --> D3
+    D2 --> D3
 ```
-+---------------------------------------------------------------------------------------------------+
-|                                 INDIAN RURAL FREIGHT ECOSYSTEM                                    |
-+---------------------------------------------------------------------------------------------------+
-|  ORIGIN TIER               INTERMEDIATE CONSOLIDATION        TRANSIT CORRIDOR     TERMINAL TIER   |
-|                                                                                                   |
-|  [Smallholder Farmer] ---> [Village Aggregation Point]                                            |
-|  (1-3 Acres / 1-4 MT)      (Informal Village Square)                                              |
-|                                     |                                                             |
-|  [Commercial Grower]  ---> [Farmer Producer Org (FPO)] ---> [Arterial Corridor] -> [APMC Mandi]   |
-|  (5-15 MT / Perishables)   (Custom Hiring / PACS)           (SH / NH Highways)     (Wholesale)    |
-|                                     |                              |                      |       |
-|  [Rural Cottage MSME] ---> [Local Broker / Kuccha Arhtiya]         |               [Urban Retail/ |
-|  (Handicraft / Processed)  (Manual Phone Dispatch)                 |                Processor]    |
-|                                                                    v                      |       |
-|                                                    [Small Fleet Owner / Driver]           v       |
-|                                                    (1-5 Trucks: SCV / LCV / ICV)     [End Consumer|
-+---------------------------------------------------------------------------------------------------+
-```
+
 
 ### Key Stakeholders & Operating Roles
 
@@ -92,28 +113,22 @@ The rural freight sector is characterized by an operational mismatch between shi
 
 Why does rural freight remain structurally inefficient despite decades of road expansion?
 
-```
-+---------------------------------------------------------------------------------------------------+
-|                           THE ROOT CAUSES OF RURAL FREIGHT BREAKDOWN                             |
-+---------------------------------------------------------------------------------------------------+
-|  1. DIRECTIONAL TRADE IMBALANCE                                                                   |
-|     - Agricultural commodities flow RURAL -> URBAN (bulk, perishable, seasonal).                 |
-|     - Manufactured goods flow URBAN -> RURAL through formal distributor fleets (closed loop).     |
-|     - Result: Commercial vehicles delivering farm produce have no automated backhaul load.       |
-|                                                                                                   |
-|  2. TEMPORAL & HARVEST CONCENTRATION                                                              |
-|     - Perishable crops (onions, tomatoes, leafy greens) harvest simultaneously in clusters.       |
-|     - Creates violent localized spikes in freight demand followed by prolonged lean periods.      |
-|                                                                                                   |
-|  3. INFORMATIONAL ASYMMETRY & BROKER LOCK-IN                                                      |
-|     - Independent truck drivers lack visibility into pending loads outside their immediate mandi. |
-|     - Rural brokers prioritize full truckloads (FTL) and refuse to manage complex LTL multi-drops.|
-|                                                                                                   |
-|  4. MULTI-AXIS PHYSICAL INCOMPATIBILITY                                                           |
-|     - Load aggregation fails because cargo differs in density, package stackability, odor, and    |
-|       moisture (e.g., wet tubers cannot be co-loaded with dry grains or chemical fertilizers).    |
-+---------------------------------------------------------------------------------------------------+
-```
+```mermaid
+flowchart TD
+    subgraph RootCauses ["Structural Root Causes of Rural Freight Breakdown"]
+        direction TB
+        RC1["1. Directional Trade Imbalance\n- Rural to Urban: Bulk, perishable, seasonal produce\n- Urban to Rural: Closed distributor fleets\n- Result: 28%-43% empty return deadheading"]
+        RC2["2. Temporal & Harvest Concentration\n- Synchronized harvesting across regional clusters\n- Sharp localized freight demand spikes\n- Prolonged idle lean periods for independent fleets"]
+        RC3["3. Informational Asymmetry & Broker Lock-In\n- Transporters lack load visibility outside local mandi\n- Commission agents extract 6%-12% margins\n- Brokers refuse complex multi-drop LTL aggregation"]
+        RC4["4. Multi-Axis Physical Incompatibility\n- Heterogeneous cargo (density, moisture, odor, ethylene)\n- Lack of automated cross-compatibility validation\n- Fear of cross-contamination prevents co-loading"]
+    end
+
+    RC1 --> Impact["Rural Transport Crisis:\nFreight Cost = 16.9% of Output Value\nPost-Harvest Loss = 4.6%-15.8%"]
+    RC2 --> Impact
+    RC3 --> Impact
+    RC4 --> Impact
+````
+
 
 ### The Underutilization vs. Overloading Paradox in Indian Trucking
 
@@ -194,29 +209,18 @@ The following matrix maps the official requirements of **Problem Statement 5.3**
 
 To maintain complete academic honesty and hackathon integrity, all empirical claims and modeling hypotheses in PRAYAAN are rigorously categorized:
 
-```
-+---------------------------------------------------------------------------------------------------+
-|                                   EVIDENCE VS. ASSUMPTIONS AUDIT                                  |
-+---------------------------------------------------------------------------------------------------+
-| Category               | Description & Source Baseline                                            |
-+------------------------+--------------------------------------------------------------------------+
-| 1. Verified Evidence   | Data extracted from peer-reviewed literature, official statutory acts,    |
-|    (Government/Academic| or government statistical agencies (NCAER/DPIIT Dec 2023, MoAFW/AGMARKNET,|
-|     Reports)           | CGST Act Rule 138, ICAR-CIPHET, NITI Aayog/RMI, Agricultural Census).    |
-|                        |                                                                          |
-| 2. Commercial Market   | Published rate cards, commercial platform terms, and observed mandi rates|
-|    Evidence            | from active transport associations and logistics operators.              |
-|                        |                                                                          |
-| 3. Team Engineering   | Algorithmic simplifications and system architecture parameters adopted   |
-|    Assumptions         | for the prototype (e.g., corridor linearity, 100-slot grid, ₹899 SaaS).  |
-|                        |                                                                          |
-| 4. Unverified          | Behavioral claims regarding user adoption speed, willingness of farmers  |
-|    Hypotheses          | to co-load produce, and driver compliance with digital handoffs.         |
-|                        |                                                                          |
-| 5. Field Research      | Empirical field interviews with farmers, fleet owners, and mandi arhtiyas|
-|    Still Required      | (STATUS: NOT YET CONDUCTED — VALIDATION REQUIRED).                       |
-+---------------------------------------------------------------------------------------------------+
-```
+```mermaid
+flowchart TD
+    subgraph Audit ["5-Tier Evidentiary & Assumption Framework"]
+        direction TB
+        E1["1. Verified Statutory & Academic Evidence\n- DPIIT / NCAER Dec 2023: Logistics 7.97% macro / 16.9% MSME\n- MoAFW 10th Census: 86.2% smallholder landholdings\n- CGST Rule 138(14)(e): Fresh produce e-way bill exemption"]
+        E2["2. Commercial Market Evidence\n- Regional truck union rate cards: ₹7,000 / 10t ICV charter\n- Commercial Diesel: ₹92/L benchmark\n- AGMARKNET daily modal mandi prices"]
+        E3["3. Team Engineering Assumptions\n- Spatial corridor buffer: delta_buffer <= 10.0 km\n- Vehicle capacity discretization: 100-slot planning grid\n- Subscription Pricing: ₹899/month flat SaaS"]
+        E4["4. Unverified Hypotheses\n- Farmer willingness to co-load produce with peers\n- Driver compliance with digital loading bay OTPs"]
+        E5["5. Field Research Protocols\n- Planned 120-interview field study across Nashik corridor\n- STATUS: PLANNED - NOT YET CONDUCTED"]
+    end
+````
+
 
 ### Detailed Classification Table
 
@@ -267,23 +271,18 @@ Recognizing that elderly smallholders may lack smartphones:
 
 To establish competition-readiness, PRAYAAN is evaluated against existing commercial and government logistics platforms:
 
-```
-+-----------------------------------------------------------------------------------------------------------------------------------------+
-|                                           COMPETITOR DIFFERENTIATION MATRIX                                                             |
-| *Assessment Basis: Team technical review of publicly available product features, developer docs, and published regulatory filings.     |
-+------------------------------------+-----------+--------+--------+--------+-----------+-----------+----------+--------------+-----------+
-| Architectural Capability           | BlackBuck | Porter | Rivigo | DeHaat | Ninjacart | KisanRath | e-NAM    | Vahak        | PRAYAAN   |
-+------------------------------------+-----------+--------+--------+--------+-----------+-----------+----------+--------------+-----------+
-| 1. Small Shipment LTL Pooling      | No (FTL)  | No     | Parcels| Captive| Captive   | No        | No       | No (FTL)     | YES (Core)|
-| 2. Multi-Stop Pickups & Drops      | Rare      | No     | Hub-Hub| Hub-Hub| Hub-Hub   | No        | No       | Rare         | YES (Corr)|
-| 3. Rural Transporter Inclusivity   | Yes       | Urban  | Drivers| Closed | Closed    | Directory | Directory| Yes          | YES (Open)|
-| 4. 3-Axis Capacity Validation      | No (Wt)   | No (Wt)| Volume | Closed | Closed    | No        | No       | No           | YES (3-Ax)|
-| 5. Offline Driver Workflows        | Basic     | No     | Yes    | No     | Basic     | No        | No       | Basic        | YES(SQLite|
-| 6. Vernacular Voice-First Access   | Limited   | No     | No     | Yes    | Internal  | Basic     | Multiling| Limited      | YES(Bhash)|
-| 7. Transparent Cost Allocation     | Brokerage | Dynamic| Tariffs| Margin | Margin    | N/A       | N/A      | Bidding      | YES(Paise)|
-| 8. Decoupled Delivery Confirmation | No        | No     | Hub-Hub| No     | Internal  | No        | No       | No           | YES (OTP) |
-+------------------------------------+-----------+--------+--------+--------+-----------+-----------+----------+--------------+-----------+
-```
+| Architectural Capability | BlackBuck | Porter | Rivigo | DeHaat | Ninjacart | KisanRath | e-NAM | Vahak | PRAYAAN |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **1. Small Shipment LTL Pooling** | No (FTL) | No | Parcels | Captive | Captive | No | No | No (FTL) | **YES (Core)** |
+| **2. Multi-Stop Pickups & Drops** | Rare | No | Hub-Hub | Hub-Hub | Hub-Hub | No | No | Rare | **YES (Corridor)** |
+| **3. Rural Transporter Inclusivity** | Yes | Urban | Drivers | Closed | Closed | Directory | Directory | Yes | **YES (Open SaaS)** |
+| **4. 3-Axis Capacity Validation** | No (Wt) | No (Wt) | Volume | Closed | Closed | No | No | No | **YES (3-Axis)** |
+| **5. Offline Driver Workflows** | Basic | No | Yes | No | Basic | No | No | Basic | **YES (SQLite)** |
+| **6. Vernacular Voice-First Access** | Limited | No | No | Yes | Internal | Basic | Multilingual | Limited | **YES (Bhashini)** |
+| **7. Transparent Cost Allocation** | Brokerage | Dynamic | Tariffs | Margin | Margin | N/A | N/A | Bidding | **YES (Paise NMRS)** |
+| **8. Decoupled Delivery Confirmation** | No | No | Hub-Hub | No | Internal | No | No | No | **YES (Dual OTP)** |
+
+> _*Assessment Basis: Technical review of publicly available product features, developer docs, and published regulatory filings._
 
 ### Analysis of Intercity LTL & Load-Board Platforms (Why They Differ)
 
@@ -297,3 +296,4 @@ To establish competition-readiness, PRAYAAN is evaluated against existing commer
 2. **Deterministic Multi-Attribute Pooling vs. FTL Truck Boards**: Unlike BlackBuck or Vahak, which match one shipper's dedicated load to one truck, PRAYAAN consolidates three 2.5-tonne shipments from different smallholders into a single vehicle run along a shared corridor.
 3. **Decoupled Multi-Buyer Handshake**: Existing logistics platforms treat an entire truck as a single delivery manifest. If Buyer 2 rejects cargo or is absent, the driver cannot complete the trip. PRAYAAN decouples delivery acknowledgments so each buyer confirms only their cargo lot independently.
 4. **Zero-Commission Predictable SaaS**: By charging a transparent ₹899/month flat fee instead of taking a 5% to 15% transaction cut, PRAYAAN prevents freight rate inflation and fosters long-term transporter loyalty.
+```

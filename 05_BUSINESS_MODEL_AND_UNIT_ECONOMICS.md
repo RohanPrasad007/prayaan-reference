@@ -8,7 +8,9 @@
 ---
 
 > [!IMPORTANT]
+>
 > ### ⏱️ 30-Second Executive TL;DR & Judge Fast-Track
+>
 > - **The Commercial Philosophy**: Zero predatory transaction brokerage (which extracts 8%–15% from farmers). Instead, PRAYAAN operates on a transparent, predictable Software-as-a-Service (SaaS) subscription: **₹899 / month for Sellers & Fleet Owners, ₹0 for Wholesale Buyers**.
 > - **The FPO Aggregation Anchor**: Smallholders access pooling via their local FPO/SHG, which holds a single platform subscription and manages internal member accounting via a nominal **₹10 / quintal** handling fee.
 > - **Financial Defensibility & Audited OpEx**:
@@ -28,20 +30,26 @@
 
 A logistics platform for rural Bharat must avoid predatory brokerage commissions (which typically extract 8% to 15% of cargo value) and high per-transaction friction. **PRAYAAN** adopts an ultra-low-friction, predictable Software-as-a-Service (SaaS) subscription model designed to empower rural producers, Farmer Producer Organizations (FPOs), and small fleet owners.
 
+```mermaid
+flowchart TD
+    subgraph SaaSModel ["PRAYAAN Flat SaaS Subscription & Revenue Architecture"]
+        direction TB
+        subgraph Tiers ["Subscription Tiers (Zero Transaction Commission)"]
+            S1["Seller / FPO Plan\n₹899 / month + 18% GST\nUnlimited crop listings & pooling"]
+            S2["Fleet Owner Plan\n₹899 / month + 18% GST\nCorridor load board & NMRS dispatch"]
+            S3["Wholesale Buyer Plan\n₹0 FREE\nFrictionless buyer liquidity & RFQ"]
+        end
+
+        subgraph Value ["Commercial Rationale & Unit Economics"]
+            V1["Zero Brokerage Cut:\nReplaces 8%-15% extractive commission brokers"]
+            V2["Immediate ROI:\nSingle pooled run saves ₹3,000-₹4,000\n(Subscription pays back on Trip 1)"]
+            V3["High Gross Margin (87.1%):\n₹783/mo net margin per subscriber\nFunds rural customer support & field ops"]
+        end
+
+        Tiers --> Value
+    end
 ```
-+---------------------------------------------------------------------------------------------------+
-|                            SAAS PRICING PHILOSOPHY & COMMERCE DESIGN                              |
-+---------------------------------------------------------------------------------------------------+
-|  TRANSPARENT VALUE-BASED PRICING                    COMMERCIAL RATIONALE                          |
-|  - Seller / FPO Plan: ₹899 / month (+ 18% GST).     - Eliminates predatory 8%–15% commission      |
-|  - Fleet Owner Plan:  ₹899 / month (+ 18% GST).       brokerage cuts on agricultural freight.     |
-|  - Wholesale Buyer:   ₹0 (Free browsing & RFQ).     - A single shared trip saves ₹3,000–₹4,000,   |
-|  - Dual-Role Entity:  Pays separate plans if          making the subscription ROI positive on     |
-|    operating both as commercial seller & carrier.     Trip 1 of each month.                       |
-|  - Zero Platform Transaction Commission.            - Yields 87.1% gross margin to fund regional  |
-|                                                       customer support desk and field staff.      |
-+---------------------------------------------------------------------------------------------------+
-```
+
 
 ---
 
@@ -149,24 +157,16 @@ The platform achieves operational cash-flow break-even at **384 active subscribe
 
 ## 4. Three-Year Multi-Scenario Financial Projections
 
-```
-+---------------------------------------------------------------------------------------------------+
-|                     THREE-YEAR FINANCIAL PROJECTIONS (INR LAKHS) — AUDITED OPEX                   |
-+------------------------------------+--------------------+--------------------+--------------------+
-| Financial Parameter                | Year 1 (1 Corridor)| Year 2 (4 Corridors| Year 3 (10 Corridors|
-+------------------------------------+--------------------+--------------------+--------------------+
-| Active Seller Subscribers (FPOs)   | 120                | 650                | 2,400              |
-| Active Fleet Owners (Trucks)       | 180                | 1,100              | 4,200              |
-| Total Active Subscribers           | 300                | 1,750              | 6,600              |
-+------------------------------------+--------------------+--------------------+--------------------+
-| Gross Recognized Revenue (Net GST) | ₹32.36 Lakhs       | ₹188.79 Lakhs      | ₹712.01 Lakhs      |
-| Direct Variable Technology Costs   | (₹4.18 Lakhs)      | (₹24.36 Lakhs)     | (₹91.87 Lakhs)     |
-| Fixed Operational Overhead (OpEx)  | (₹36.00 Lakhs)     | (₹79.20 Lakhs)     | (₹162.00 Lakhs)    |
-+------------------------------------+--------------------+--------------------+--------------------+
-| Operating EBITDA                   | (₹7.81 Lakhs)      | ₹85.23 Lakhs       | ₹458.14 Lakhs      |
-| Operating EBITDA Margin            | -24.1% (Seed Phase)| +45.1%             | +64.3%             |
-+------------------------------------+--------------------+--------------------+--------------------+
-```
+| Financial Parameter | Year 1 (1 Corridor) | Year 2 (4 Corridors) | Year 3 (10 Corridors) |
+| :--- | :---: | :---: | :---: |
+| **Active Seller Subscribers (FPOs)** | 120 | 650 | 2,400 |
+| **Active Fleet Owners (Trucks)** | 180 | 1,100 | 4,200 |
+| **Total Active Subscribers** | **300** | **1,750** | **6,600** |
+| Gross Recognized Revenue (Net GST) | ₹32.36 Lakhs | ₹188.79 Lakhs | ₹712.01 Lakhs |
+| Direct Variable Technology Costs | (₹4.18 Lakhs) | (₹24.36 Lakhs) | (₹91.87 Lakhs) |
+| Fixed Operational Overhead (OpEx) | (₹36.00 Lakhs) | (₹79.20 Lakhs) | (₹162.00 Lakhs) |
+| **Operating EBITDA** | **(₹7.81 Lakhs)** | **₹85.23 Lakhs** | **₹458.14 Lakhs** |
+| **Operating EBITDA Margin** | **-24.1%** *(Seed Phase)* | **+45.1%** | **+64.3%** |
 *Note: Generated dynamically via `scripts/unit_economics.py`. Year 1 reflects an intentional seed-stage development deficit while establishing the core engineering team, turning cash-flow positive in Month 9 upon surpassing the 384 active subscriber milestone.*
 
 ### B. Macroeconomic & Climate Shock Sensitivity Stress-Test
@@ -195,13 +195,9 @@ To ensure complete transparency before competition juries, PRAYAAN explicitly se
 
 ## 6. Comprehensive Field-Validation Protocol
 
-```
-=====================================================================================================
-STATUS: NOT YET CONDUCTED — VALIDATION REQUIRED
-The questionnaires, sampling methodologies, and data collection frameworks below represent
-PRAYAAN's pre-pilot field validation protocol. No interviews have been conducted to date.
-=====================================================================================================
-```
+> [!NOTE]
+> ### STATUS: NOT YET CONDUCTED — VALIDATION REQUIRED
+> The questionnaires, sampling methodologies, and data collection frameworks below represent PRAYAAN's pre-pilot field validation protocol. No interviews have been conducted to date.
 
 ### A. Sampling Methodology & Cohort Sizing
 
@@ -217,29 +213,31 @@ PRAYAAN's pre-pilot field validation protocol. No interviews have been conducted
 ### B. Instrument 1: Farmer & Producer Questionnaire (20 Key Metrics)
 
 ```
+
 [FIELD DATA COLLECTION SHEET — PRODUCER COHORT]
-Interviewer Name: _______________________ Date: ____________ Village/Block: __________________
-Respondent Name: ________________________ Landholding (Acres): _____ Primary Crops: ___________
+Interviewer Name: **********\_\_\_********** Date: ****\_\_\_\_**** Village/Block: ********\_\_********
+Respondent Name: **********\_\_\_\_********** Landholding (Acres): **\_** Primary Crops: ****\_\_\_****
 
 Q01. What is your typical marketable surplus volume per harvest cycle? [Quintals / Tonnes]
 Q02. How do you currently transport produce from farmgate to the nearest APMC mandi?
-     [ ] Own tractor/trolley  [ ] Hired SCV (Tata Ace)  [ ] Shared local pickup  [ ] Sold at farmgate to middleman
+[ ] Own tractor/trolley [ ] Hired SCV (Tata Ace) [ ] Shared local pickup [ ] Sold at farmgate to middleman
 Q03. What freight price do you currently pay per quintal or per trip to your primary mandi? [INR]
 Q04. How many hours or days prior to harvest do you book transportation?
 Q05. Have you ever experienced a transporter failing to arrive on time? If yes, what happened to produce?
 Q06. On average, how many hours does your produce wait at the loading dock before departure?
 Q07. Do you ever sell at farmgate at a discounted price because transport is unavailable or too expensive?
-     If yes, what is the typical price markdown compared to mandi rate? [e.g., 20% lower, 30% lower]
+If yes, what is the typical price markdown compared to mandi rate? [e.g., 20% lower, 30% lower]
 Q08. Would you be willing to share truck space with another farmer from your village traveling to the same market?
-     [ ] Yes, unconditionally  [ ] Yes, if produce is partitioned  [ ] No (Explain reason: ____________)
+[ ] Yes, unconditionally [ ] Yes, if produce is partitioned [ ] No (Explain reason: ****\_\_\_\_****)
 Q09. What is your biggest fear regarding shared truckloads?
-     [ ] Cargo theft  [ ] Produce damage/crushing  [ ] Consignment mixing  [ ] Delayed unloading
+[ ] Cargo theft [ ] Produce damage/crushing [ ] Consignment mixing [ ] Delayed unloading
 Q10. How do you verify that the quantity loaded at the farm reaches the buyer without pilferage?
-Q11. What mobile phone do you use? [ ] Feature phone (keypad)  [ ] Basic Android  [ ] Modern Smartphone
+Q11. What mobile phone do you use? [ ] Feature phone (keypad) [ ] Basic Android [ ] Modern Smartphone
 Q12. How comfortable are you using an OTP code or mobile app to confirm loading? [Scale 1 to 5]
-Q13. What languages are you fluent in reading? [ ] Hindi  [ ] Marathi  [ ] Gujarati  [ ] English
-Q14. Are you a registered member of an active Farmer Producer Organization (FPO)? [ ] Yes  [ ] No
-Q15. If an FPO provided pooled transport saving 30% on freight, would you use it? [ ] Yes  [ ] No
+Q13. What languages are you fluent in reading? [ ] Hindi [ ] Marathi [ ] Gujarati [ ] English
+Q14. Are you a registered member of an active Farmer Producer Organization (FPO)? [ ] Yes [ ] No
+Q15. If an FPO provided pooled transport saving 30% on freight, would you use it? [ ] Yes [ ] No
+
 ```
 
 ---
@@ -247,30 +245,32 @@ Q15. If an FPO provided pooled transport saving 30% on freight, would you use it
 ### C. Instrument 2: Fleet Owner & Truck Driver Questionnaire (20 Key Metrics)
 
 ```
+
 [FIELD DATA COLLECTION SHEET — TRANSPORTER & DRIVER COHORT]
-Interviewer Name: _______________________ Date: ____________ Transport Nagar: ________________
-Fleet Owner / Driver Name: ______________ Fleet Size: _____ Primary Vehicle Models: _________
+Interviewer Name: **********\_\_\_********** Date: ****\_\_\_\_**** Transport Nagar: ******\_\_\_\_******
+Fleet Owner / Driver Name: ******\_\_****** Fleet Size: **\_** Primary Vehicle Models: ****\_****
 
 Q01. What vehicle models do you operate on rural-to-urban routes?
-     [ ] SCV (< 1.5t)  [ ] LCV (2.5t - 4t)  [ ] ICV (7t - 10t)  [ ] Multi-Axle (> 16t)
+[ ] SCV (< 1.5t) [ ] LCV (2.5t - 4t) [ ] ICV (7t - 10t) [ ] Multi-Axle (> 16t)
 Q02. What is your actual average fuel mileage (km per liter) when fully loaded vs. empty?
 Q03. What is the standard commercial one-way freight rate you quote for the corridor? [INR]
 Q04. When delivering agricultural produce to urban mandis, how do you find return cargo?
-     [ ] Commission agent / broker  [ ] Wait at transport nagar  [ ] WhatsApp groups  [ ] Return empty
+[ ] Commission agent / broker [ ] Wait at transport nagar [ ] WhatsApp groups [ ] Return empty
 Q05. What percentage of your return trips are run completely empty (deadheading)? [ ____ % ]
 Q06. How many days per month does each commercial vehicle sit idle without an assigned load?
 Q07. What commission percentage or fee do you pay to freight brokers per trip? [ ____ % / INR ]
 Q08. How do shippers settle freight payments?
-     [ ] 100% Cash on delivery  [ ] Advance diesel cash + balance on POD  [ ] Delayed credit (15-45 days)
+[ ] 100% Cash on delivery [ ] Advance diesel cash + balance on POD [ ] Delayed credit (15-45 days)
 Q09. How often do shippers or buyers make deductions from your freight bill claiming damaged/short cargo?
 Q10. How many loading stops are you willing to make within a 15 km rural radius if paid extra? [Max stops: __]
 Q11. How much additional compensation per stop would make a multi-pickup run viable? [INR]
 Q12. Have you ever experienced smartphone network disconnection during rural pickups? How do you cope?
-Q13. Do you currently use FASTag for toll payments? [ ] Yes  [ ] No
+Q13. Do you currently use FASTag for toll payments? [ ] Yes [ ] No
 Q14. Would you pay a flat ₹899/month subscription if it provided guaranteed verified return loads?
-     [ ] Definitely yes  [ ] Only if trial is free  [ ] No, prefer commission per load
+[ ] Definitely yes [ ] Only if trial is free [ ] No, prefer commission per load
 Q15. What is your average monthly expenditure on tyre replacements, maintenance, and commercial EMI?
-```
+
+````
 
 ---
 
@@ -278,25 +278,21 @@ Q15. What is your average monthly expenditure on tyre replacements, maintenance,
 
 When field surveys are conducted during Stage 2, raw response data will be mapped directly into PRAYAAN’s algorithmic parameters:
 
-```
-+---------------------------------------------------------------------------------------------------+
-|                        FIELD DATA TO ALGORITHMIC PARAMETER MAPPING                                |
-+---------------------------------------------------------------------------------------------------+
-| Survey Metric Collected             | Algorithmic Variable in PRAYAAN Model                       |
-+-------------------------------------+-------------------------------------------------------------+
-| Observed return empty trip rate     | Calibrates Return Probability P_backhaul in repositioning   |
-| (Q05 in Transporter Survey)         | cost formula: K_reposition = (1 - P_backhaul) * (D * V_km).  |
-|                                     |                                                             |
-| Multi-stop detour compensation      | Sets the Pickup Service Cost s_p and maximum corridor detour|
-| (Q11 in Transporter Survey)         | threshold \delta_max in m-PDVRPTW objective function.      |
-|                                     |                                                             |
-| Observed loading dock wait time     | Sets the pickup time window width [e_p, l_p] and loading    |
-| (Q06 in Farmer Survey)              | dock timeout threshold (default: 60 minutes).               |
-|                                     |                                                             |
-| Baseline dedicated charter rates    | Establishes standalone benchmark C_standalone(c_i) to verify |
-| (Q03 in Farmer Survey)              | that NMRS allocated freight A_i guarantees >= 30% savings.  |
-+---------------------------------------------------------------------------------------------------+
-```
+```mermaid
+flowchart LR
+    S1["Observed Return Empty Rate (Q05)"] --> P1["Backhaul Probability P_backhaul\nin Repositioning Model"]
+    S2["Multi-Stop Detour Cost (Q11)"] --> P2["Detour Buffer & Pickup Cost\nin m-PDVRPTW Model"]
+    S3["Loading Dock Wait Time (Q06)"] --> P3["Time Windows & Dock Timeout\n(Default: 60 min)"]
+    S4["Dedicated Charter Rates (Q03)"] --> P4["Standalone Cost Benchmark C_standalone\nfor Core Stability & IR Verification"]
+````
+
+
+| Survey Metric Collected | Algorithmic Variable in PRAYAAN Model | Mathematical Role |
+| :--- | :--- | :--- |
+| **Observed Return Empty Trip Rate** (Q05) | $P_{\text{backhaul}}$ in repositioning formula | Calibrates $K_{\text{reposition}} = (1 - P_{\text{backhaul}}) \cdot [D_{\text{return}} \cdot V_{\text{km}}]$ |
+| **Multi-Stop Detour Compensation** (Q11) | Pickup Service Cost $s_p$ & $\delta_{\max}$ | Bounds maximum orthogonal detour corridor envelope ($\le 10\text{ km}$) |
+| **Observed Loading Dock Wait Time** (Q06) | Pickup Time Window $[e_p, l_p]$ | Sets dock timeout threshold (default: 60 min) to prevent driver detention |
+| **Baseline Dedicated Charter Rates** (Q03) | Standalone Cost $c(\{i\})$ | Verifies Individual Rationality ($A_i \le c(\{i\})$) and $\ge 30\%$ savings |
 
 ### E. Evidence Requirements Before Platform Impact Claims Can Be Made
 
@@ -313,10 +309,9 @@ Before PRAYAAN publishes any public impact claims, the team must meet four verif
 
 To transition seamlessly from hackathon evaluation to physical field deployment, the following standard Memorandum of Understanding / Letter of Intent (LoI) template has been drafted for execution with regional Farmer Producer Organizations and transport unions:
 
-```
-+---------------------------------------------------------------------------------------------------+
-|               MEMORANDUM OF UNDERSTANDING / PRE-PILOT LETTER OF INTENT (LoI)                      |
-+---------------------------------------------------------------------------------------------------+
+```text
+MEMORANDUM OF UNDERSTANDING / PRE-PILOT LETTER OF INTENT (LoI)
+==============================================================
 Date: ________________________              Execution City: Nashik, Maharashtra
 
 BETWEEN:

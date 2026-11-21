@@ -1,7 +1,7 @@
 # Technical Limitations, System Threats & Hypothesis Validation
 
 > **Critical Risk & Assumption Analysis for Competition Jury & Institutional Reviewers**  
-> *PRAYAAN (Tech4Bharat 2026 / GAVS Hackathon, Theme 5: Rural Freight, Team Kernal500)*
+> _PRAYAAN (Tech4Bharat 2026 / GAVS Hackathon, Theme 5: Rural Freight, Team Kernal500)_
 
 ---
 
@@ -13,17 +13,31 @@ Every early-stage logistics innovation operating in Indian rural supply chains f
 
 ## 2. Comprehensive Analysis of the Top 10 Threats
 
+```mermaid
+flowchart TD
+    subgraph ThreatSpectrum ["PRAYAAN Operational & Technical Threat Spectrum"]
+        direction TB
+        subgraph Col1 ["Behavioral & Market Dynamics"]
+            T1["Threat 1: Farmer Pooling Reluctance\n(Fear of cargo commingling & disputes)"]
+            T9["Threat 9: Arhtiya Credit Resistance\n(Informal debt lock-in at Mandis)"]
+            T10["Threat 10: Corridor Liquidity Gate\n(Threshold density for daily dispatches)"]
+        end
+
+        subgraph Col2 ["Operational & Infrastructure"]
+            T2["Threat 2: Driver Multi-Stop Fatigue\n(Detour time & loading dock waiting)"]
+            T7["Threat 7: Ghat Cellular Dead Zones\n(Intermittent 2G/zero connectivity)"]
+            T8["Threat 8: Perishable Transit Clock\n(Strict harvest-to-dock shelf life)"]
+            T6["Threat 6: ALNS Scaling Latency\n(Combinatorial dispatch compute time)"]
+        end
+
+        subgraph Col3 ["Legal, Financial & Regulatory"]
+            T3["Threat 3: RBI Escrow Regulations\n(PA Nodal Account compliance)"]
+            T4["Threat 4: GTA vs Facilitator GST\n(Tax classification under CGST Act)"]
+            T5["Threat 5: Backhaul Deadhead Model\n(Unsecured return-trip economics)"]
+        end
+    end
 ```
-+----------------------------------------------------------------------------------------------------+
-|                                    PRAYAAN THREAT SPECTRUM                                         |
-+----------------------------------------------------------------------------------------------------+
-|  BEHAVIORAL & MARKET DYNAMICS    |  OPERATIONAL & INFRASTRUCTURE   |  LEGAL, FINANCIAL & REGULATORY|
-|  - 1. Farmer Pooling Reluctance  |  - 2. Driver Multi-Stop Fatigue |  - 3. RBI Escrow Regulations  |
-|  - 9. Arhatiya Credit Resistance |  - 7. Ghat Cellular Dead Zones  |  - 4. GTA vs Facilitator GST  |
-|  - 10. Density / Liquidity Gate  |  - 8. Perishable Transit Clock  |  - 5. Backhaul Deadhead Model |
-|                                  |  - 6. ALNS Scaling Latency      |                               |
-+----------------------------------------------------------------------------------------------------+
-```
+
 
 ---
 
@@ -164,3 +178,4 @@ Every early-stage logistics innovation operating in Indian rural supply chains f
 ---
 
 *This document is maintained as part of the official PRAYAAN technical dossier. All listed hypotheses will be systematically evaluated, and outcomes will be recorded in subsequent technical revisions.*
+```

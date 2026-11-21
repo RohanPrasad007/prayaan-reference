@@ -8,7 +8,9 @@
 ---
 
 > [!IMPORTANT]
+>
 > ### ⏱️ 30-Second Executive TL;DR & Judge Fast-Track
+>
 > - **The Core Architecture**: A full-stack, tri-client system (Vendor Web, Fleet Portal, Driver React Native Mobile App) backed by a hardened PostgreSQL 16 persistence engine, PostGIS spatial indexing, and strict Row-Level Security (RLS).
 > - **Key Engineering Innovations**:
 >   1. **Offline-First Resilience**: Driver mobile workflow runs on an encrypted on-device SQLite transactional journal with causal sync and idempotent replay, ensuring uninterrupted operations in 2G/zero-connectivity farm belts.
@@ -243,12 +245,15 @@ erDiagram
 
 PRAYAAN enforces a six-stage deterministic state transition machine governing order and custody lifecycles:
 
+```mermaid
+flowchart LR
+    S1["01 LIST\nFarmer posts crop with\npickup origin & lot size"] --> S2["02 AGREE\nBuyer agrees on terms\nor negotiates digital RFQ"]
+    S2 --> S3["03 CONFIRM\nOrder advance opens\nunassigned request in pool"]
+    S3 --> S4["04 CLAIM\nFleet owner pools\ncompatible loads to trip"]
+    S4 --> S5["05 PICKUP\nDriver verifies 6-digit\nloading OTP & photo proof"]
+    S5 --> S6["06 DELIVER\nBuyer verifies delivery\nOTP & confirms custody"]
 ```
-[01 LIST]  --->  [02 AGREE]  --->  [03 CONFIRM]  --->  [04 CLAIM]  --->  [05 PICKUP]  --->  [06 DELIVER]
- Farmer posts     Buyer agrees       Order advance      Fleet owner        Driver verifies    Buyer verifies
- crop with        on terms or        opens unassigned   pools compatible   6-digit loading    delivery OTP &
- pickup origin    negotiates         request in pool    loads to trip      OTP & evidence     confirms order
-```
+
 
 ### Stage 01: Crop Listing (`LIST`)
 
@@ -293,38 +298,35 @@ PRAYAAN enforces a six-stage deterministic state transition machine governing or
 
 To ensure seamless field execution in remote rural areas with zero cellular reception, the Driver Mobile App operates an **Offline-First Synchronization Engine**:
 
-```
-+---------------------------------------------------------------------------------------------------+
-|                            OFFLINE SYNCHRONIZATION TRANSACTION FLOW                               |
-+---------------------------------------------------------------------------------------------------+
-|  REMOTE VILLAGE (OFFLINE ZONE)                      TRANSIT CORRIDOR (NETWORK RESTORED)          |
-|                                                                                                   |
-|  [Driver Action: Verify OTP / Capture Photo]                                                      |
-|         |                                                                                         |
-|         v                                                                                         |
-|  [Write to Encrypted Local SQLite DB]                                                             |
-|  - Payload: {action, trip_id, consignment_id,                                                     |
-|              client_timestamp, gps, otp_hash}                                                     |
-|  - Envelope: {idempotency_key: UUIDv4, sync_status: PENDING}                                      |
-|         |                                                                                         |
-|         v                                                                                         |
-|  [Update Local UI Optimistically]                                                                 |
-|  - Driver proceeds with trip execution                                                            |
-|                                                     [Network Connectivity Detected]               |
-|                                                            |                                      |
-|                                                            v                                      |
-|                                                     [Atomic Causal Batch Push]                    |
-|                                                     - POST /api/v1/sync/journal                   |
-|                                                            |                                      |
-|                                                            v                                      |
-|                                                     [Backend Idempotency Verification]            |
-|                                                     - If UUID exists: return cached response      |
-|                                                     - If new: commit transaction & emit events    |
-|                                                            |                                      |
-|                                                            v                                      |
-|                                                     [Acknowledge & Mark Synced in SQLite]         |
-+---------------------------------------------------------------------------------------------------+
-```
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Driver as Driver Mobile App
+    participant SQLite as Local Encrypted SQLite
+    participant SyncWorker as Background Sync Worker
+    participant Gateway as API Gateway
+    participant Backend as PostgreSQL 16 Backend
+
+    Note over Driver,SQLite: Remote Village (Offline / 2G Zone)
+    Driver->>SQLite: Verify 6-Digit OTP / Capture Geofenced Photo
+    SQLite->>SQLite: Append to Action Journal (Status: PENDING, Idempotency UUIDv4)
+    SQLite-->>Driver: Optimistic UI Success (Trip Unblocked)
+
+    Note over SyncWorker,Backend: Transit Corridor (Cellular Network Restored)
+    SyncWorker->>SyncWorker: Network Connectivity Detected (Ping Polling)
+    SyncWorker->>SQLite: Read Unsynced Pending Events (Sorted by client_timestamp)
+    SyncWorker->>Gateway: POST /api/v1/sync/journal (JWT + Encrypted JSON Batch)
+    Gateway->>Backend: Atomic Batch Insertion & Idempotency Check
+    alt Key already exists (Replayed Request)
+        Backend-->>Gateway: Return 200 OK (Cached Historical Result)
+    else New Event
+        Backend->>Backend: Execute State Transition & Check Triggers
+        Backend-->>Gateway: Return 201 Created (Committed State)
+    end
+    Gateway-->>SyncWorker: Batch Sync Acknowledged
+    SyncWorker->>SQLite: UPDATE journal SET sync_status = 'SYNCED'
+````
+
 
 ### Protocol Technical Guarantees:
 
@@ -381,7 +383,7 @@ CREATE POLICY consignments_update_policy ON consignments
         is_trip_operator(trip_id, get_current_app_user_id())
         OR is_app_admin()
     );
-```
+````
 
 #### Known RLS Attack Vectors & Mitigations:
 
@@ -417,39 +419,34 @@ To prevent fraudulent collection of freight payments or falsified delivery evide
 
 ## 8. Statutory E-Way Bill & Payment Gateway Workflows
 
+```mermaid
+flowchart TD
+    subgraph Commodity ["Statutory E-Way Bill Workflow (CGST Rule 138)"]
+        direction TB
+        C1["Listing Confirmed & Consignment Booked"] --> C2{"Is Commodity Fresh / Unprocessed?\nRule 138(14)(e) & Notif 2/2017"}
+        C2 -- "YES" --> C3["Statutory E-Way Bill EXEMPTION\nBypass E-Way Generation\nGenerate Internal Consignment Note"]
+        C2 -- "NO (Processed / Branded)" --> C4{"Consignment Value > ₹50,000?"}
+        C4 -- "YES" --> C5["Generate Part A (Consignor Details)\nAssign Truck -> Add Part B (Vehicle No)"]
+        C4 -- "NO" --> C6["Below Threshold: No E-Way Required"]
+    end
+
+    subgraph Payment ["Split-Milestone Driver Freight Settlement (RBI Nodal Account)"]
+        direction TB
+        P1["Buyer Confirms Order\nAuthorizes Payment via Licensed PA (Razorpay/Cashfree)"]
+        P2["RBI Nodal Escrow Locks Funds:\n- 20% Advance Cargo Deposit (Covers >140% of Trip Freight)\n- 100% Freight Fee Committed"]
+        P3["Loading OTP Verified at Farmgate\n- Driver verifies 6-digit OTP & submits cargo photo"]
+        P4["Milestone 1: 50% Instant Freight Advance\n- Direct UPI Payout to Driver for Diesel & FASTag Tolls"]
+        P5["Delivery OTP Confirmed by Buyer\n- Decoupled single-buyer verification at APMC dock"]
+        P6["Milestone 2: Automated T+1 Final Disbursal\n- 100% Crop Value to Farmer Bank Account\n- Remaining 50% Freight to Transporter Bank Account"]
+
+        P1 --> P2
+        P2 --> P3
+        P3 --> P4
+        P4 --> P5
+        P5 --> P6
+    end
 ```
-+---------------------------------------------------------------------------------------------------+
-|                        E-WAY BILL & PAYMENT ARCHITECTURE FLOW                                     |
-+---------------------------------------------------------------------------------------------------+
-|  COMMODITY EVALUATION                               PAYMENT SETTLEMENT LIFECYCLE                  |
-|                                                                                                   |
-|  [Crop Listing Confirmed]                           [Buyer Orders Produce]                        |
-|         |                                                      |                                  |
-|         v                                                      v                                  |
-|  Is Commodity Exempt under Notification              [Authorize Advance via Licensed PA]          |
-|  No. 2/2017-Central Tax (Rate)?                      (Razorpay/Cashfree Nodal Escrow)             |
-|   (e.g., Fresh Vegetables, Grains, Milk)                       |                                  |
-|         |                                                      v                                  |
-|    +----+----+                                       [Funds Locked in Escrow]                     |
-|    |         |                                       - 20% Advance Cargo Deposit                  |
-|   YES        NO                                      - 100% Freight Fee Committed                 |
-|    |         |                                                 |                                  |
-|    v         v                                                 v                                  |
-| [Bypass   [Check Consignment Value]                  [Loading OTP Verified at Farmgate]           |
-|  E-Way    - If > Rs 50,000: Generate Part A                    |                                  |
-|  Bill]      - When Truck Assigned: Add Part B                  v                                  |
-|           - In Demo: Tag SIMULATED_DEMO]             [Milestone 1: 50% Freight Instant Disbursal] |
-|                                                      - UPI Advance to Driver for Diesel & Tolls   |
-|                                                                |                                  |
-|                                                                v                                  |
-|                                                      [Delivery OTP Confirmed by Buyer]            |
-|                                                                |                                  |
-|                                                                v                                  |
-|                                                      [Milestone 2: Automated T+1 Final Disbursal] |
-|                                                      - Crop Value (100%) -> Farmer Bank Account   |
-|                                                      - Remaining 50% Freight -> Transporter Bank  |
-+---------------------------------------------------------------------------------------------------+
-```
+
 
 ### Deterministic 50/50 Split-Milestone Freight Disbursal Policy
 To solve the structural working capital deficit faced by rural truck drivers without incurring unhedged credit risk:
@@ -464,3 +461,4 @@ To maintain absolute compliance with RBI regulations:
 - PRAYAAN does **not** operate an internal banking wallet or unlicensed escrow pool.
 - All funds flow through a **commercial Payment Aggregator (Razorpay / Cashfree) operating an RBI-regulated Nodal / Escrow Account** under the Payment and Settlement Systems Act, 2007.
 - In prototype demonstrations, payment webhooks are clearly designated `SIMULATED_GATEWAY_SANDBOX`.
+```

@@ -8,7 +8,9 @@
 ---
 
 > [!IMPORTANT]
+>
 > ### ⏱️ 30-Second Executive TL;DR & Judge Fast-Track
+>
 > - **The Core Purpose**: Provides an airtight, audit-ready evidentiary foundation for every quantitative metric, statutory compliance baseline, and environmental calculation used across the PRAYAAN dossier.
 > - **Key Breakthrough — Logistics Cost Reconciliation**: Resolves the widespread hackathon confusion between macro logistics cost (~8% of GDP, DPIIT/NCAER Dec 2023) and rural/MSME enterprise logistics burden (**16.9% of output value**), explaining why agricultural freight remains an acute economic bottleneck.
 > - **Regulatory Compliance**: Explicitly accounts for CGST Rule 138(14)(e) agricultural e-way bill exemptions, DPDP Act 2023 consent protocols, and RBI Payment Aggregator escrow requirements.
@@ -29,6 +31,18 @@ This document provides a comprehensive audit of all cited sources, resolves hist
 ## 2. Institutional Source Audit Table
 
 The following register audits every major quantitative claim across the PRAYAAN reference documentation in accordance with strict academic verification standards:
+
+```mermaid
+flowchart TD
+    subgraph Hierarchy ["Institutional & Statutory Source-of-Truth Hierarchy"]
+        direction TB
+        L1["Tier 1: Central Statutes & Gazettes (Binding Law)\n- CGST Rules 2017: Rule 138(14)(e) fresh produce exemption\n- Digital Personal Data Protection Act (DPDP 2023)\n- RBI Payment Aggregator Guidelines (Nodal Escrow)"]
+        L2["Tier 2: Ministerial & Academic Surveys (Empirical Data)\n- DPIIT & NCAER (Dec 2023): Macro 7.97% GDP vs MSME 16.9%\n- MoAFW 10th Agricultural Census: 86.2% smallholder base\n- ICAR-CIPHET: 4.6%-15.8% perishable transit loss"]
+        L3["Tier 3: Sectoral Policy & Environmental Baselines\n- NITI Aayog & RMI: 28%-43% commercial deadheading\n- India GHG / IPCC: 2.644 kg CO2 per liter diesel combustion\n- MoRTH: Basic Road Statistics (>70% modal road dominance)"]
+        L4["Tier 4: Live Corridor Ground Rates\n- Regional Truck Union Rate Cards: ₹7,000 / 10t ICV haul\n- DMI / AGMARKNET: Daily modal agricultural prices"]
+        L1 --> L2 --> L3 --> L4
+    end
+```
 
 |   #    | Claimed Metric / Finding                                                                                                                                        | Institutional Source                                                                                                                     | Publication Date       | Exact Page / Section                                | Geography                                | Relevance to PRAYAAN                                                                                                  | Reliability Tier                                                                                               | Methodological Limitations                                                                                             |
 | :----: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------- | :--------------------- | :-------------------------------------------------- | :--------------------------------------- | :-------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
@@ -51,29 +65,25 @@ The following register audits every major quantitative claim across the PRAYAAN 
 
 A major point of confusion in logistics competitions is the wide discrepancy in cited national logistics costs. PRAYAAN reconciles this explicitly:
 
+```mermaid
+flowchart TD
+    subgraph MacroVsMicro ["Reconciliation of India's Logistics Cost Estimates"]
+        direction TB
+        subgraph Macro ["Macroeconomic National Estimates"]
+            M1["Legacy Model Estimates\n- Source: Armstrong & Associates, McKinsey, NITI Aayog 2021\n- Methodology: Top-down macroeconomic extrapolation\n- Estimate: 13% - 14% of GDP"]
+            M2["NCAER / DPIIT Comprehensive Study (Dec 2023)\n- Methodology: Bottom-up hybrid Supply-Use Tables + 1,200+ enterprise surveys\n- Verified Metric: 7.97% - 8.35% of GDP (₹24.01 Lakh Cr)"]
+        end
+
+        subgraph Micro ["Microeconomic Enterprise Reality (NCAER Disaggregated Data)"]
+            E1["Large Corporate Enterprises\nLogistics Cost = ~7.6% of output value"]
+            E2["Rural MSMEs & Small Agricultural Producers\nLogistics Cost = 16.9% of output value!"]
+        end
+
+        M2 --> Micro
+        E2 --> Focus["PRAYAAN Target Scope:\nDirectly addresses the acute 16.9% rural MSME logistics crisis"]
+    end
 ```
-+---------------------------------------------------------------------------------------------------+
-|                         RECONCILING INDIA'S LOGISTICS COST ESTIMATES                              |
-+---------------------------------------------------------------------------------------------------+
-|  LEGACY ESTIMATE (13% - 14% of GDP)               NCAER / DPIIT EMPIRICAL ESTIMATE (7.97% - 8.35%)|
-|  - Source: Armstrong & Associates (2014),         - Source: DPIIT & NCAER Comprehensive Report    |
-|    McKinsey, NITI Aayog (2021).                     (Released December 2023).                     |
-|  - Methodology: Top-down macroeconomic model      - Methodology: Bottom-up hybrid framework using |
-|    using high indirect cost multipliers.            Supply-Use Tables (MOSPI) + 1,200+ enterprise |
-|  - Inclusion: Heavily weighted by high road         primary surveys across 14 freight sectors.    |
-|    congestion, border tax delays, and buffer     - Finding: Aggregate national logistics cost is |
-|    inventory carrying costs.                        ~7.97% of GDP for FY23 (₹24.01 Lakh Crore).   |
-+---------------------------------------------------------------------------------------------------+
-                                                  |
-                                                  v
-+---------------------------------------------------------------------------------------------------+
-|                            THE MICRO DISPARITY RECONCILIATION                                     |
-|  While the MACRO national logistics cost is ~8% of GDP, the NCAER study proved that:             |
-|  - Large Corporate Enterprises face logistics costs of ~7.6% of their output value.               |
-|  - MSMEs and Rural Agricultural Producers face logistics costs of 16.9% of their output value!    |
-|  CONCLUSION: PRAYAAN targets the 16.9% rural MSME logistics crisis, where fragmentation is severe.|
-+---------------------------------------------------------------------------------------------------+
-```
+
 
 ### B. Empty Running vs. Payload Underutilization
 
@@ -216,3 +226,4 @@ To ensure complete scientific integrity, PRAYAAN distinguishes between:
 8. **World Resources Institute (WRI) India, Confederation of Indian Industry (CII), & TERI**. _India GHG Program: Technical Guidance for Calculating GHG Emissions from Road Freight Transport_. [https://indiaghgp.org](https://indiaghgp.org).
 9. **Ministry of Law and Justice, Government of India** (August 2023). _The Digital Personal Data Protection Act, 2023 (Act No. 22 of 2023)_. The Gazette of India, Extraordinary.
 10. **Reserve Bank of India (RBI)** (March 2020 / July 2022). _Guidelines on Regulation of Payment Aggregators and Payment Gateways (DPSS.CO.PD.No.1810/02.14.008/2019-20)_. Reserve Bank of India, Mumbai. [https://www.rbi.org.in](https://www.rbi.org.in).
+```
