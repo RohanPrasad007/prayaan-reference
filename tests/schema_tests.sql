@@ -19,14 +19,14 @@
 
 BEGIN;
 
-RAISE NOTICE '======================================================================';
-RAISE NOTICE 'STARTING PRAYAAN SCHEMA INVARIANT & SECURITY TEST SUITE';
-RAISE NOTICE '======================================================================';
+\echo '======================================================================'
+\echo 'STARTING PRAYAAN SCHEMA INVARIANT & SECURITY TEST SUITE'
+\echo '======================================================================'
 
 -- -------------------------------------------------------------------------------------
 -- TEST A: Aadhaar Masking Format Validation (14-Character Regex)
 -- -------------------------------------------------------------------------------------
-RAISE NOTICE '>>> TEST A: Aadhaar Masking Format Validation';
+\echo '>>> TEST A: Aadhaar Masking Format Validation'
 
 DO $$
 DECLARE
@@ -75,7 +75,7 @@ END $$;
 -- -------------------------------------------------------------------------------------
 -- TEST B: Multi-Axis Capacity Trigger & Leg Precedence Enforcement
 -- -------------------------------------------------------------------------------------
-RAISE NOTICE '>>> TEST B: Multi-Axis Capacity Trigger & Stop Sequence Precedence';
+\echo '>>> TEST B: Multi-Axis Capacity Trigger & Stop Sequence Precedence'
 
 DO $$
 DECLARE
@@ -202,7 +202,7 @@ END $$;
 -- -------------------------------------------------------------------------------------
 -- TEST C: Trip Concurrency Row Locking Verification
 -- -------------------------------------------------------------------------------------
-RAISE NOTICE '>>> TEST C: Trip-Level Concurrency Locking (FOR UPDATE)';
+\echo '>>> TEST C: Trip-Level Concurrency Locking (FOR UPDATE)'
 
 DO $$
 DECLARE
@@ -219,7 +219,7 @@ END $$;
 -- -------------------------------------------------------------------------------------
 -- TEST D: RLS Multi-Tenant Isolation Between Sellers
 -- -------------------------------------------------------------------------------------
-RAISE NOTICE '>>> TEST D: Row-Level Security (RLS) Tenant Isolation';
+\echo '>>> TEST D: Row-Level Security (RLS) Tenant Isolation'
 
 DO $$
 DECLARE
@@ -283,7 +283,7 @@ END $$;
 -- -------------------------------------------------------------------------------------
 -- TEST E: Anti-Tampering Shield for Allocated Freight & Advance Disbursements
 -- -------------------------------------------------------------------------------------
-RAISE NOTICE '>>> TEST E: Transporter Anti-Tampering Shield & Payout Limits';
+\echo '>>> TEST E: Transporter Anti-Tampering Shield & Payout Limits'
 
 DO $$
 DECLARE
@@ -337,8 +337,8 @@ BEGIN
     END IF;
 END $$;
 
-RAISE NOTICE '======================================================================';
-RAISE NOTICE 'ALL PRAYAAN SCHEMA INVARIANT & SECURITY TESTS PASSED SUCCESSFULLY!';
-RAISE NOTICE '======================================================================';
+\echo '======================================================================'
+\echo 'ALL PRAYAAN SCHEMA INVARIANT & SECURITY TESTS PASSED SUCCESSFULLY!'
+\echo '======================================================================'
 
 ROLLBACK; -- Safe test suite: rolls back all dummy artifacts
