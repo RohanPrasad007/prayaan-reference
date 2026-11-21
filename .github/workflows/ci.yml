@@ -43,6 +43,24 @@ jobs:
       - name: Test PostgreSQL Schema & PostGIS Setup
         run: |
           docker compose up -d db
-          timeout 30 sh -c 'until docker compose exec -T db pg_isready -U postgres -d prayaan; do sleep 1; done'
+          echo "Waiting for PostgreSQL server readiness..."
+          for i in $(seq 1 60); do
+            if docker compose exec -T db pg_isready -U postgres -d prayaan >/dev/null 2>&1; then
+              break
+            fi
+            sleep 1
+          done
+          echo "Waiting for schema tables to be initialized..."
+          for i in $(seq 1 30); do
+            if docker compose exec -T db psql -U postgres -d prayaan -c "SELECT 1 FROM users LIMIT 1;" >/dev/null 2>&1; then
+              echo "Database schema verified ready!"
+              break
+            fi
+            sleep 1
+          done
+          if ! docker compose exec -T db psql -U postgres -d prayaan -c "SELECT 1 FROM users LIMIT 1;" >/dev/null 2>&1; then
+            echo "Schema not yet applied by entrypoint, applying directly from schema.sql..."
+            docker compose exec -T db psql -U postgres -d prayaan -f /docker-entrypoint-initdb.d/01_schema.sql
+          fi
           docker compose exec -T db psql -U postgres -d prayaan -f /tests/schema_tests.sql
           docker compose down -v

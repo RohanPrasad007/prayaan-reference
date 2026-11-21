@@ -29,8 +29,25 @@ unit-economics:
 test-db:
 	@echo "Starting PostgreSQL 16 + PostGIS container via Docker Compose..."
 	docker compose up -d db
-	@echo "Awaiting PostgreSQL ready status..."
-	@docker compose exec -T db sh -c 'until pg_isready -U postgres -d prayaan; do sleep 1; done'
+	@echo "Awaiting PostgreSQL server readiness..."
+	@for i in $$(seq 1 60); do \
+		if docker compose exec -T db pg_isready -U postgres -d prayaan >/dev/null 2>&1; then \
+			break; \
+		fi; \
+		sleep 1; \
+	done
+	@echo "Awaiting PostgreSQL schema readiness..."
+	@for i in $$(seq 1 30); do \
+		if docker compose exec -T db psql -U postgres -d prayaan -c "SELECT 1 FROM users LIMIT 1;" >/dev/null 2>&1; then \
+			echo "Database schema verified ready!"; \
+			break; \
+		fi; \
+		sleep 1; \
+	done
+	@if ! docker compose exec -T db psql -U postgres -d prayaan -c "SELECT 1 FROM users LIMIT 1;" >/dev/null 2>&1; then \
+		echo "Applying schema directly from schema.sql..."; \
+		docker compose exec -T db psql -U postgres -d prayaan -f /docker-entrypoint-initdb.d/01_schema.sql; \
+	fi
 	@echo "Executing schema invariant and security test suite..."
 	docker compose exec -T db psql -U postgres -d prayaan -f /tests/schema_tests.sql
 	@echo "Schema verification complete."
