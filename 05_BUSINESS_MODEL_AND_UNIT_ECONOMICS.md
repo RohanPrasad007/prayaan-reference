@@ -58,8 +58,8 @@ flowchart TD
 
 | Stakeholder Tier             |            Monthly Subscription             | Target User Persona                                                                     | Included Platform Capabilities                                                                                                                                                                                                                            | Commercial Justification                                                                                               |
 | :--------------------------- | :-----------------------------------------: | :-------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
-| **Seller Subscription**      | **₹899 / month**<br>($89,900\text{ Paise}$) | Farmer Producer Organizations (FPOs), Village Aggregators, Commercial Fruit/Veg Growers | - Unlimited crop listings & AGMARKNET daily modal price benchmarks.<br>- Bilateral digital RFQ negotiation engine.<br>- Automated 3-axis corridor load pooling.<br>- 6-digit loading bay custody OTP generation.<br>- Digital proof-of-delivery receipts. | A single shared trip saves ₹3,000–₹4,000 in freight. Subscribing pays for itself on the first pooled run of the month. |
-| **Fleet Owner Subscription** | **₹899 / month**<br>($89,900\text{ Paise}$) | Small Road Transport Operators (SRTOs owning 1–5 trucks), Independent Owner-Drivers     | - Corridor-based open load board discovery.<br>- Interactive 3-axis pooling & capacity audit planner.<br>- Automated NMRS integer freight cost allocation.<br>- Driver mobile dispatch and turn-by-turn route tracking.<br>- Return backhaul matching.    | Eliminates reliance on informal brokers charging 10%–15% commission per trip. Saves ₹5,000+ per month per truck.       |
+| **Seller Subscription**      | **₹899 / month**<br>($`89,900\text{ Paise}`$) | Farmer Producer Organizations (FPOs), Village Aggregators, Commercial Fruit/Veg Growers | - Unlimited crop listings & AGMARKNET daily modal price benchmarks.<br>- Bilateral digital RFQ negotiation engine.<br>- Automated 3-axis corridor load pooling.<br>- 6-digit loading bay custody OTP generation.<br>- Digital proof-of-delivery receipts. | A single shared trip saves ₹3,000–₹4,000 in freight. Subscribing pays for itself on the first pooled run of the month. |
+| **Fleet Owner Subscription** | **₹899 / month**<br>($`89,900\text{ Paise}`$) | Small Road Transport Operators (SRTOs owning 1–5 trucks), Independent Owner-Drivers     | - Corridor-based open load board discovery.<br>- Interactive 3-axis pooling & capacity audit planner.<br>- Automated NMRS integer freight cost allocation.<br>- Driver mobile dispatch and turn-by-turn route tracking.<br>- Return backhaul matching.    | Eliminates reliance on informal brokers charging 10%–15% commission per trip. Saves ₹5,000+ per month per truck.       |
 | **Wholesale Buyer**          |                **₹0 (FREE)**                | Mandi Wholesalers, Urban Retailers, Food Processors                                     | - Open browse of rural crop listings.<br>- Direct farmer RFQ negotiations.<br>- Decoupled delivery OTP confirmation.<br>- Zero platform transaction cut.                                                                                                  | Minimizes buyer onboarding friction, driving wholesale liquidity and demand onto the platform.                         |
 
 ### B. Critical Commercial Viability Nuance: Smallholders vs. FPOs
@@ -83,11 +83,11 @@ To eliminate administrative friction within Farmer Producer Organizations:
    - Standalone Right-Sized Vehicle Benchmark: A dedicated 2.5t LCV (Bolero Maxi Truck, audited charter rate ₹5,200, or ₹260/quintal).
    - PRAYAAN Pooled Freight: ₹2,000 (₹100/quintal transport outlay via integer NMRS on a shared 10t ICV).
    - Gross Transport Savings: ₹5,200 - ₹2,000 = **₹3,200 (61.5% gross savings)**.
-   - FPO Facilitation Levy ($20\text{ quintals} \times ₹10/\text{q}$): ₹200 credited to FPO's treasury.
+   - FPO Facilitation Levy ($`20\text{ quintals} \times ₹10/\text{q}`$): ₹200 credited to FPO's treasury.
    - Net Transport Expense for Ramesh: ₹2,000 + ₹200 = **₹2,200 (₹110/quintal)**.
    - Farmer's Net Take-Home Savings: **₹3,000 (57.7% net freight reduction)** compared to hiring a dedicated LCV.
 4. **FPO Platform Self-Sustenance**:
-   - The FPO needs to pool only **90 quintals (9.0 tonnes)** of produce across all its members each month to recover the entire ₹899 platform subscription ($90 \times ₹10 = ₹900$).
+   - The FPO needs to pool only **90 quintals (9.0 tonnes)** of produce across all its members each month to recover the entire ₹899 platform subscription ($`90 \times ₹10 = ₹900`$).
    - A single 10-tonne truck run covers the software overhead for the entire month, turning the logistics desk into a self-sustaining service center.
 
 ### D. Driver Working-Capital Solution: Deterministic 50/50 Split Disbursal
@@ -115,17 +115,17 @@ To ensure full statutory tax compliance:
 
 ### B. Customer Acquisition Cost (CAC) & Lifetime Value (LTV)
 
-- **Blended Seller Acquisition Cost ($\text{CAC}_{\text{seller}}$)**: **₹1,850** (FPO institutional onboarding via KVKs and CSCs).
-- **Fleet Owner Acquisition Cost ($\text{CAC}_{\text{fleet}}$)**: **₹3,200** (Direct transport nagar and truck terminal activation).
-- **Blended CAC**: $0.40 \times ₹1,850 + 0.60 \times ₹3,200 = \mathbf{₹2,660}$.
+- **Blended Seller Acquisition Cost ($`\text{CAC}_{\text{seller}}`$)**: **₹1,850** (FPO institutional onboarding via KVKs and CSCs).
+- **Fleet Owner Acquisition Cost ($`\text{CAC}_{\text{fleet}}`$)**: **₹3,200** (Direct transport nagar and truck terminal activation).
+- **Blended CAC**: $`0.40 \times ₹1,850 + 0.60 \times ₹3,200 = \mathbf{₹2,660}`$.
 - **Monthly Churn & Inactivity**:
   - Blended annual churn is modeled at **6.5% monthly**, reflecting agricultural seasonality (65% active paying cohort, 35% seasonal harvest pause).
   - Average Active Customer Lifetime: **15.4 months**.
-- **Customer Lifetime Value ($\text{LTV}$)**: $\text{LTV} = \frac{\text{Monthly Net Margin}}{\text{Monthly Churn}} = \frac{₹783.00}{0.065} = \mathbf{₹12,046.15}$
+- **Customer Lifetime Value ($`\text{LTV}`$)**: $`\text{LTV} = \frac{\text{Monthly Net Margin}}{\text{Monthly Churn}} = \frac{₹783.00}{0.065} = \mathbf{₹12,046.15}`$
 - **LTV / CAC Ratios**:
-  - Sellers (FPOs): $\frac{₹12,046}{₹1,850} = \mathbf{6.51\times}$ (Healthy SaaS benchmark: $> 3.0\times$).
-  - Fleet Owners: $\frac{₹12,046}{₹3,200} = \mathbf{3.76\times}$.
-  - Blended Portfolio: $\frac{₹12,046}{₹2,660} = \mathbf{4.53\times}$.
+  - Sellers (FPOs): $`\frac{₹12,046}{₹1,850} = \mathbf{6.51\times}`$ (Healthy SaaS benchmark: $`> 3.0\times`$).
+  - Fleet Owners: $`\frac{₹12,046}{₹3,200} = \mathbf{3.76\times}`$.
+  - Blended Portfolio: $`\frac{₹12,046}{₹2,660} = \mathbf{4.53\times}`$.
 
 ### C. Monthly Operating Expenses (OpEx Breakdown at Scale: 1,000 Subscribers)
 
@@ -205,9 +205,9 @@ To ensure complete transparency before competition juries, PRAYAAN explicitly se
 
 ### A. Sampling Methodology & Cohort Sizing
 
-- **Target Geographic Corridor**: **Nashik District (Niphad, Yeola, Sinnar) $\leftrightarrow$ Mumbai Metropolitan Region (Vashi APMC, Kalyan Mandi)** (~165 km).
+- **Target Geographic Corridor**: **Nashik District (Niphad, Yeola, Sinnar) $`\leftrightarrow`$ Mumbai Metropolitan Region (Vashi APMC, Kalyan Mandi)** (~165 km).
 - **Sampling Frame**: Stratified random sampling across three stakeholder clusters:
-  1. **Smallholder Farmers & FPO Executives**: $N = 60$ respondents (45 marginal farmers $< 2\text{ ha}$, 10 commercial growers, 5 FPO board directors).
+  1. **Smallholder Farmers & FPO Executives**: $N = 60$ respondents (45 marginal farmers $`< 2\text{ ha}`$, 10 commercial growers, 5 FPO board directors).
   2. **Fleet Owners & Commercial Drivers**: $N = 35$ respondents (15 small fleet owners owning 2–5 trucks, 20 hired/owner-drivers).
   3. **Wholesale Mandi Traders & Commission Agents**: $N = 25$ respondents (15 commission agents/arhtiyas, 10 bulk procurement buyers).
   4. **Total Target Sample Size**: **120 primary field interviews**.
@@ -292,10 +292,10 @@ flowchart LR
 
 | Survey Metric Collected                    | Algorithmic Variable in PRAYAAN Model          | Mathematical Role                                                                                            |
 | :----------------------------------------- | :--------------------------------------------- | :----------------------------------------------------------------------------------------------------------- |
-| **Observed Return Empty Trip Rate** (Q05)  | $P_{\text{backhaul}}$ in repositioning formula | Calibrates $K_{\text{reposition}} = (1 - P_{\text{backhaul}}) \cdot [D_{\text{return}} \cdot V_{\text{km}}]$ |
-| **Multi-Stop Detour Compensation** (Q11)   | Pickup Service Cost $s_p$ & $\delta_{\max}$    | Bounds maximum orthogonal detour corridor envelope ($\le 10\text{ km}$)                                      |
-| **Observed Loading Dock Wait Time** (Q06)  | Pickup Time Window $[e_p, l_p]$                | Sets dock timeout threshold (default: 60 min) to prevent driver detention                                    |
-| **Baseline Dedicated Charter Rates** (Q03) | Standalone Cost $c(\{i\})$                     | Verifies Individual Rationality ($A_i \le c(\{i\})$) and $\ge 30\%$ savings                                  |
+| **Observed Return Empty Trip Rate** (Q05)  | $`P_{\text{backhaul}}`$ in repositioning formula | Calibrates $`K_{\text{reposition}} = (1 - P_{\text{backhaul}}) \cdot [D_{\text{return}} \cdot V_{\text{km}}]`$ |
+| **Multi-Stop Detour Compensation** (Q11)   | Pickup Service Cost $`s_p`$ & $`\delta_{\max}`$    | Bounds maximum orthogonal detour corridor envelope ($`\le 10\text{ km}`$)                                      |
+| **Observed Loading Dock Wait Time** (Q06)  | Pickup Time Window $`[e_p, l_p]`$                | Sets dock timeout threshold (default: 60 min) to prevent driver detention                                    |
+| **Baseline Dedicated Charter Rates** (Q03) | Standalone Cost $`c(\{i\})`$                     | Verifies Individual Rationality ($`A_i \le c(\{i\})`$) and $`\ge 30\%`$ savings                                  |
 
 ### E. Evidence Requirements Before Platform Impact Claims Can Be Made
 

@@ -54,7 +54,7 @@ flowchart TD
 | **06** | **86.2% of all operational landholdings** in India belong to small and marginal farmers (< 2.0 hectares).                                                       | **Ministry of Agriculture & Farmers Welfare (MoAFW)** — _All India Report on Agriculture Census 2015–16_                                 | 2019 / 2020            | Chapter 2: Distribution of Operational Holdings     | India (National Rural)                   | Proves that rural crop production is structurally fragmented into sub-scale Less-Than-Truckload (LTL) lots.           | `OFFICIAL CENSUS` (Complete decennial agricultural census)                                                     | Operational holding size does not perfectly match marketable surplus (many smallholders produce subsistence crops).    |
 | **07** | Post-harvest quantitative transit and storage loss in fruits and vegetables is **4.6% to 15.8%**.                                                               | **ICAR-CIPHET** — _Study on Assessment of Post-Harvest Losses of Major Crops and Commodities in India_                                   | 2015 / 2022 Update     | Table 4.12; Perishables Loss Matrix                 | India (All Agro-Climatic Zones)          | Confirms that uncoordinated rural transport and dock delays cause physical food destruction, not just financial loss. | `ACADEMIC / OFFICIAL` (ICAR national sample survey across 107 districts)                                       | Averages across seasons; peak summer harvest losses in tomatoes and onions often exceed 20%.                           |
 | **08** | Fresh and unprocessed agricultural produce (vegetables, fruits, cereals, milk) are **statutorily exempt** from E-Way Bill generation.                           | **Ministry of Finance (CBIC)** — _CGST Rules 2017 (Rule 138(14)(e))_ read with _Notification No. 2/2017-Central Tax (Rate)_              | June 2017 / As Amended | Rule 138(14)(e); Annexure Schedule 07 & 08          | India (All States & UTs)                 | Corrects critical architecture error: PRAYAAN must not enforce mandatory E-Way bills for fresh farmgate shipments.    | `STATUTORY STATUTE` (Official Gazette Notification)                                                            | Exemption lapses if produce is processed, branded, or packed in registered trademark unit containers.                  |
-| **09** | Diesel fuel combustion produces **2.644 kg of $\text{CO}_2$ per liter** of diesel burned.                                                                       | **India GHG Program (WRI India / TERI / CII)** & IPCC Transport Guidelines                                                               | 2018 / 2021            | Stationary & Mobile Combustion Factors (Diesel HSD) | India (Energy Sector)                    | Provides the defensible physical multiplier for converting reduced vehicle-kilometers into audited emissions savings. | `OFFICIAL SCIENTIFIC` (Derived from chemical stoichiometry of standard high-speed diesel fuel)                 | Excludes well-to-tank (upstream refining) emissions; represents direct tailpipe (tank-to-wheel) emissions.             |
+| **09** | Diesel fuel combustion produces **2.644 kg of $`\text{CO}_2`$ per liter** of diesel burned.                                                                       | **India GHG Program (WRI India / TERI / CII)** & IPCC Transport Guidelines                                                               | 2018 / 2021            | Stationary & Mobile Combustion Factors (Diesel HSD) | India (Energy Sector)                    | Provides the defensible physical multiplier for converting reduced vehicle-kilometers into audited emissions savings. | `OFFICIAL SCIENTIFIC` (Derived from chemical stoichiometry of standard high-speed diesel fuel)                 | Excludes well-to-tank (upstream refining) emissions; represents direct tailpipe (tank-to-wheel) emissions.             |
 | **10** | Over 75% of commercial freight vehicles in India belong to small fleet operators owning **1 to 5 trucks**.                                                      | **National Transport Development Policy Committee (NTDPC)** & World Bank Studies                                                         | 2014 / 2020 Review     | Volume 3: Road and Freight Transport                | India (Transporter Profile)              | Defines target user persona for the Fleet Owner application: small, capital-constrained operators, not mega-fleets.   | `POLICY STUDY` (National transport commission survey)                                                          | High degree of unorganized sub-contracting makes exact vehicle registration tracking challenging.                      |
 
 ---
@@ -89,15 +89,15 @@ flowchart TD
 These two concepts describe fundamentally different physical failure modes and must never be conflated:
 
 1. **Deadheading (Empty Running)**:
-   - **Definition**: A vehicle traveling along a highway corridor with **zero cargo on board** ($\text{Payload} = 0\text{ kg}$).
+   - **Definition**: A vehicle traveling along a highway corridor with **zero cargo on board** ($`\text{Payload} = 0\text{ kg}`$).
    - **Empirical Baseline**: Represents **28% to 43%** of total commercial truck kilometers in India (NITI Aayog/RMI, 2021).
-   - **Root Cause**: Unidirectional freight flows (agricultural goods move rural $\rightarrow$ urban; consumer goods move urban $\rightarrow$ rural via segregated corporate networks) combined with a lack of inter-shipper coordination.
+   - **Root Cause**: Unidirectional freight flows (agricultural goods move rural $`\rightarrow`$ urban; consumer goods move urban $`\rightarrow`$ rural via segregated corporate networks) combined with a lack of inter-shipper coordination.
 2. **Payload Underutilization (Partial Loading)**:
-   - **Definition**: A vehicle in transit carrying cargo, but operating significantly below its rated physical capacity ($\text{Weight} \ll W_V$ or $\text{Volume} \ll U_V$).
+   - **Definition**: A vehicle in transit carrying cargo, but operating significantly below its rated physical capacity ($`\text{Weight} \ll W_V`$ or $`\text{Volume} \ll U_V`$).
    - **Empirical Baseline**: Rural agricultural Less-Than-Truckload vehicles frequently run at **30% to 50% capacity utilization**.
    - **Root Cause**: Smallholder harvest batch sizes (1–4 MT) and perishability deadlines that prevent waiting for a full 10-tonne load.
 3. **PRAYAAN Impact**:
-   - PRAYAAN eliminates **payload underutilization** on outbound legs by multi-consignment pooling ($3\text{t} + 4\text{t} \rightarrow 7\text{t}$ load on one truck).
+   - PRAYAAN eliminates **payload underutilization** on outbound legs by multi-consignment pooling ($`3\text{t} + 4\text{t} \rightarrow 7\text{t}`$ load on one truck).
    - PRAYAAN eliminates **empty running** on return legs by discovering backhaul agricultural inputs, seeds, packaged groceries, or returning crates.
 
 ### C. The Overloading vs. Underutilization Paradox
@@ -143,7 +143,7 @@ PRAYAAN’s system architecture is designed in strict conformance with Indian st
 ### C. Motor Vehicles (Amendment) Act, 2019 (Sections 113, 114 & 194)
 
 - **Overloading Penalties**: Section 194 mandates a minimum fine of ₹20,000 plus ₹2,000 per extra tonne of overload, along with driver license suspension.
-- **PRAYAAN Compliance**: The 3-axis capacity validation algorithm deterministically rejects any load combination where $\sum w_c > W_V$, protecting fleet owners from catastrophic roadside penalties and vehicle chassis damage.
+- **PRAYAAN Compliance**: The 3-axis capacity validation algorithm deterministically rejects any load combination where $`\sum w_c > W_V`$, protecting fleet owners from catastrophic roadside penalties and vehicle chassis damage.
 
 ### D. Reserve Bank of India (RBI) Payment Aggregator Guidelines (March 2020 / July 2022)
 
@@ -158,17 +158,17 @@ Many hackathon proposals make wild, unsupported environmental claims (e.g., _"Ou
 
 ### A. Core Mathematical Emissions Model
 
-The well-to-wheel tailpipe greenhouse gas emissions $E$ (in $\text{kg CO}_2\text{e}$) generated by a commercial freight trip along corridor $\mathcal{T}$ is formulated as:
+The well-to-wheel tailpipe greenhouse gas emissions $E$ (in $`\text{kg CO}_2\text{e}`$) generated by a commercial freight trip along corridor $`\mathcal{T}`$ is formulated as:
 
 $$E(\mathcal{T}) = \sum_{\ell_k \in \mathcal{L}} D(\ell_k) \cdot \text{SFC}(V, \mathcal{C}_{\ell_k}) \cdot \xi_{\text{diesel}}$$
 
 Where:
 
-- $D(\ell_k)$ is the physical road distance of leg $\ell_k$ (in kilometers).
-- $\text{SFC}(V, \mathcal{C}_{\ell_k})$ is the **Specific Fuel Consumption** of vehicle $V$ (in liters per kilometer) under active cargo load $\mathcal{C}_{\ell_k}$.
-- $\xi_{\text{diesel}} = 2.6444\text{ kg CO}_2/\text{liter}$ is the standard stoichiometric emission factor for high-speed diesel in India (India GHG Program / IPCC Mobile Combustion Factor).
+- $`D(\ell_k)`$ is the physical road distance of leg $`\ell_k`$ (in kilometers).
+- $`\text{SFC}(V, \mathcal{C}_{\ell_k})`$ is the **Specific Fuel Consumption** of vehicle $V$ (in liters per kilometer) under active cargo load $`\mathcal{C}_{\ell_k}`$.
+- $`\xi_{\text{diesel}} = 2.6444\text{ kg CO}_2/\text{liter}`$ is the standard stoichiometric emission factor for high-speed diesel in India (India GHG Program / IPCC Mobile Combustion Factor).
 
-### B. Load-Dependent Specific Fuel Consumption ($\text{SFC}$)
+### B. Load-Dependent Specific Fuel Consumption ($`\text{SFC}`$)
 
 Fuel consumption does not remain constant; it scales linearly with vehicle gross weight:
 
@@ -176,12 +176,12 @@ $$\text{SFC}(V, \mathcal{C}_{\ell_k}) = \text{SFC}_{\text{empty}}(V) + \left[ \t
 
 #### Empirical Baseline Fuel Parameters for Indian Commercial Fleets:
 
-| Vehicle Classification               | Typical Chassis Example         | Rated Payload ($W_V$) | $\text{SFC}_{\text{empty}}$ (Empty Truck) | $\text{SFC}_{\text{full}}$ (Fully Loaded) |   Baseline Freight Intensity (Loaded)   |
+| Vehicle Classification               | Typical Chassis Example         | Rated Payload ($`W_V`$) | $`\text{SFC}_{\text{empty}}`$ (Empty Truck) | $`\text{SFC}_{\text{full}}`$ (Fully Loaded) |   Baseline Freight Intensity (Loaded)   |
 | :----------------------------------- | :------------------------------ | :-------------------: | :---------------------------------------: | :---------------------------------------: | :-------------------------------------: |
-| **SCV (Small Comm. Vehicle)**        | Tata Ace / Mahindra Supro       |       1,000 kg        | $0.065\text{ L/km}$ ($15.4\text{ km/L}$)  | $0.080\text{ L/km}$ ($12.5\text{ km/L}$)  | $\approx 211\text{ g CO}_2/\text{t-km}$ |
-| **LCV (Light Comm. Vehicle)**        | Mahindra Bolero Maxi / Tata 407 |       2,500 kg        | $0.095\text{ L/km}$ ($10.5\text{ km/L}$)  |  $0.125\text{ L/km}$ ($8.0\text{ km/L}$)  | $\approx 132\text{ g CO}_2/\text{t-km}$ |
-| **ICV (Intermediate Comm. Vehicle)** | Eicher Pro 3010 / Tata 1109     |       10,000 kg       | $0.170\text{ L/km}$ ($5.88\text{ km/L}$)  | $0.240\text{ L/km}$ ($4.17\text{ km/L}$)  | $\approx 63\text{ g CO}_2/\text{t-km}$  |
-| **MHCV (Multi-Axle Truck)**          | Tata Signa 2818 / BharatBenz    |       18,000 kg       | $0.240\text{ L/km}$ ($4.17\text{ km/L}$)  | $0.340\text{ L/km}$ ($2.94\text{ km/L}$)  | $\approx 50\text{ g CO}_2/\text{t-km}$  |
+| **SCV (Small Comm. Vehicle)**        | Tata Ace / Mahindra Supro       |       1,000 kg        | $`0.065\text{ L/km}`$ ($`15.4\text{ km/L}`$)  | $`0.080\text{ L/km}`$ ($`12.5\text{ km/L}`$)  | $`\approx 211\text{ g CO}_2/\text{t-km}`$ |
+| **LCV (Light Comm. Vehicle)**        | Mahindra Bolero Maxi / Tata 407 |       2,500 kg        | $`0.095\text{ L/km}`$ ($`10.5\text{ km/L}`$)  |  $`0.125\text{ L/km}`$ ($`8.0\text{ km/L}`$)  | $`\approx 132\text{ g CO}_2/\text{t-km}`$ |
+| **ICV (Intermediate Comm. Vehicle)** | Eicher Pro 3010 / Tata 1109     |       10,000 kg       | $`0.170\text{ L/km}`$ ($`5.88\text{ km/L}`$)  | $`0.240\text{ L/km}`$ ($`4.17\text{ km/L}`$)  | $`\approx 63\text{ g CO}_2/\text{t-km}`$  |
+| **MHCV (Multi-Axle Truck)**          | Tata Signa 2818 / BharatBenz    |       18,000 kg       | $`0.240\text{ L/km}`$ ($`4.17\text{ km/L}`$)  | $`0.340\text{ L/km}`$ ($`2.94\text{ km/L}`$)  | $`\approx 50\text{ g CO}_2/\text{t-km}`$  |
 
 ### C. Emissions Avoided vs. Emissions Shifted
 
@@ -189,26 +189,26 @@ To ensure complete scientific integrity, PRAYAAN distinguishes between:
 
 1. **Emissions Avoided (True Net Abatement)**:
    - When two farmers who would have chartered two independent 10-tonne trucks running half-empty consolidate into a single 10-tonne vehicle, the second truck's entire fuel burn is completely eliminated from the highway corridor.
-   - **Net Avoided Emissions**: $\Delta E = E(\text{Truck}_1, w_A) + E(\text{Truck}_2, w_B) - E(\text{Pooled Truck}, w_A + w_B)$
+   - **Net Avoided Emissions**: $`\Delta E = E(\text{Truck}_1, w_A) + E(\text{Truck}_2, w_B) - E(\text{Pooled Truck}, w_A + w_B)`$
 2. **Emissions Shifted (Zero Abatement)**:
    - If an aggregator merely re-routes an existing truck to make three distant, circuitous detours, the additional detour mileage may consume _more_ diesel than dispatching a smaller dedicated vehicle.
-   - PRAYAAN prevents emission-shifting by enforcing a strict **Maximum Detour Constraint ($\le 15\%$ total corridor detour)** before any pooling match is authorized.
+   - PRAYAAN prevents emission-shifting by enforcing a strict **Maximum Detour Constraint ($`\le 15\%`$ total corridor detour)** before any pooling match is authorized.
 
 #### Worked Case Example (Nashik to Mumbai — 165 km Corridor):
 
 - **Baseline Independent Dispatch (Status Quo)**:
-  - Truck 1 (3t load on 10t ICV): $\text{SFC} = 0.170 + (0.070 \times 0.30) = 0.191\text{ L/km} \times 165\text{ km} = 31.515\text{ L}$
-  - Truck 2 (4t load on 10t ICV): $\text{SFC} = 0.170 + (0.070 \times 0.40) = 0.198\text{ L/km} \times 165\text{ km} = 32.670\text{ L}$
-  - Total Diesel Burn: $64.185\text{ Liters}$
-  - **Total Baseline Emissions**: $64.185\text{ L} \times 2.6444\text{ kg CO}_2/\text{L} = \mathbf{169.73\text{ kg CO}_2}$
+  - Truck 1 (3t load on 10t ICV): $`\text{SFC} = 0.170 + (0.070 \times 0.30) = 0.191\text{ L/km} \times 165\text{ km} = 31.515\text{ L}`$
+  - Truck 2 (4t load on 10t ICV): $`\text{SFC} = 0.170 + (0.070 \times 0.40) = 0.198\text{ L/km} \times 165\text{ km} = 32.670\text{ L}`$
+  - Total Diesel Burn: $`64.185\text{ Liters}`$
+  - **Total Baseline Emissions**: $`64.185\text{ L} \times 2.6444\text{ kg CO}_2/\text{L} = \mathbf{169.73\text{ kg CO}_2}`$
 - **PRAYAAN Consolidated Run (Shared 7t load on single 10t ICV)**:
-  - Pooled Truck (7t load on 10t ICV): $\text{SFC} = 0.170 + (0.070 \times 0.70) = 0.219\text{ L/km} \times 165\text{ km} = 36.135\text{ L}$
-  - Total Diesel Burn: $36.135\text{ Liters}$
-  - **Total Pooled Emissions**: $36.135\text{ L} \times 2.6444\text{ kg CO}_2/\text{L} = \mathbf{95.55\text{ kg CO}_2}$
+  - Pooled Truck (7t load on 10t ICV): $`\text{SFC} = 0.170 + (0.070 \times 0.70) = 0.219\text{ L/km} \times 165\text{ km} = 36.135\text{ L}`$
+  - Total Diesel Burn: $`36.135\text{ Liters}`$
+  - **Total Pooled Emissions**: $`36.135\text{ L} \times 2.6444\text{ kg CO}_2/\text{L} = \mathbf{95.55\text{ kg CO}_2}`$
 - **Measurable Net Environmental Impact**:
-  - **Diesel Saved**: $28.05\text{ Liters}$ per one-way corridor run ($43.7\%$ fuel reduction).
-  - **Net Emissions Avoided**: $\mathbf{74.18\text{ kg CO}_2}$ per shared trip.
-  - Extrapolated over a 100-trip monthly cohort along this single corridor: $\mathbf{7.42\text{ Metric Tonnes of CO}_2}$ abated monthly.
+  - **Diesel Saved**: $`28.05\text{ Liters}`$ per one-way corridor run ($`43.7\%`$ fuel reduction).
+  - **Net Emissions Avoided**: $`\mathbf{74.18\text{ kg CO}_2}`$ per shared trip.
+  - Extrapolated over a 100-trip monthly cohort along this single corridor: $`\mathbf{7.42\text{ Metric Tonnes of CO}_2}`$ abated monthly.
 
 ---
 

@@ -162,7 +162,7 @@ The failure to pool rural freight produces severe, quantifiable national losses:
 2. **Post-Harvest Transit Losses**:
    According to studies by the Indian Council of Agricultural Research (ICAR-CIPHET, 2015/2022), post-harvest losses in fruits and vegetables range between **4.6% and 15.8%**, driven heavily by unventilated transit delays and rough handling during uncoordinated multi-stage loading.
 3. **Deadheading Fuel Waste & Carbon Emissions**:
-   With **28% to 43% of commercial vehicle kilometers** run empty in rural corridors, millions of liters of imported diesel are burned without productive freight utility, emitting approximately **2.644 kg of $\text{CO}_2$ per liter** of diesel consumed.
+   With **28% to 43% of commercial vehicle kilometers** run empty in rural corridors, millions of liters of imported diesel are burned without productive freight utility, emitting approximately **2.644 kg of $`\text{CO}_2`$ per liter** of diesel consumed.
 
 ---
 
@@ -172,7 +172,7 @@ To maintain high engineering fidelity and feasibility within the competition tim
 
 ### In-Scope (Core Architectural Deliverables)
 
-- **Corridor-Based LTL Pooling**: Consolidating Less-Than-Truckload agricultural consignments (0.5 to 5.0 MT) along defined inter-district arterial highways (e.g., Nashik $\rightarrow$ Mumbai, Kolhapur $\rightarrow$ Pune).
+- **Corridor-Based LTL Pooling**: Consolidating Less-Than-Truckload agricultural consignments (0.5 to 5.0 MT) along defined inter-district arterial highways (e.g., Nashik $`\rightarrow`$ Mumbai, Kolhapur $`\rightarrow`$ Pune).
 - **Multi-Stop Pickups & Drops**: Sequencing pickups across 2 to 4 farmgate/aggregation clusters and delivering to multiple mandi docks or urban warehouses.
 - **3-Axis Physical Fit Engine**: Deterministic validation of payload weight, usable cubic volume, and package slot footprints, enforced leg-by-leg.
 - **Fair-Share Proportional Cost Allocation**: Integer-safe (paise-level) cost splitting ensuring shippers pay only for consumed truck space.
@@ -227,10 +227,10 @@ flowchart TD
 | **Empty Commercial Running**      | 28% to 43% of truck kilometers                  | `VERIFIED EVIDENCE`     | NITI Aayog & RMI (_Fast Tracking Freight in India_, June 2021).                                 |
 | **Smallholder Farm Distribution** | 86.2% of Indian operational landholdings        | `VERIFIED EVIDENCE`     | Ministry of Agriculture & Farmers Welfare (_10th Agricultural Census_).                         |
 | **Fresh Produce E-Way Exemption** | Unprocessed vegetables/grains exempt            | `VERIFIED EVIDENCE`     | CGST Rules Rule 138(14)(e) & Notification No. 2/2017-Central Tax (Rate).                        |
-| **Diesel $\text{CO}_2$ Factor**   | 2.644 kg $\text{CO}_2$ per liter of diesel      | `VERIFIED EVIDENCE`     | India GHG Program (WRI India / TERI / CII) & IPCC Guidelines.                                   |
+| **Diesel $`\text{CO}_2`$ Factor**   | 2.644 kg $`\text{CO}_2`$ per liter of diesel      | `VERIFIED EVIDENCE`     | India GHG Program (WRI India / TERI / CII) & IPCC Guidelines.                                   |
 | **Mandi Price Benchmark**         | Modal price in ₹/quintal                        | `VERIFIED EVIDENCE`     | Directorate of Marketing & Inspection (AGMARKNET daily feeds).                                  |
 | **Commercial Road Freight Rate**  | ₹3.78 per tonne-km national road average        | `COMMERCIAL EVIDENCE`   | NCAER / DPIIT (Dec 2023); varies from ₹1.51 (heavy trailers) to ₹11.03 (SCVs).                  |
-| **10-Tonne Truck Corridor Rate**  | ₹7,000 for Nashik $\rightarrow$ Mumbai (165 km) | `COMMERCIAL EVIDENCE`   | Regional truck union rate cards (approx. ₹40–₹45/km for 10t ICV roundtrip).                     |
+| **10-Tonne Truck Corridor Rate**  | ₹7,000 for Nashik $`\rightarrow`$ Mumbai (165 km) | `COMMERCIAL EVIDENCE`   | Regional truck union rate cards (approx. ₹40–₹45/km for 10t ICV roundtrip).                     |
 | **SaaS Pricing Model**            | ₹899/month for sellers & fleet owners           | `TEAM ASSUMPTION`       | Calibrated to cover cloud hosting, maps, SMS gateways, and rural support with 87% gross margin. |
 | **Corridor Buffer Threshold**     | 10 km spatial detour envelope                   | `TEAM ASSUMPTION`       | Engineering heuristic to restrict circuitous routing along arterial highways.                   |
 | **Farmer Willingness to Pool**    | Farmers accept shared truck space               | `UNVERIFIED HYPOTHESIS` | Requires field confirmation regarding produce commingling concerns.                             |
@@ -252,7 +252,7 @@ Digital tools designed for urban tech-savvy users fail abruptly in rural Bharat.
 ### B. Ultra-Low Bandwidth & Budget Hardware Optimization
 
 - **Target Device Profile**: Functional on low-end Android smartphones (Android 9.0+, Android Go Edition, 2GB RAM) costing under ₹6,000.
-- **Payload Compression**: API requests utilize concise JSON payloads with gzip compression; media photo uploads for custody verification are downscaled locally to $\le 300\text{ KB}$ before transmission.
+- **Payload Compression**: API requests utilize concise JSON payloads with gzip compression; media photo uploads for custody verification are downscaled locally to $`\le 300\text{ KB}`$ before transmission.
 - **Offline Cache**: Crucial master data (active vehicle profiles, route waypoints, verified OTP sequences) are stored locally in SQLite, permitting complete trip execution during prolonged network outages.
 
 ### C. Assisted Onboarding via Rural Community Infrastructure

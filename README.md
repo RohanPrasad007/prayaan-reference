@@ -25,7 +25,7 @@
 >   3. **Empirical Citations & Integrity**: Review [`02_OFFICIAL_RESEARCH... Section 2 & 3`](02_OFFICIAL_RESEARCH_AND_CITATIONS.md#2-institutional-source-audit-table) for the 10-point government audit table and macro vs. micro logistics cost reconciliation.
 >   4. **Pilot Deployment**: Review [`07_IMPLEMENTATION_ROADMAP... Section 1`](07_IMPLEMENTATION_ROADMAP_AND_MILESTONES.md#1-guiding-execution-philosophy) for the 4-stage Nashik–Mumbai pilot plan.
 > - 🔬 **If you have 10+ Minutes (Deep-Dive Mathematical, Algorithmic & Code Audit)**:
->   1. **Operations Research & Game Theory**: Review [`03_MATHEMATICAL_MODEL... Section 3.D & 7`](03_MATHEMATICAL_MODEL_AND_POOLING_ALGORITHMS.md#d-cooperative-game-theory-core-stability-theorem-for-nmrs) for the NMRS Core Stability Theorem, $10^9$ integer paise scaling, and 6 worked arithmetic examples.
+>   1. **Operations Research & Game Theory**: Review [`03_MATHEMATICAL_MODEL... Section 3.D & 7`](03_MATHEMATICAL_MODEL_AND_POOLING_ALGORITHMS.md#d-cooperative-game-theory-core-stability-theorem-for-nmrs) for the NMRS Core Stability Theorem, $`10^9`$ integer paise scaling, and 6 worked arithmetic examples.
 >   2. **Production Database Integrity**: Inspect [`schema.sql`](schema.sql) for PostGIS spatial indexing, `ethylene_category` enums, and the PL/pgSQL trigger `validate_consignment_stops_and_capacity()`.
 >   3. **Zero-Hardcoding Live Verification**: Run the verification scripts directly in your terminal:
 >      ```bash

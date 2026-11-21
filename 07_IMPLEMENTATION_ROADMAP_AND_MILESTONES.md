@@ -15,7 +15,7 @@
 > - **The 4 Implementation Stages**:
 >   - **Stage 1 (Current)**: Verified working prototype with tri-client architecture, deterministic 3-axis capacity validation, integer NMRS cost splitting, and offline SQLite driver journal.
 >   - **Stage 2 (Months 1–6)**: Controlled pilot on the high-density Nashik–Mumbai agricultural corridor (~165 km) with 10 FPOs, 25 fleet operators (50 trucks), and 20 APMC wholesale buyers.
->   - **Stage 3 (Months 6–12)**: Empirical evidence harvesting (elevate truck utilization from <45% to $\ge 70\%$, cut deadhead km by 30%).
+>   - **Stage 3 (Months 6–12)**: Empirical evidence harvesting (elevate truck utilization from <45% to $`\ge 70\%`$, cut deadhead km by 30%).
 >   - **Stage 4 (Months 12–24)**: Meta-heuristic optimization (ALNS), 3D bin packing, and expansion across 10 rural corridors.
 > - **Judge Fast-Path (60 Seconds)**:
 >   - Review the roadmap diagram in [**Section 1: Four-Stage Delivery Roadmap**](#1-guiding-execution-philosophy).
@@ -63,7 +63,7 @@ flowchart TD
 ### Stage 2: Controlled Field Pilot & Field Validation
 
 - **Objective**: Test the platform in live agricultural transport operations along a single arterial corridor and collect empirical baseline field data.
-- **Target Corridor**: **Nashik District (Niphad, Yeola, Sinnar) $\leftrightarrow$ Mumbai Metropolitan Region (Vashi APMC, Kalyan Mandi)** (~165 km).
+- **Target Corridor**: **Nashik District (Niphad, Yeola, Sinnar) $`\leftrightarrow`$ Mumbai Metropolitan Region (Vashi APMC, Kalyan Mandi)** (~165 km).
 - **Participant Cohort**:
   - **10 Farmer Producer Organizations (FPOs)** representing approximately 1,500 member smallholder farmers.
   - **25 Regional Fleet Operators** representing 50 commercial vehicles (mix of SCVs, LCVs, and 10t ICVs).
@@ -80,10 +80,10 @@ flowchart TD
 
 - **Objective**: Quantify real-world operational savings, verify asset utilization improvements, and harden software architecture against field telemetry.
 - **Pilot Success Metrics & Verification Standards**:
-  1. **Truck Capacity Utilization**: Elevate average payload and cubic volume utilization from the baseline of $< 45\%$ to $\ge 70\%$.
-  2. **Measured Freight Cost Savings**: Validate a measurable $30\%\text{ to }45\%$ reduction in per-quintal freight expenses for participating FPO members compared to prevailing dedicated charter rates.
-  3. **Empty Running Reduction**: Decrease return deadhead kilometers along the test corridor from $40\%$ to $< 25\%$ through backhaul matching.
-  4. **Loading Bay Turnaround Time**: Reduce farmgate loading delays by $\ge 40\%$ through automated pre-arrival cargo readiness gates.
+  1. **Truck Capacity Utilization**: Elevate average payload and cubic volume utilization from the baseline of $`< 45\%`$ to $`\ge 70\%`$.
+  2. **Measured Freight Cost Savings**: Validate a measurable $`30\%\text{ to }45\%`$ reduction in per-quintal freight expenses for participating FPO members compared to prevailing dedicated charter rates.
+  3. **Empty Running Reduction**: Decrease return deadhead kilometers along the test corridor from $`40\%`$ to $`< 25\%`$ through backhaul matching.
+  4. **Loading Bay Turnaround Time**: Reduce farmgate loading delays by $`\ge 40\%`$ through automated pre-arrival cargo readiness gates.
 - **Exit Milestone Gate**: Publication of an audited pilot impact report signed by participating FPO leaders and transport union executives.
 
 ---
@@ -94,10 +94,10 @@ flowchart TD
 - **Key Strategic Initiatives**:
   1. **ALNS & 3D Packing Deployment**: Production rollout of the Adaptive Large Neighborhood Search and 3D Bin Packing heuristics formalized in [`06_AI_ASSISTED_FREIGHT_POOLING_ROADMAP.md`](06_AI_ASSISTED_FREIGHT_POOLING_ROADMAP.md).
   2. **Corridor Grid Expansion**: Replicating the corridor model to 10 high-density rural agricultural corridors:
-     - Kolhapur $\leftrightarrow$ Pune (Sugarcane, vegetables, jaggery)
-     - Nagpur $\leftrightarrow$ Hyderabad (Oranges, cotton, pulses)
-     - Indore $\leftrightarrow$ Ahmedabad (Soybean, wheat, spices)
-     - Belagavi $\leftrightarrow$ Bengaluru (Vegetables, maize, commercial crops)
+     - Kolhapur $`\leftrightarrow`$ Pune (Sugarcane, vegetables, jaggery)
+     - Nagpur $`\leftrightarrow`$ Hyderabad (Oranges, cotton, pulses)
+     - Indore $`\leftrightarrow`$ Ahmedabad (Soybean, wheat, spices)
+     - Belagavi $`\leftrightarrow`$ Bengaluru (Vegetables, maize, commercial crops)
   3. **National Logistics Integration**: Establishing formal API interoperability with India's **Unified Logistics Interface Platform (ULIP)** for automated VAHAN vehicle fitness verification, and the **Open Network for Digital Commerce (ONDC)** for open buyer discovery.
 - **Exit Milestone Gate**: A self-sustaining, multi-corridor freight pooling network supporting over 1,000 daily rural shipments with operating profitability.
 
@@ -109,5 +109,5 @@ flowchart TD
 | :--------------------------------------------------------------------------- | :--------------------------------: | :------------------------------------------- | :------------------------------------------------------------------- |
 | **Gate 1: Prototype Code Freeze**                                            | Current Milestone<br>(Tech4Bharat) | Architecture complexity & model error.       | Deterministic capacity validation & integer paise math.              |
 | **Gate 2: Field Validation Audit**<br>(120 Primary Interviews)               |              Month 3               | Low farmer digital trust & commingling fear. | Partner directly with established FPOs/KVKs & independent lot seals. |
-| **Gate 3: Pilot 100-Trip Run**<br>(Nashik $\leftrightarrow$ Mumbai Corridor) |              Month 6               | Loading dock delays & vehicle detention.     | 60-min wait timeout & detention compensation.                        |
+| **Gate 3: Pilot 100-Trip Run**<br>(Nashik $`\leftrightarrow`$ Mumbai Corridor) |              Month 6               | Loading dock delays & vehicle detention.     | 60-min wait timeout & detention compensation.                        |
 | **Gate 4: Multi-Corridor Scaling**<br>(10 Regional Arteries)                 |              Month 18              | Driver churn & commission broker pushback.   | Transparent ₹899 SaaS; zero transaction cuts.                        |
